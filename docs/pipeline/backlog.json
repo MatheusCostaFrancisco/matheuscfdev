@@ -217,7 +217,7 @@
       ],
       "status": "done",
       "attempts": 1,
-      "commit": null,
+      "commit": "b968c30",
       "notes": [
         "2026-11-24 rodada 4 (PO): acceptance updated: cv.md now has 4 certifications and the site is bilingual; depends on T-018 (locale content wiring)."
       ]
@@ -292,7 +292,7 @@
     {
       "status": "done",
       "attempts": 1,
-      "commit": null,
+      "commit": "e02d705",
       "id": "T-015",
       "title": "Add bilingual routing (/en/, /pt/) with browser language detection and ADR",
       "type": "infra",
@@ -316,7 +316,7 @@
     {
       "status": "done",
       "attempts": 1,
-      "commit": null,
+      "commit": "90cfd9d",
       "id": "T-016",
       "title": "Create typed SiteContent model and en content from the updated cv.md",
       "type": "content",
@@ -339,7 +339,7 @@
     {
       "status": "done",
       "attempts": 1,
-      "commit": null,
+      "commit": "913d898",
       "id": "T-017",
       "title": "Create pt-BR content from cv.pt-BR.md with the same facts as en",
       "type": "content",
@@ -361,7 +361,7 @@
     {
       "status": "done",
       "attempts": 1,
-      "commit": null,
+      "commit": "8f31bb0",
       "id": "T-018",
       "title": "Render every section and layout component from locale content",
       "type": "feature",
@@ -384,7 +384,7 @@
     {
       "status": "done",
       "attempts": 1,
-      "commit": null,
+      "commit": "07b1d62",
       "id": "T-019",
       "title": "Add visible language switcher to the header",
       "type": "feature",
@@ -404,7 +404,7 @@
     {
       "status": "done",
       "attempts": 1,
-      "commit": null,
+      "commit": "8840a35",
       "id": "T-020",
       "title": "Update products section with ElevaTech, product details and WoodFlow link",
       "type": "fix",
@@ -426,7 +426,7 @@
     {
       "status": "done",
       "attempts": 1,
-      "commit": null,
+      "commit": "d7af6aa",
       "id": "T-021",
       "title": "Polish experience timeline for the ESALQ/USP entry and promotion note contrast",
       "type": "fix",
