@@ -185,6 +185,31 @@ function taskBlock(task) {
   ].join('\n')
 }
 
+// ---------- Papéis ----------
+
+// Agentes de .claude/agents/ só entram no registro quando a sessão do Claude Code inicia.
+// Se o papel não estiver registrado, o agente genérico recebe o arquivo do papel como instrução.
+const unregisteredRoles = new Set()
+
+async function roleAgent(role, prompt, opts) {
+  if (!unregisteredRoles.has(role)) {
+    try {
+      return await agent(prompt, Object.assign({}, opts, { agentType: role }))
+    } catch (err) {
+      const message = String(err && err.message ? err.message : err)
+      if (!message.includes('not found')) throw err
+      unregisteredRoles.add(role)
+      log('Papel "' + role + '" não registrado nesta sessão; usando .claude/agents/' + role + '.md como instrução.')
+    }
+  }
+  const preamble = [
+    'Seu papel nesta tarefa é "' + role + '".',
+    'ANTES de qualquer outra ação, leia o arquivo `.claude/agents/' + role + '.md` na raiz do repositório e siga as instruções dele (ignore o frontmatter) como suas instruções de sistema, inclusive as restrições de ferramentas descritas.',
+    '',
+  ].join('\n')
+  return agent(preamble + prompt, opts)
+}
+
 // ---------- Prompts ----------
 
 function preflightPrompt() {
@@ -287,8 +312,7 @@ function reportPrompt() {
 // ---------- Execução de uma tarefa ----------
 
 async function runReviewer(reviewer, task, impl) {
-  const verdict = await agent(reviewPrompt(reviewer, task, impl), {
-    agentType: reviewer,
+  const verdict = await roleAgent(reviewer, reviewPrompt(reviewer, task, impl), {
     schema: VERDICT,
     label: task.id + ' · ' + reviewer,
     phase: 'Execução',
@@ -360,8 +384,7 @@ async function runTask(task) {
 
   for (;;) {
     const attempt = record.cycles.length + 1
-    const impl = await agent(implementPrompt(task, feedback), {
-      agentType: implementer,
+    const impl = await roleAgent(implementer, implementPrompt(task, feedback), {
       schema: IMPL,
       label: task.id + ' · ' + implementer + ' #' + attempt,
       phase: 'Execução',
@@ -446,7 +469,7 @@ if (pre && pre.stashedInflight) log('Sobra de rodada interrompida guardada em st
 let plan = null
 if (!run.aborted) {
   phase('Planejamento')
-  plan = await agent(planPrompt(), { agentType: 'po', schema: PLAN, label: 'po', phase: 'Planejamento' })
+  plan = await roleAgent('po', planPrompt(), { schema: PLAN, label: 'po', phase: 'Planejamento' })
   if (!plan) {
     run.aborted = 'O PO não retornou plano.'
   } else {
@@ -495,13 +518,13 @@ if (!run.aborted && plan && plan.tasks.length) {
 
 if (!run.aborted) {
   phase('Deploy')
-  const dep = await agent(deployPrompt(), { agentType: 'deployer', schema: DEPLOY, label: 'deployer', phase: 'Deploy' })
+  const dep = await roleAgent('deployer', deployPrompt(), { schema: DEPLOY, label: 'deployer', phase: 'Deploy' })
   run.deploy = dep || { status: 'failed', url: '', commit: '', pendencias: [], notes: 'deployer não retornou resultado' }
   addUnique(run.pendencias, run.deploy.pendencias)
 }
 
 phase('Relatório')
-const report = await agent(reportPrompt(), { agentType: 'reporter', schema: REPORT, label: 'reporter', phase: 'Relatório' })
+const report = await roleAgent('reporter', reportPrompt(), { schema: REPORT, label: 'reporter', phase: 'Relatório' })
 
 const count = (o) => run.tasks.filter((t) => t.outcome === o).length
 return {
