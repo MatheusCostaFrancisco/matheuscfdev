@@ -1,8 +1,10 @@
 import { cn } from "../lib/cn";
 import { useContent } from "../lib/use-content";
 
-const cardClass = cn(
-  "flex flex-col rounded-2xl border border-line bg-surface-raised p-6 shadow-sm",
+const cardClass =
+  "flex flex-col rounded-2xl border border-line bg-surface-raised p-6 shadow-sm";
+
+const interactiveCardClass = cn(
   "motion-safe:transition-shadow motion-safe:duration-200",
   "hover:border-line-strong hover:shadow-md focus-within:border-accent-600 focus-within:shadow-md",
 );
@@ -31,7 +33,7 @@ export function Products() {
       <ul className="mt-8 grid gap-6 sm:grid-cols-2">
         {products.map((product) => (
           <li key={product.name} className="flex">
-            <article className={cn(cardClass, "w-full min-w-0")}>
+            <article className={cn(cardClass, "w-full min-w-0", product.url && interactiveCardClass)}>
               <h3 className="text-xl font-semibold text-fg">{product.name}</h3>
               {product.role ? (
                 <p className="mt-1 text-sm font-medium text-accent-700">

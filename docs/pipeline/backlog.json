@@ -402,8 +402,8 @@
       "notes": []
     },
     {
-      "status": "todo",
-      "attempts": 0,
+      "status": "done",
+      "attempts": 1,
       "commit": null,
       "id": "T-020",
       "title": "Update products section with ElevaTech, product details and WoodFlow link",
