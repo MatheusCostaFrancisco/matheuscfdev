@@ -215,8 +215,8 @@
         "T-004",
         "T-018"
       ],
-      "status": "todo",
-      "attempts": 0,
+      "status": "done",
+      "attempts": 1,
       "commit": null,
       "notes": [
         "2026-11-24 rodada 4 (PO): acceptance updated: cv.md now has 4 certifications and the site is bilingual; depends on T-018 (locale content wiring)."

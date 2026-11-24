@@ -139,7 +139,7 @@ export const ptBR = {
     { group: 'IA aplicada', items: ['LLMs (Claude, OpenAI)', 'Agentes de IA', 'Desenvolvimento orientado a especificação'] },
   ],
   education: [
-    { course: 'MBA em Arquitetura de Software', institution: 'FIAP', period: 'Abr 2026 – Abr 2027 (previsto)' },
+    { course: 'MBA em Arquitetura de Software', institution: 'FIAP', period: 'Abr 2026 – Abr 2027 (em andamento)' },
     { course: 'Pós-graduação em Desenvolvimento Front-End', institution: 'IGTI (XP Educação)', period: '2021 – 2022' },
     { course: 'Bacharelado em Sistemas de Informação', institution: 'UNIMEP', period: '2016 – 2020' },
     { course: 'Técnico em Informática', institution: 'Senac Piracicaba', period: '2012 – 2014' },
