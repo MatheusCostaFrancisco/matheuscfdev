@@ -20,6 +20,7 @@ Este repo é desenvolvido por uma esteira autônoma. Spec: `docs/specs/2026-11-2
 - Entrada: `/esteira [maxTasks]` → workflow `.claude/workflows/esteira.js` → agentes em `.claude/agents/`.
 - Estado: `docs/pipeline/backlog.json`. Relatório para o stakeholder: `docs/pipeline/REPORT.md`.
 - Commits vão direto na `main`, uma tarefa por commit.
+- Modelo de cada papel: mapa `ROLE_MODEL` em `.claude/workflows/esteira.js` (Opus para PO, architect e revisores; Sonnet para devs e deployer; Haiku para reporter, pré-checagem, commit e stash).
 
 ## Regras de conteúdo
 

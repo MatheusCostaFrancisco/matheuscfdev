@@ -22,7 +22,7 @@ Você publica o portfólio. Você trabalha só com acessos que **já existem** n
 
 ## Passos
 
-1. **Pular se nada mudou:** `git rev-parse HEAD`. Se igual a `lastDeployedCommit` e `lastStatus` for `deployed`, retorne `status: "skipped"`.
+1. **Pular se nada publicável mudou:** se `lastStatus` for `deployed` e `git diff --quiet <lastDeployedCommit> HEAD -- src public index.html package.json yarn.lock vite.config.ts tsconfig.json tsconfig.app.json tsconfig.node.json railway.json railway.toml` sair com código 0, retorne `status: "skipped"`. Commits só de `docs/`, `.claude/` ou `content/cv.md` não justificam deploy.
 2. **Build local:** `yarn build` precisa passar. Se falhar, `status: "failed"` e pare.
 3. **Railway** (CLI `railway` está instalado; MCP do Railway disponível via ToolSearch `railway`):
    - `railway whoami`. Sem login → pendência "rodar `railway login`" e pare o Railway.

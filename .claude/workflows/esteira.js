@@ -141,13 +141,28 @@ const DEPLOY = {
 const REPORT = {
   type: 'object',
   properties: {
-    reportPath: { type: 'string' },
+    reportMarkdown: { type: 'string', description: 'conteúdo completo do REPORT.md; quem grava é a sessão principal' },
     runLogPath: { type: 'string' },
     runNumber: { type: 'integer' },
     commit: { type: 'string' },
   },
-  required: ['reportPath', 'runLogPath', 'runNumber', 'commit'],
+  required: ['reportMarkdown', 'runLogPath', 'runNumber', 'commit'],
 }
+
+// ---------- Modelos por papel ----------
+
+const ROLE_MODEL = {
+  po: 'opus',
+  architect: 'opus',
+  'code-reviewer': 'opus',
+  'ui-reviewer': 'opus',
+  'a11y-reviewer': 'opus',
+  'frontend-dev': 'sonnet',
+  'content-writer': 'sonnet',
+  deployer: 'sonnet',
+  reporter: 'haiku',
+}
+const UTILITY_MODEL = 'haiku' // pré-checagem, commit, stash
 
 // ---------- Estado da rodada ----------
 
@@ -191,7 +206,8 @@ function taskBlock(task) {
 // Se o papel não estiver registrado, o agente genérico recebe o arquivo do papel como instrução.
 const unregisteredRoles = new Set()
 
-async function roleAgent(role, prompt, opts) {
+async function roleAgent(role, prompt, baseOpts) {
+  const opts = Object.assign({ model: ROLE_MODEL[role] }, baseOpts)
   if (!unregisteredRoles.has(role)) {
     try {
       return await agent(prompt, Object.assign({}, opts, { agentType: role }))
@@ -347,7 +363,7 @@ async function rejectTask(task, record, status, reason) {
   record.reason = reason
   const res = await agent(revertPrompt(task, status, reason), {
     schema: REVERT,
-    effort: 'low',
+    model: UTILITY_MODEL,
     label: task.id + ' · stash',
     phase: 'Execução',
   })
@@ -428,7 +444,7 @@ async function runTask(task) {
       record.minorFindings = minors
       const c = await agent(commitPrompt(task, impl), {
         schema: COMMIT,
-        effort: 'low',
+        model: UTILITY_MODEL,
         label: task.id + ' · commit',
         phase: 'Execução',
       })
@@ -453,7 +469,7 @@ async function runTask(task) {
 // ---------- Fluxo ----------
 
 phase('Pré-checagem')
-const pre = await agent(preflightPrompt(), { schema: PREFLIGHT, effort: 'low', label: 'pré-checagem', phase: 'Pré-checagem' })
+const pre = await agent(preflightPrompt(), { schema: PREFLIGHT, model: UTILITY_MODEL, label: 'pré-checagem', phase: 'Pré-checagem' })
 run.preflight = pre
 if (!pre) {
   run.aborted = 'Pré-checagem não retornou resultado.'
@@ -537,5 +553,7 @@ return {
   deploy: run.deploy ? run.deploy.status + (run.deploy.url ? ' ' + run.deploy.url : '') : 'não executado',
   pendencias: run.pendencias.length,
   reviewItems: run.reviewItems.length,
-  report: report ? report.reportPath : 'reporter falhou — ver transcript do workflow',
+  runLog: report ? report.runLogPath : 'reporter falhou — ver transcript do workflow',
+  // Subagentes não podem gravar arquivos de relatório; a sessão principal grava este conteúdo em docs/pipeline/REPORT.md
+  reportMarkdown: report ? report.reportMarkdown : '',
 }

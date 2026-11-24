@@ -105,7 +105,7 @@ Não existe status `doing` persistido: se a rodada cai no meio, a tarefa continu
    6. Reprovado após 2 ciclos: mudança vai para `git stash`, status `review`, achados vão para **Para revisão**.
 4. **Circuit breaker.** 3 tarefas seguidas sem entrega encerram a fase de execução.
 5. **Deploy.** Se ao menos 1 tarefa foi entregue: `deployer` builda e publica no Railway e configura o Cloudflare. O que falhar por falta de conta, autorização, domínio ou token vira pendência; o deploy não tenta contornar.
-6. **Relatório.** `reporter` reescreve `REPORT.md`, cria o log da rodada e commita os dois (`docs: update pipeline report`).
+6. **Relatório.** `reporter` cria e commita o log da rodada e devolve o conteúdo do `REPORT.md`; a sessão principal que rodou `/esteira` grava e commita o `REPORT.md` (o harness não deixa subagentes gravarem arquivos de relatório).
 
 ### Contrato do veredito de revisão
 

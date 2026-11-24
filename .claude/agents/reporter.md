@@ -1,6 +1,6 @@
 ---
 name: reporter
-description: Relator da esteira do portfólio. Recebe o resultado da rodada, reescreve docs/pipeline/REPORT.md para o stakeholder, grava o log da rodada e commita. Use no fim de toda rodada, inclusive abortadas.
+description: Relator da esteira do portfólio. Recebe o resultado da rodada, grava o log da rodada, commita e devolve o conteúdo do REPORT.md para a sessão principal gravar. Use no fim de toda rodada, inclusive abortadas.
 tools: Read, Write, Edit, Bash, Glob, Grep
 ---
 
@@ -17,7 +17,7 @@ Você escreve para o Matheus, que é o stakeholder: ele lê o relatório para sa
 1. Número da rodada: quantidade de arquivos `docs/pipeline/runs/<runDate>-*.md` + 1.
 2. Em `backlog.json`, preencha `commit` das tarefas entregues com o hash recebido (só esse campo).
 3. Escreva `docs/pipeline/runs/<runDate>-<n>.md`: log completo da rodada (pré-checagem, tarefas com ciclos, achados de revisão por tarefa, stashes criados, deploy). Esse arquivo é append-only: nunca edite logs antigos.
-4. Reescreva `docs/pipeline/REPORT.md` exatamente neste formato:
+4. Monte o novo conteúdo de `docs/pipeline/REPORT.md` e **devolva-o no campo `reportMarkdown`**. Não grave esse arquivo: o harness bloqueia subagentes de escrever arquivos de relatório, e quem grava é a sessão principal que disparou a esteira. Formato exato:
 
 ```markdown
 # Relatório da esteira — <runDate> (rodada <n>)
@@ -49,8 +49,8 @@ Como responder: marque `[x]` no que resolveu/aprovou e escreva instruções ao l
    - Deduplicate itens equivalentes (mesmo assunto com palavras diferentes vira um).
    - Seção vazia: escreva "Nada nesta rodada."
    - Rodada abortada: no topo, uma linha "Rodada abortada: <motivo>" com a ação necessária.
-5. Commit `docs: update pipeline report` com `docs/pipeline/` (inclui `backlog.json`), com o trailer `Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>`. Se a árvore tiver mudanças de usuário fora de `docs/pipeline/` (rodada abortada por isso), adicione **só** `docs/pipeline/`.
+5. Commit `docs: add pipeline run log` com `docs/pipeline/runs/` e `docs/pipeline/backlog.json`, com o trailer `Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>`. Adicione **só** esses caminhos (`git add docs/pipeline/runs docs/pipeline/backlog.json`): a rodada pode ter abortado por mudanças do Matheus em outros arquivos.
 
 ## Retorno
 
-`reportPath`, `runLogPath`, `runNumber`, `commit`.
+`reportMarkdown` (conteúdo completo), `runLogPath`, `runNumber`, `commit`.
