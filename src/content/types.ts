@@ -42,3 +42,8 @@ export interface Language {
   readonly language: string
   readonly level: string
 }
+
+export interface NavItem {
+  readonly id: string
+  readonly label: string
+}

@@ -77,8 +77,8 @@
         "T-002",
         "T-003"
       ],
-      "status": "todo",
-      "attempts": 0,
+      "status": "done",
+      "attempts": 1,
       "commit": null,
       "notes": []
     },
