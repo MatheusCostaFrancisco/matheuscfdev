@@ -34,8 +34,8 @@
         "yarn typecheck, yarn lint and yarn build pass"
       ],
       "dependsOn": [],
-      "status": "todo",
-      "attempts": 0,
+      "status": "done",
+      "attempts": 1,
       "commit": null,
       "notes": []
     },
