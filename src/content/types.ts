@@ -7,6 +7,7 @@ export interface Profile {
   readonly linkedin: string
   readonly tagline: string
   readonly summary: string
+  readonly photoAlt: string
 }
 
 export interface Experience {

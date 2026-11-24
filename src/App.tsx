@@ -1,7 +1,8 @@
 import { Footer } from './components/Footer'
 import { Header } from './components/Header'
 import { SkipLink } from './components/SkipLink'
-import { navigation, profile } from './content'
+import { navigation } from './content'
+import { Hero } from './sections/Hero'
 
 function App() {
   return (
@@ -9,8 +10,7 @@ function App() {
       <SkipLink />
       <Header />
       <main id="main" tabIndex={-1} className="mx-auto w-full max-w-5xl flex-1 px-4 py-10 sm:px-6">
-        <h1 className="text-display font-bold text-fg">{profile.name}</h1>
-        <p className="mt-2 text-lg text-fg-muted">{profile.role}</p>
+        <Hero />
         {navigation.map((item) => (
           <section
             key={item.id}
