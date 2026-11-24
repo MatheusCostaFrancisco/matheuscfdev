@@ -30,3 +30,6 @@ dist-ssr
 
 # Claude local
 .claude/settings.local.json
+
+# Pipeline in-flight marker
+docs/pipeline/.inflight.json

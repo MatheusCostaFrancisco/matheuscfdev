@@ -73,7 +73,7 @@ Os commits e reverts são feitos por chamadas curtas de agente com esforço baix
     {
       "id": "T-001",
       "title": "Criar tokens do design system",
-      "type": "infra | design-system | feature | content | fix | deploy",
+      "type": "infra | design-system | feature | content | fix",
       "priority": "P0 | P1 | P2",
       "touchesUi": true,
       "acceptance": ["critério verificável 1", "critério verificável 2"],
@@ -91,7 +91,7 @@ Não existe status `doing` persistido: se a rodada cai no meio, a tarefa continu
 
 ## Fluxo de uma rodada
 
-1. **Pré-checagem.** Um agente verifica se a árvore git está limpa. Mudança não commitada sem o marcador `.inflight.json` aborta a rodada sem tocar em nada; com o marcador, é descartada (ver Edge cases).
+1. **Pré-checagem.** Um agente verifica se a árvore git está limpa. Mudança não commitada sem o marcador `.inflight.json` aborta a rodada sem tocar em nada; com o marcador, vai para `git stash` (ver Edge cases).
 2. **Planejamento.** `po` lê `cv.md` e `backlog.json`.
    - Backlog vazio ou `cvHash` diferente: gera ou reconcilia tarefas. Tarefas `done` não são recriadas.
    - Retorna até `maxTasks` (padrão 8) tarefas `todo` com dependências satisfeitas, ordenadas por prioridade.
@@ -102,7 +102,7 @@ Não existe status `doing` persistido: se a rodada cai no meio, a tarefa continu
    3. Gates verdes: revisores aplicáveis rodam em paralelo. `code-reviewer` sempre; `ui-reviewer` e `a11y-reviewer` quando `touchesUi`.
    4. Algum achado `blocker`: implementador corrige com os achados no prompt e volta ao passo 1. Máximo 2 ciclos de correção.
    5. Aprovado: commit na `main` com status `done` e hash na tarefa. Achados `minor` e itens que pedem decisão do stakeholder vão para **Para revisão**, sem bloquear.
-   6. Reprovado após 2 ciclos: revert, status `review`, achados vão para **Para revisão**.
+   6. Reprovado após 2 ciclos: mudança vai para `git stash`, status `review`, achados vão para **Para revisão**.
 4. **Circuit breaker.** 3 tarefas seguidas sem entrega encerram a fase de execução.
 5. **Deploy.** Se ao menos 1 tarefa foi entregue: `deployer` builda e publica no Railway e configura o Cloudflare. O que falhar por falta de conta, autorização, domínio ou token vira pendência; o deploy não tenta contornar.
 6. **Relatório.** `reporter` reescreve `REPORT.md`, cria o log da rodada e commita os dois (`docs: update pipeline report`).
@@ -162,7 +162,7 @@ Itens de **Para revisão** e **Pendências** que continuam abertos são carregad
 | Caso | Comportamento |
 |---|---|
 | Árvore git suja no início, sem `docs/pipeline/.inflight.json` | Mudança é do stakeholder: aborta sem alterar nada; o relatório lista os arquivos |
-| Rodada interrompida (app fechado, erro de API) | Antes de implementar, a esteira grava `docs/pipeline/.inflight.json` com o id da tarefa e apaga após commit/revert. Na pré-checagem seguinte, árvore suja **com** esse marcador é sobra da esteira: descarta a mudança, mantém a tarefa `todo` e registra no log |
+| Rodada interrompida (app fechado, erro de API) | Antes de implementar, a esteira grava `docs/pipeline/.inflight.json` (ignorado pelo git) com o id da tarefa e apaga após commit/revert. Na pré-checagem seguinte, árvore suja **com** esse marcador é sobra da esteira: vai para `git stash` (recuperável), a tarefa continua `todo` e o log registra o stash |
 | `cv.md` ausente | Só infra/layout; pendência "enviar CV" |
 | `cv.md` alterado | `po` reconcilia: tarefas de conteúdo afetadas voltam para `todo` |
 | Dado ausente no CV (ex.: foto, link) | `content-writer` usa `[REVISAR: ...]` visível e o item vai para **Para revisão** |
