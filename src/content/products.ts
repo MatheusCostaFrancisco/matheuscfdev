@@ -10,7 +10,7 @@ export const products: readonly Product[] = [
   },
   {
     name: 'WoodFlow',
-    url: '[REVISAR: WoodFlow tem URL pública?]',
+    urlPending: '[REVISAR: WoodFlow tem URL pública?]',
     description:
       'Multi-tenant SaaS for woodworking shops, with a WhatsApp integration that logs entries into the system and an admin panel showing usage per customer.',
     stack: ['TypeScript', 'Stripe', 'OpenAI API'],

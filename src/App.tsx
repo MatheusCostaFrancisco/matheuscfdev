@@ -6,6 +6,7 @@ import { About } from "./sections/About";
 import { Contact } from "./sections/Contact";
 import { Experience } from "./sections/Experience";
 import { Hero } from "./sections/Hero";
+import { Products } from "./sections/Products";
 
 function App() {
   return (
@@ -20,9 +21,10 @@ function App() {
         <Hero />
         <About />
         <Experience />
+        <Products />
         {navigation
           .filter((item) =>
-              !["about", "experience", "contact"].includes(item.id))
+              !["about", "experience", "products", "contact"].includes(item.id))
           .map((item) => (
             <section
               key={item.id}

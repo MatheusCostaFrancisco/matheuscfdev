@@ -21,9 +21,12 @@ export interface Experience {
   readonly bullets: readonly string[]
 }
 
-export interface Product {
+type ProductLink =
+  | { readonly url: string; readonly urlPending?: never }
+  | { readonly url?: never; readonly urlPending: string }
+
+export type Product = ProductLink & {
   readonly name: string
-  readonly url: string
   readonly description: string
   readonly stack: readonly string[]
 }
