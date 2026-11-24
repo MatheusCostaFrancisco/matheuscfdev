@@ -7,6 +7,6 @@
   "railwayUrl": "https://site-production-5010b1df.up.railway.app",
   "customDomain": null,
   "cloudflare": { "zoneId": null, "dnsConfigured": false },
-  "lastDeployedCommit": "d14b323d7c0a74c1165897e4c85eb46714e73fce",
+  "lastDeployedCommit": "f8160e3",
   "lastStatus": "deployed"
 }

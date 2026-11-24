@@ -6,14 +6,14 @@ Resumo: 8 entregues · 18 para revisão · 0 bloqueadas · 4 no backlog
 ## Entregues
 | Tarefa | Commit | Resumo |
 |---|---|---|
-| T-003 | `a11f6b5` | Módulos tipados em `src/content` (profile, experience, products, skills, education, languages) a partir do cv.md. Sem telefone. WoodFlow com `urlPending`. |
-| T-004 | `cf5b4b3` | Header com nav, skip link, `<main>` e footer. Menu acessível abaixo de md (Esc fecha). Placeholders removidos. |
-| T-005 | `1e86af9` | Hero com o único h1, cargo, tagline, stack, foto 480x480 com alt e CTAs (#contact e LinkedIn). |
-| T-006 | `1012183` | Seção About (#about) com o resumo do cv.md, labelled por h2. |
-| T-007 | `8b6e484` | Experience (#experience) em `<ol>`, 5 cargos em ordem reversa, datas em `<time>`, promoção da Soluti (Abr 2023). |
-| T-008 | `2161062` | Contact (#contact) com e-mail, LinkedIn e localização. Footer com © ano e nome. Sem telefone. |
-| T-009 | `71105ab` | Products: Manda Aí com link, WoodFlow com marcador [REVISAR]. Aprovado no 3º ciclo (dois reprovados antes). |
-| T-010 | `d14b323` | Skills (#skills) com os 5 grupos do cv.md, cada um com h3 e lista rotulada. |
+| T-003 | `8ce75cf` | Módulos tipados em `src/content` (profile, experience, products, skills, education, languages) a partir do cv.md. Sem telefone. WoodFlow com `urlPending`. |
+| T-004 | `278e2d1` | Header com nav, skip link, `<main>` e footer. Menu acessível abaixo de md (Esc fecha). Placeholders removidos. |
+| T-005 | `8a52c1e` | Hero com o único h1, cargo, tagline, stack, foto 480x480 com alt e CTAs (#contact e LinkedIn). |
+| T-006 | `5a96663` | Seção About (#about) com o resumo do cv.md, labelled por h2. |
+| T-007 | `96467e8` | Experience (#experience) em `<ol>`, 5 cargos em ordem reversa, datas em `<time>`, promoção da Soluti (Abr 2023). |
+| T-008 | `b5d6d30` | Contact (#contact) com e-mail, LinkedIn e localização. Footer com © ano e nome. Sem telefone. |
+| T-009 | `aedf84e` | Products: Manda Aí com link, WoodFlow com marcador [REVISAR]. Aprovado no 3º ciclo (dois reprovados antes). |
+| T-010 | `f8160e3` | Skills (#skills) com os 5 grupos do cv.md, cada um com h3 e lista rotulada. |
 
 ## Para revisão
 - [ ] **T-001** Fonte Poppins: Google Fonts (requisição a terceiro, relevante para LGPD) ou self-hosted (`@fontsource/poppins`, vira tarefa infra P1) — escolher uma.
