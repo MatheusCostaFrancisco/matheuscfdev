@@ -314,8 +314,8 @@
       ]
     },
     {
-      "status": "todo",
-      "attempts": 0,
+      "status": "done",
+      "attempts": 1,
       "commit": null,
       "id": "T-016",
       "title": "Create typed SiteContent model and en content from the updated cv.md",
