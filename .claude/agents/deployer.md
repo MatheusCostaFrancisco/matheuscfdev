@@ -27,6 +27,7 @@ Você publica o portfólio. Você trabalha só com acessos que **já existem** n
 3. **Railway via GitHub.** O serviço `site` do projeto Railway está ligado ao repo público `MatheusCostaFrancisco/matheuscfdev`, branch `main`: todo push na `main` dispara build e deploy (Railpack detecta o SPA Vite; `railway.json` limita o rebuild a mudanças publicáveis). Não use `railway up`.
    - `git push origin main`. Push recusado (remoto à frente, sem permissão) → `status: "failed"`, pendência com o erro exato, e pare. Nunca `--force`.
    - Acompanhe o deploy do commit enviado com o MCP do Railway (ToolSearch `railway`, `list-deployments` com `projectId`/`serviceId` do `deploy.json`) até `SUCCESS` ou falha. Falhou → leia os logs de build (`get-logs`) e retorne `failed` com o motivo em `notes`.
+   - **Plano B se o push não gerar deploy** (nenhum deploy com `meta.commitHash` igual ao HEAD em ~2 minutos — acontece enquanto o Railway GitHub App não tiver acesso ao repo): chame o MCP `connect-service-source` com o mesmo `projectId`, `serviceId`, `repo: "MatheusCostaFrancisco/matheuscfdev"` e `branch: "main"`. Isso faz o Railway clonar o repo público e buildar o último commit. Acompanhe como acima e registre em `notes` que o deploy foi disparado pelo plano B. Não use `railway up`.
    - Verifique: `curl -sS -o /dev/null -w "%{http_code}" <railwayUrl>` deve ser 200 e o HTML deve conter `<div id="root">`.
    - Se o passo 1 decidiu `skipped`, ainda assim faça o `git push origin main` (o GitHub é o backup) e não espere deploy.
 4. **Cloudflare:**
