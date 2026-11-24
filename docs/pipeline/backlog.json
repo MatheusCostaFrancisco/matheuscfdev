@@ -337,8 +337,8 @@
       ]
     },
     {
-      "status": "todo",
-      "attempts": 0,
+      "status": "done",
+      "attempts": 1,
       "commit": null,
       "id": "T-017",
       "title": "Create pt-BR content from cv.pt-BR.md with the same facts as en",
