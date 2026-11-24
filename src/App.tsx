@@ -3,6 +3,7 @@ import { Header } from "./components/Header";
 import { SkipLink } from "./components/SkipLink";
 import { navigation } from "./content";
 import { About } from "./sections/About";
+import { Contact } from "./sections/Contact";
 import { Experience } from "./sections/Experience";
 import { Hero } from "./sections/Hero";
 
@@ -20,7 +21,8 @@ function App() {
         <About />
         <Experience />
         {navigation
-          .filter((item) => item.id !== "about" && item.id !== "experience")
+          .filter((item) =>
+              !["about", "experience", "contact"].includes(item.id))
           .map((item) => (
             <section
               key={item.id}
@@ -36,6 +38,7 @@ function App() {
               </h2>
             </section>
           ))}
+        <Contact />
       </main>
       <Footer />
     </div>
