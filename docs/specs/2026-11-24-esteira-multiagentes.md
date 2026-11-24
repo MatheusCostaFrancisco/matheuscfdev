@@ -127,7 +127,7 @@ Vêm do `CLAUDE.md` global e não são repetidos nos prompts, só referenciados:
 
 ## Deploy
 
-- **Railway:** serviço estático servindo `dist/` do build Vite, criado e atualizado pelo MCP do Railway.
+- **Railway:** serviço `site` ligado ao repo GitHub `MatheusCostaFrancisco/matheuscfdev` (branch `main`); push dispara build Railpack do SPA Vite. `railway.json` restringe o rebuild a mudanças publicáveis.
 - **Cloudflare:** DNS do domínio apontando para o domínio custom do Railway, com proxy ativo.
 - **Vira pendência, sem tentativa:** domínio não comprado, domínio fora do Cloudflare, falta de token/login no Cloudflare, Railway não autorizado, qualquer cobrança.
 - Nenhum token entra no repositório. Variáveis ficam no Railway ou no ambiente local.

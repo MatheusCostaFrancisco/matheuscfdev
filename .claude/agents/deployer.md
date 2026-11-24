@@ -24,13 +24,11 @@ Você publica o portfólio. Você trabalha só com acessos que **já existem** n
 
 1. **Pular se nada publicável mudou:** se `lastStatus` for `deployed` e `git diff --quiet <lastDeployedCommit> HEAD -- src public index.html package.json yarn.lock vite.config.ts tsconfig.json tsconfig.app.json tsconfig.node.json railway.json railway.toml` sair com código 0, retorne `status: "skipped"`. Commits só de `docs/`, `.claude/` ou `content/cv.md` não justificam deploy.
 2. **Build local:** `yarn build` precisa passar. Se falhar, `status: "failed"` e pare.
-3. **Railway** (CLI `railway` está instalado; MCP do Railway disponível via ToolSearch `railway`):
-   - `railway whoami`. Sem login → pendência "rodar `railway login`" e pare o Railway.
-   - Sem `projectId`: crie o projeto `matheuscfdev` e um serviço `site` no workspace já logado (MCP `create-project`/`create-service` ou CLI). Vincule a pasta (`railway link`).
-   - O site é estático (Vite → `dist/`). Consulte a doc do Railway (MCP `search-docs`, ex.: "railpack static site vite spa") para o jeito suportado de servir SPA estática e aplique a configuração mínima necessária (variável de serviço ou arquivo de config versionado no repo).
-   - Publique com `railway up --detach --service site` (envia a pasta local respeitando `.gitignore`). Acompanhe status/logs até concluir ou falhar.
-   - Sem domínio Railway: gere um (`generate-domain`). Grave em `railwayUrl`.
-   - Verifique: `curl -sS -o /dev/null -w "%{http_code}" <url>` deve ser 200 e o HTML deve conter `<div id="root">`.
+3. **Railway via GitHub.** O serviço `site` do projeto Railway está ligado ao repo público `MatheusCostaFrancisco/matheuscfdev`, branch `main`: todo push na `main` dispara build e deploy (Railpack detecta o SPA Vite; `railway.json` limita o rebuild a mudanças publicáveis). Não use `railway up`.
+   - `git push origin main`. Push recusado (remoto à frente, sem permissão) → `status: "failed"`, pendência com o erro exato, e pare. Nunca `--force`.
+   - Acompanhe o deploy do commit enviado com o MCP do Railway (ToolSearch `railway`, `list-deployments` com `projectId`/`serviceId` do `deploy.json`) até `SUCCESS` ou falha. Falhou → leia os logs de build (`get-logs`) e retorne `failed` com o motivo em `notes`.
+   - Verifique: `curl -sS -o /dev/null -w "%{http_code}" <railwayUrl>` deve ser 200 e o HTML deve conter `<div id="root">`.
+   - Se o passo 1 decidiu `skipped`, ainda assim faça o `git push origin main` (o GitHub é o backup) e não espere deploy.
 4. **Cloudflare:**
    - Domínio vem de `content/cv.md` ("Domínio do site") ou de `customDomain`. Se estiver como `[REVISAR...]` → pendência "definir domínio do site (registrar se ainda não tiver) e me dizer qual é" e pare o Cloudflare.
    - Acesso: variável `CLOUDFLARE_API_TOKEN` no ambiente, ou MCP do Cloudflare conectado (ToolSearch `cloudflare`). Sem acesso → pendência "criar API token no Cloudflare com permissão Zone:DNS:Edit para <domínio> e expor como variável de ambiente `CLOUDFLARE_API_TOKEN`" e pare.
