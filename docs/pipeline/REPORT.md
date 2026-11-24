@@ -4,4 +4,4 @@ Nenhuma rodada executada ainda. Rode `/esteira` no Claude Code.
 
 ## Pendências do stakeholder
 - [ ] Definir domínio do site (comprar/registrar se ainda não tiver) e colocá-lo no Cloudflare
-- [ ] Fazer login no Cloudflare para a esteira (`npx wrangler login`) ou definir `CLOUDFLARE_API_TOKEN` no ambiente
+- [ ] Criar API token no Cloudflare (Zone:DNS:Edit) e expor como variável de ambiente `CLOUDFLARE_API_TOKEN`
