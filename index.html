@@ -34,7 +34,9 @@
     <meta property="og:image:alt" content="Portrait of Matheus Costa Francisco" />
 
     <!--
-      Language redirect (ADR 0002): preferred browser language starting with
+      Language redirect (ADR 0002): a choice stored by the header switcher
+      (localStorage key matheuscfdev.locale, keep in sync with
+      src/lib/locale.ts) wins; otherwise preferred browser language starting with
       "pt" goes to /pt/, everything else to /en/. Query and hash are kept so
       links like /#contact land on the same section. Without JS the links in
       <body> are shown instead.
@@ -44,7 +46,15 @@
         var languages = navigator.languages;
         var preferred =
           (languages && languages.length > 0 ? languages[0] : navigator.language) || "";
-        var target = preferred.toLowerCase().indexOf("pt") === 0 ? "/pt/" : "/en/";
+        var stored = null;
+        try {
+          stored = window.localStorage.getItem("matheuscfdev.locale");
+        } catch (e) {}
+        var target =
+          stored === "pt-BR" ? "/pt/" : stored === "en" ? "/en/" : null;
+        if (!target) {
+          target = preferred.toLowerCase().indexOf("pt") === 0 ? "/pt/" : "/en/";
+        }
         window.location.replace(target + window.location.search + window.location.hash);
       })();
     </script>

@@ -164,7 +164,15 @@ export const ptBR = {
   ],
   ui: {
     skipLink: 'Ir para o conteúdo principal',
-    header: { navLabel: 'Principal', openMenu: 'Abrir menu', closeMenu: 'Fechar menu' },
+    header: { navLabel: 'Principal', openMenu: 'Abrir menu', closeMenu: 'Fechar menu',
+      language: {
+        groupLabel: 'Idioma',
+        options: {
+          en: { short: 'EN', name: 'English (EN)' },
+          'pt-BR': { short: 'PT', name: 'Português do Brasil (PT)' },
+        },
+      },
+    },
     hero: { stackLabel: 'Stack principal', getInTouch: 'Entre em contato', linkedin: 'LinkedIn' },
     contact: { email: 'E-mail', linkedin: 'LinkedIn', github: 'GitHub', location: 'Localização' },
     products: { stackLabelSuffix: 'stack', websitePrefix: 'site' },

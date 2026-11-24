@@ -164,7 +164,15 @@ export const en = {
   ],
   ui: {
     skipLink: 'Skip to main content',
-    header: { navLabel: 'Primary', openMenu: 'Open menu', closeMenu: 'Close menu' },
+    header: { navLabel: 'Primary', openMenu: 'Open menu', closeMenu: 'Close menu',
+      language: {
+        groupLabel: 'Language',
+        options: {
+          en: { short: 'EN', name: 'English (EN)' },
+          'pt-BR': { short: 'PT', name: 'Português do Brasil (PT)' },
+        },
+      },
+    },
     hero: { stackLabel: 'Main stack', getInTouch: 'Get in touch', linkedin: 'LinkedIn' },
     contact: { email: 'E-mail', linkedin: 'LinkedIn', github: 'GitHub', location: 'Location' },
     products: { stackLabelSuffix: 'stack', websitePrefix: 'website' },

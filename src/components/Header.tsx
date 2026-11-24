@@ -1,6 +1,18 @@
 import { useEffect, useRef, useState } from 'react'
 import { cn } from '../lib/cn'
+import { locales, localePaths, storeLocale } from '../lib/locale'
+import { useLocale } from '../lib/locale-context'
 import { useContent } from '../lib/use-content'
+
+function useHash(): string {
+  const [hash, setHash] = useState(() => window.location.hash)
+  useEffect(() => {
+    const onHashChange = () => setHash(window.location.hash)
+    window.addEventListener('hashchange', onHashChange)
+    return () => window.removeEventListener('hashchange', onHashChange)
+  }, [])
+  return hash
+}
 
 const linkClass = cn(
   'block rounded-2xl px-4 py-2 text-sm font-medium text-fg-muted',
@@ -10,9 +22,19 @@ const linkClass = cn(
   'motion-safe:transition-colors',
 )
 
+const languageLinkClass = cn(
+  'inline-flex min-h-11 min-w-11 items-center justify-center rounded-2xl px-3 text-sm font-semibold',
+  'text-fg-muted hover:bg-accent-50 hover:text-accent-800',
+  'active:bg-accent-100 active:text-accent-900',
+  'aria-[current=page]:bg-accent-100 aria-[current=page]:text-accent-900',
+  'motion-safe:transition-colors',
+)
+
 export function Header() {
   const { navigation, profile, ui } = useContent()
   const [open, setOpen] = useState(false)
+  const currentLocale = useLocale()
+  const hash = useHash()
   const buttonRef = useRef<HTMLButtonElement>(null)
 
   useEffect(() => {
@@ -81,6 +103,32 @@ export function Header() {
                 </a>
               </li>
             ))}
+            <li className="mt-1 border-t border-line pt-2 md:ml-2 md:mt-0 md:border-l md:border-t-0 md:pl-2 md:pt-0">
+              <ul aria-label={ui.header.language.groupLabel} className="flex gap-1">
+                {locales.map((locale) => {
+                  const option = ui.header.language.options[locale]
+                  const active = locale === currentLocale
+                  return (
+                    <li key={locale}>
+                      <a
+                        href={`${localePaths[locale]}${hash}`}
+                        hrefLang={locale}
+                        lang={locale}
+                        aria-label={option.name}
+                        aria-current={active ? 'page' : undefined}
+                        onClick={() => {
+                          storeLocale(locale)
+                          setOpen(false)
+                        }}
+                        className={languageLinkClass}
+                      >
+                        {option.short}
+                      </a>
+                    </li>
+                  )
+                })}
+              </ul>
+            </li>
           </ul>
         </nav>
       </div>

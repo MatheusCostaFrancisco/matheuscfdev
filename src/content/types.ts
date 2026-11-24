@@ -60,6 +60,10 @@ export interface UiStrings {
     readonly navLabel: string
     readonly openMenu: string
     readonly closeMenu: string
+    readonly language: {
+      readonly groupLabel: string
+      readonly options: Record<'en' | 'pt-BR', { readonly short: string; readonly name: string }>
+    }
   }
   readonly hero: {
     readonly stackLabel: string

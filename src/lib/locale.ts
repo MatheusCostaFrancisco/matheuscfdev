@@ -18,3 +18,15 @@ export function localeFromPathname(pathname: string): Locale {
   const firstSegment = pathname.split('/').find((segment) => segment.length > 0)
   return firstSegment?.toLowerCase() === 'pt' ? 'pt-BR' : defaultLocale
 }
+
+/** localStorage key holding the visitor's explicit language choice (see ADR 0002). */
+export const localeStorageKey = 'matheuscfdev.locale'
+
+/** Remembers the chosen locale; storage can be blocked, so failures are ignored. */
+export function storeLocale(locale: Locale): void {
+  try {
+    window.localStorage.setItem(localeStorageKey, locale)
+  } catch {
+    // Storage unavailable (private mode, blocked cookies): the choice just is not remembered.
+  }
+}
