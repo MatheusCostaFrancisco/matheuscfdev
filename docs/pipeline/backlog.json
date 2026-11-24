@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "cvHash": "aef82a713033aa792bc650ddc30d217a6d33121a755f95ae486d91c076f368af",
+  "cvHash": "05dd649a5e651fe0558b56789dde0420b2c4c4f6d4d7758ae13596c4c5280ed1",
   "tasks": [
     {
       "id": "T-001",
@@ -206,17 +206,21 @@
       "priority": "P1",
       "touchesUi": true,
       "acceptance": [
-        "Section #education lists the 4 courses from cv.md with institution and period, the FIAP MBA marked as expected",
-        "The AWS Certified Cloud Practitioner certification and both languages with levels (Portuguese native, English intermediate B1/B2) are rendered",
-        "All data comes from src/content/"
+        "Section #education lists the 4 courses from cv.md with institution and period, read from the locale content, with the FIAP MBA marked as expected in en and in progress in pt-BR",
+        "The section lists the 4 certifications from cv.md (AWS Certified Cloud Practitioner, Vue JS 2, Vue 3, Laravel 5.6) and both languages with levels (Portuguese native, English intermediate B1/B2)",
+        "App.tsx no longer renders placeholder sections generated from the navigation list (the filter on hardcoded ids is gone) and #education is a labelled region with an <h2>",
+        "/en/ and /pt/ both render the section in their language and it has no horizontal scroll at 375px"
       ],
       "dependsOn": [
-        "T-004"
+        "T-004",
+        "T-018"
       ],
       "status": "todo",
       "attempts": 0,
       "commit": null,
-      "notes": []
+      "notes": [
+        "2026-11-24 rodada 4 (PO): acceptance updated: cv.md now has 4 certifications and the site is bilingual; depends on T-018 (locale content wiring)."
+      ]
     },
     {
       "id": "T-012",
@@ -233,12 +237,15 @@
         "T-005",
         "T-006",
         "T-007",
-        "T-008"
+        "T-008",
+        "T-018"
       ],
       "status": "todo",
       "attempts": 0,
       "commit": null,
-      "notes": []
+      "notes": [
+        "2026-11-24 rodada 4 (PO): depends on T-018 so animations are built on the localized components."
+      ]
     },
     {
       "id": "T-013",
@@ -248,17 +255,20 @@
       "touchesUi": true,
       "acceptance": [
         "yarn build produces dist/404.html using the same font and color tokens as the main page",
-        "The 404 page has lang=\"en\", a <main> landmark, an <h1> and a link back to /",
-        "It has no horizontal scroll at 375px"
+        "The 404 page has a <main> landmark, a single <h1> and the message in en and pt-BR, each block marked with its own lang attribute",
+        "It links to /en/ and /pt/ and has no horizontal scroll at 375px"
       ],
       "dependsOn": [
         "T-001",
-        "T-002"
+        "T-002",
+        "T-015"
       ],
       "status": "todo",
       "attempts": 0,
       "commit": null,
-      "notes": []
+      "notes": [
+        "2026-11-24 rodada 4 (PO): acceptance updated for the bilingual site (routes /en/ and /pt/ from T-015)."
+      ]
     },
     {
       "id": "T-014",
@@ -277,6 +287,289 @@
       "status": "todo",
       "attempts": 0,
       "commit": null,
+      "notes": []
+    },
+    {
+      "status": "todo",
+      "attempts": 0,
+      "commit": null,
+      "id": "T-015",
+      "title": "Add bilingual routing (/en/, /pt/) with browser language detection and ADR",
+      "type": "infra",
+      "priority": "P0",
+      "touchesUi": true,
+      "acceptance": [
+        "docs/adr/0002-i18n-routing.md records the decision (locales en and pt-BR, static pages at /en/ and /pt/, detection rule, fallback en, same section anchors in both locales) with a 'Quando reabrir' section",
+        "yarn build emits dist/en/index.html with <html lang=\"en\"> and dist/pt/index.html with <html lang=\"pt-BR\">, each with its own title, meta description, og:locale and <link rel=\"alternate\" hreflang> for en, pt-BR and x-default",
+        "dist/index.html sends visitors whose preferred browser language starts with 'pt' to /pt/ and everyone else to /en/, preserving the URL hash, and without JavaScript shows plain links to both versions",
+        "src/lib/ exports a typed Locale ('en' | 'pt-BR') and a function that resolves the locale from the pathname (unknown path resolves to en), and the app mounts with the locale of the page it was loaded from",
+        "yarn typecheck, yarn lint and yarn build pass"
+      ],
+      "dependsOn": [
+        "T-002",
+        "T-004"
+      ],
+      "notes": [
+        "2026-11-24 rodada 4 (PO): stakeholder decision (REPORT 24/11): bilingual pt-BR + en, browser detection with en fallback, visible selector, routes /pt and /en, P0. Static multi-page output chosen over client-side routing so each locale has its own lang and meta without JS."
+      ]
+    },
+    {
+      "status": "todo",
+      "attempts": 0,
+      "commit": null,
+      "id": "T-016",
+      "title": "Create typed SiteContent model and en content from the updated cv.md",
+      "type": "content",
+      "priority": "P0",
+      "touchesUi": false,
+      "acceptance": [
+        "src/content declares a SiteContent type (no any) covering profile (e-mail contato.matheuscf@gmail.com, LinkedIn and GitHub https://github.com/MatheusCostaFrancisco), experience, products, skills, education, certifications, languages, navigation and every UI string currently hardcoded in Header, SkipLink, Hero, Contact and section headings",
+        "The en object satisfies SiteContent and has 6 experience entries in reverse chronological order ending with Intern · ESALQ/USP (Jun 2017 – Jul 2018) and 3 products in cv.md order (ElevaTech, Manda Aí, WoodFlow) with their cv.md bullets",
+        "WoodFlow has url https://site.woodflow.app.br/ and the 7-item stack from cv.md, certifications list the 4 entries from cv.md, and no [REVISAR] marker or phone number exists in the new content",
+        "No fact absent from cv.md is introduced, the current page keeps building unchanged (legacy flat modules are only removed in T-018), and yarn typecheck, yarn lint and yarn build pass"
+      ],
+      "dependsOn": [
+        "T-003",
+        "T-015"
+      ],
+      "notes": [
+        "2026-11-24 rodada 4 (PO): reconciliation of cv.md change (hash aef82a7 -> 05dd649): new e-mail, GitHub, ESALQ/USP internship, ElevaTech, Manda Aí and WoodFlow details, WoodFlow URL, 3 extra certifications. T-003 is done and is not reopened."
+      ]
+    },
+    {
+      "status": "todo",
+      "attempts": 0,
+      "commit": null,
+      "id": "T-017",
+      "title": "Create pt-BR content from cv.pt-BR.md with the same facts as en",
+      "type": "content",
+      "priority": "P0",
+      "touchesUi": false,
+      "acceptance": [
+        "src/content exports a Record<Locale, SiteContent> whose pt-BR entry compiles only if every key of SiteContent is present, with text taken from content/cv.pt-BR.md",
+        "pt-BR has the same facts as en: 6 positions with the same dates, 3 products with the same links, the 4 certifications and both languages",
+        "Where cv.pt-BR.md diverges from cv.md on a fact (skills groups and items, IGTI course name and dates), the cv.md fact is used, translated to pt-BR, and the divergence is listed in the task summary",
+        "UI strings are translated in first person without marketing jargon, no [REVISAR] marker exists, and yarn typecheck, yarn lint and yarn build pass"
+      ],
+      "dependsOn": [
+        "T-016"
+      ],
+      "notes": [
+        "2026-11-24 rodada 4 (PO): cv.pt-BR.md says cv.md wins on factual divergence; the pt-BR skills table (7 groups) and IGTI entry differ from cv.md and go to stakeholder review."
+      ]
+    },
+    {
+      "status": "todo",
+      "attempts": 0,
+      "commit": null,
+      "id": "T-018",
+      "title": "Render every section and layout component from locale content",
+      "type": "feature",
+      "priority": "P0",
+      "touchesUi": true,
+      "acceptance": [
+        "Header, SkipLink, Hero, About, Experience, Products, Skills, Contact and Footer read all visible text and accessible names from the content of the current locale; no user-facing string literal remains in src/components or src/sections",
+        "/en/ renders the page in English and /pt/ in Portuguese, both showing contato.matheuscf@gmail.com, and 'matheusccontato' appears nowhere in src/ or dist/",
+        "The legacy flat content modules with the old data are removed so each locale has a single source, and Experience and Products render all entries of the content (6 positions, 3 products)",
+        "Section anchors #about, #experience, #products, #skills, #education and #contact are identical in both locales, and yarn typecheck, yarn lint and yarn build pass"
+      ],
+      "dependsOn": [
+        "T-015",
+        "T-017"
+      ],
+      "notes": [
+        "2026-11-24 rodada 4 (PO): closes the PO minor about hardcoded texts in Header, SkipLink, Hero and Contact (REPORT rodada 3)."
+      ]
+    },
+    {
+      "status": "todo",
+      "attempts": 0,
+      "commit": null,
+      "id": "T-019",
+      "title": "Add visible language switcher to the header",
+      "type": "feature",
+      "priority": "P0",
+      "touchesUi": true,
+      "acceptance": [
+        "The header shows a language switcher in the desktop nav and in the mobile menu, each option a link to the equivalent route (/en/ <-> /pt/) that keeps the current hash, with hreflang and lang attributes and aria-current on the active locale",
+        "Choosing a language stores it in localStorage and the root redirect in dist/index.html prefers the stored choice over the browser language",
+        "Switcher labels and accessible names come from the locale content, each option is reachable by keyboard with a visible focus style and a target of at least 44x44 CSS px",
+        "No horizontal scroll at 375px with the menu open or closed, and yarn typecheck, yarn lint and yarn build pass"
+      ],
+      "dependsOn": [
+        "T-018"
+      ],
+      "notes": []
+    },
+    {
+      "status": "todo",
+      "attempts": 0,
+      "commit": null,
+      "id": "T-020",
+      "title": "Update products section with ElevaTech, product details and WoodFlow link",
+      "type": "fix",
+      "priority": "P1",
+      "touchesUi": true,
+      "acceptance": [
+        "Section #products renders ElevaTech, Manda Aí and WoodFlow in cv.md order, each with its role or description, its bullets as a list and its stack when cv.md has one",
+        "Manda Aí links to https://mandai.ia.br and WoodFlow to https://site.woodflow.app.br/, both with rel=\"noopener noreferrer\" and an accessible name that includes the product name; ElevaTech has no link and no [REVISAR] marker remains in the section",
+        "Hover and elevation styles exist only on interactive elements: a card without a link does not react to hover",
+        "The section renders in both locales with no horizontal scroll at 375px"
+      ],
+      "dependsOn": [
+        "T-018"
+      ],
+      "notes": [
+        "2026-11-24 rodada 4 (PO): reconciliation of cv.md change for done task T-009. PO decision on the T-009 review item: hover feedback only where something is clickable, since a hover affordance on a non-clickable card misleads."
+      ]
+    },
+    {
+      "status": "todo",
+      "attempts": 0,
+      "commit": null,
+      "id": "T-021",
+      "title": "Polish experience timeline for the ESALQ/USP entry and promotion note contrast",
+      "type": "fix",
+      "priority": "P1",
+      "touchesUi": true,
+      "acceptance": [
+        "Section #experience lists 6 positions with Intern · ESALQ/USP last, and entries without location, context or bullets (ESALQ/USP, RKM Sistemas) render no empty separator, empty element or placeholder",
+        "The Soluti promotion note has text contrast of at least 4.5:1 and its background or border is distinguishable from the surface at 3:1 or more, with the ratios stated in the task summary",
+        "The arbitrary -left-[7px] offset is replaced by a value from the spacing scale and the timeline has no horizontal scroll at 375px in both locales"
+      ],
+      "dependsOn": [
+        "T-018"
+      ],
+      "notes": [
+        "2026-11-24 rodada 4 (PO): reconciliation of cv.md change for done task T-007 (ESALQ/USP internship) plus T-007 minors from rodada 3. RKM grouping stays a stakeholder review item and is out of scope."
+      ]
+    },
+    {
+      "status": "todo",
+      "attempts": 0,
+      "commit": null,
+      "id": "T-022",
+      "title": "Add GitHub link to contact section and fix link wrapping and target size",
+      "type": "fix",
+      "priority": "P1",
+      "touchesUi": true,
+      "acceptance": [
+        "Section #contact shows the e-mail as a mailto link, LinkedIn and GitHub (https://github.com/MatheusCostaFrancisco) with rel=\"noopener noreferrer\" on external links, all from locale content",
+        "No break-all class remains; long values wrap at natural points (overflow-wrap: anywhere) without overflowing at 375px",
+        "Each contact link has a target at least 44px tall and a visible focus style, in both locales"
+      ],
+      "dependsOn": [
+        "T-018"
+      ],
+      "notes": [
+        "2026-11-24 rodada 4 (PO): cv.md now publishes GitHub (Publicação table). Also closes the T-008 minors (break-all, 25px targets)."
+      ]
+    },
+    {
+      "status": "todo",
+      "attempts": 0,
+      "commit": null,
+      "id": "T-023",
+      "title": "Fix mobile menu focus handling, labels and target sizes",
+      "type": "fix",
+      "priority": "P1",
+      "touchesUi": true,
+      "acceptance": [
+        "The mobile menu closes when focus moves outside it and when the viewport crosses the md breakpoint",
+        "The menu button keeps a fixed accessible name and exposes its state only through aria-expanded",
+        "Menu links and the menu button have targets of at least 44x44 CSS px",
+        "Activating the skip link leaves the <h1> fully visible below the sticky header (scroll margin on <main> or scroll-padding-top on html)"
+      ],
+      "dependsOn": [
+        "T-019"
+      ],
+      "notes": [
+        "2026-11-24 rodada 4 (PO): closes the T-004 minors listed in REPORT rodada 3. Depends on T-019 to avoid conflicting edits in Header."
+      ]
+    },
+    {
+      "status": "todo",
+      "attempts": 0,
+      "commit": null,
+      "id": "T-024",
+      "title": "Create typed 2027 study roadmap content and stage status helper",
+      "type": "content",
+      "priority": "P1",
+      "touchesUi": false,
+      "acceptance": [
+        "src/content exports roadmap content for both locales from content/estudos-2027.md: destination (from, to, phrase), the 3 'why now' pillars, the method and the 6 stages (Warm-up Dec 2026, Q1 to Q4 2027, Destination Dec 2027) each with theme, study items and deliverable",
+        "A pure function in src/lib returns done, current or upcoming for each stage given a date: on 2026-11-24 Warm-up is current and the rest upcoming; on 2027-02-15 Warm-up is done and Q1 is current",
+        "The content has no employer internal product name, manager requests or deliverable links, and no [REVISAR] marker",
+        "yarn typecheck, yarn lint and yarn build pass"
+      ],
+      "dependsOn": [
+        "T-017"
+      ],
+      "notes": [
+        "2026-11-24 rodada 4 (PO): stakeholder request (REPORT 24/11): roadmap 2027 as a hero's journey, both languages. The en text is a translation of the pt-only source."
+      ]
+    },
+    {
+      "status": "todo",
+      "attempts": 0,
+      "commit": null,
+      "id": "T-025",
+      "title": "Build 2027 roadmap section as a hero's journey",
+      "type": "feature",
+      "priority": "P1",
+      "touchesUi": true,
+      "acceptance": [
+        "Section #roadmap, linked from the nav in both locales, renders the 6 stages as an ordered list from Warm-up to Destination, each with theme, study items and deliverable",
+        "Each stage shows a text status label (done, in progress, ahead) derived from the current date by the T-024 helper, and the current stage has aria-current=\"step\"; status is never conveyed by color alone",
+        "The section shows the destination (from -> to) and the 3 'why now' pillars, all from locale content",
+        "No horizontal scroll at 375px, and any motion is disabled under prefers-reduced-motion"
+      ],
+      "dependsOn": [
+        "T-018",
+        "T-024"
+      ],
+      "notes": []
+    },
+    {
+      "status": "todo",
+      "attempts": 0,
+      "commit": null,
+      "id": "T-026",
+      "title": "Create typed books content",
+      "type": "content",
+      "priority": "P1",
+      "touchesUi": false,
+      "acceptance": [
+        "src/content exports books from content/livros.md: 3 reading, 7 read and 4 want-to-read, with titles and authors exactly as listed and without the '*' marker",
+        "The 5 Percy Jackson books are grouped as one series with their order, and progress is typed as a number or null (null for '—')",
+        "Group labels and the section heading exist in both locales, and yarn typecheck, yarn lint and yarn build pass"
+      ],
+      "dependsOn": [
+        "T-017"
+      ],
+      "notes": [
+        "2026-11-24 rodada 4 (PO): PO decision: book titles stay as listed in livros.md in both locales (they are the editions read); only labels are translated. Sent to review."
+      ]
+    },
+    {
+      "status": "todo",
+      "attempts": 0,
+      "commit": null,
+      "id": "T-027",
+      "title": "Build books section",
+      "type": "feature",
+      "priority": "P1",
+      "touchesUi": true,
+      "acceptance": [
+        "Section #books, linked from the nav in both locales, renders three groups in order (Reading now, Read, Want to read), each with an <h3>",
+        "Reading-now items with progress show a <progress> element (or role=progressbar with aria-valuenow) plus the visible percentage; items without progress show no bar",
+        "The Percy Jackson books appear grouped under the series name in order, and no cover image is rendered",
+        "No horizontal scroll at 375px in both locales"
+      ],
+      "dependsOn": [
+        "T-018",
+        "T-026"
+      ],
       "notes": []
     }
   ]
