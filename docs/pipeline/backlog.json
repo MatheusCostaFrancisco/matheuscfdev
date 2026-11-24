@@ -290,8 +290,8 @@
       "notes": []
     },
     {
-      "status": "todo",
-      "attempts": 0,
+      "status": "done",
+      "attempts": 1,
       "commit": null,
       "id": "T-015",
       "title": "Add bilingual routing (/en/, /pt/) with browser language detection and ADR",

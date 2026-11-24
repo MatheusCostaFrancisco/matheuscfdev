@@ -6,12 +6,22 @@
     <title>Matheus Costa Francisco · Senior Front-End Software Engineer</title>
     <meta
       name="description"
-      content="Senior Front-End Software Engineer with 7+ years shipping web and mobile applications to production. React, TypeScript, Vue.js, React Native and Node.js."
+      content="Senior Front-End Software Engineer with 7+ years shipping web and mobile applications to production. Choose English or Portuguese."
     />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 
-    <!-- og:url is added once the production domain is defined -->
+    <!-- hreflang becomes absolute once the production domain is defined -->
+    <link vite-ignore rel="alternate" hreflang="en" href="/en/" />
+    <link vite-ignore rel="alternate" hreflang="pt-BR" href="/pt/" />
+    <link vite-ignore rel="alternate" hreflang="x-default" href="/" />
+
+    <!--
+      Link previews (LinkedIn, WhatsApp) do not run the redirect script, so the
+      root keeps the English og: block. Keep in sync with en/index.html.
+    -->
     <meta property="og:type" content="profile" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:locale:alternate" content="pt_BR" />
     <meta
       property="og:title"
       content="Matheus Costa Francisco · Senior Front-End Software Engineer"
@@ -23,15 +33,97 @@
     <meta property="og:image" content="/content/assets/profile.jpg" />
     <meta property="og:image:alt" content="Portrait of Matheus Costa Francisco" />
 
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
-    />
+    <!--
+      Language redirect (ADR 0002): preferred browser language starting with
+      "pt" goes to /pt/, everything else to /en/. Query and hash are kept so
+      links like /#contact land on the same section. Without JS the links in
+      <body> are shown instead.
+    -->
+    <script>
+      (function () {
+        var languages = navigator.languages;
+        var preferred =
+          (languages && languages.length > 0 ? languages[0] : navigator.language) || "";
+        var target = preferred.toLowerCase().indexOf("pt") === 0 ? "/pt/" : "/en/";
+        window.location.replace(target + window.location.search + window.location.hash);
+      })();
+    </script>
+
+    <!--
+      No-JS fallback styles. This page does not load the CSS bundle, so the
+      custom properties below mirror the @theme tokens of the same name in
+      src/index.css; update both when the theme changes. Poppins is deliberately
+      not loaded here (ADR 0002): the page is only seen without JS, and a
+      font request would delay the redirect for everyone else.
+    -->
+    <style>
+      :root {
+        --color-surface: #f8faf9;
+        --color-surface-sunken: #eef3f2;
+        --color-fg: #122220;
+        --color-fg-muted: #475a56;
+        --color-accent-100: #cbf5ec;
+        --color-accent-600: #0f7c72;
+        --color-accent-700: #11645d;
+      }
+      body {
+        margin: 0;
+        min-height: 100dvh;
+        display: grid;
+        place-items: center;
+        background: var(--color-surface);
+        color: var(--color-fg);
+        font-family: ui-sans-serif, system-ui, "Segoe UI", Roboto, Arial, sans-serif;
+      }
+      main {
+        padding: 1.5rem;
+        text-align: center;
+      }
+      h1 {
+        margin: 0 0 0.5rem;
+        font-size: 1.5rem;
+        font-weight: 700;
+      }
+      p {
+        margin: 0 0 1.5rem;
+        color: var(--color-fg-muted);
+      }
+      ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        justify-content: center;
+      }
+      a {
+        display: inline-block;
+        padding: 0.75rem 1.25rem;
+        border-radius: 1rem;
+        color: var(--color-accent-700);
+        font-weight: 600;
+      }
+      a:hover {
+        background: var(--color-surface-sunken);
+      }
+      a:active {
+        background: var(--color-accent-100);
+      }
+      a:focus-visible {
+        outline: 2px solid var(--color-accent-600);
+        outline-offset: 2px;
+      }
+    </style>
   </head>
   <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
+    <main>
+      <h1>Matheus Costa Francisco</h1>
+      <p>Choose a language · <span lang="pt-BR">Escolha o idioma</span></p>
+      <ul>
+        <li><a href="/en/" hreflang="en" lang="en">English</a></li>
+        <li><a href="/pt/" hreflang="pt-BR" lang="pt-BR">Português (Brasil)</a></li>
+      </ul>
+    </main>
   </body>
 </html>

@@ -6,6 +6,8 @@
       "src/**",
       "public/**",
       "index.html",
+      "en/**",
+      "pt/**",
       "package.json",
       "yarn.lock",
       "vite.config.ts",
