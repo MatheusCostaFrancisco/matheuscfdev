@@ -1,0 +1,20 @@
+import { navigation, profile } from "../content";
+
+const aboutItem = navigation.find((item) => item.id === "about");
+
+export function About() {
+  if (!aboutItem) return null;
+
+  return (
+    <section
+      id={aboutItem.id}
+      aria-labelledby="about-title"
+      className="scroll-mt-20 py-10"
+    >
+      <h2 id="about-title" className="text-2xl font-semibold text-fg">
+        {aboutItem.label}
+      </h2>
+      <p className="mt-4 max-w-prose text-lg text-fg">{profile.summary}</p>
+    </section>
+  );
+}
