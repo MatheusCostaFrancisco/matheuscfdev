@@ -1,5 +1,253 @@
 {
   "version": 1,
-  "cvHash": null,
-  "tasks": []
+  "cvHash": "aef82a713033aa792bc650ddc30d217a6d33121a755f95ae486d91c076f368af",
+  "tasks": [
+    {
+      "id": "T-001",
+      "title": "Create design system tokens, cn() helper and visual direction ADR",
+      "type": "design-system",
+      "priority": "P0",
+      "touchesUi": true,
+      "acceptance": [
+        "src/index.css declares Tailwind 4 @theme tokens for exactly one font family (--font-sans), one accent color scale, neutral surface/text colors, a type scale and tinted shadows (shadow color derived from the accent or neutral hue, no pure-black or neon glow)",
+        "Accent and text tokens meet WCAG 2.1 AA contrast (4.5:1 for body text, 3:1 for large text and UI) against the background tokens, with ratios listed in the ADR",
+        "src/lib/cn.ts exports a typed cn() class helper and is the only class-joining helper in src/",
+        "docs/adr/0001-visual-direction.md exists with status, decision (font, accent, radius rounded-2xl, shadows, light/dark stance) and a 'Quando reabrir' section",
+        "yarn typecheck, yarn lint and yarn build pass"
+      ],
+      "dependsOn": [],
+      "status": "todo",
+      "attempts": 0,
+      "commit": null,
+      "notes": []
+    },
+    {
+      "id": "T-002",
+      "title": "Set up folder structure, page metadata and favicon; remove Vite template leftovers",
+      "type": "infra",
+      "priority": "P0",
+      "touchesUi": true,
+      "acceptance": [
+        "Folders src/components/, src/sections/, src/content/ and src/lib/ exist (with real files or a .gitkeep), and src/App.css, src/assets/react.svg and public/vite.svg are removed with no remaining references",
+        "index.html has lang=\"en\", title 'Matheus Costa Francisco · Senior Front-End Software Engineer', a meta description built only from cv.md facts, and Open Graph tags og:type, og:title, og:description and og:image (og:url omitted until the domain is defined)",
+        "A favicon that is not the Vite logo is served from public/ and referenced in index.html",
+        "yarn typecheck, yarn lint and yarn build pass"
+      ],
+      "dependsOn": [],
+      "status": "todo",
+      "attempts": 0,
+      "commit": null,
+      "notes": []
+    },
+    {
+      "id": "T-003",
+      "title": "Create typed content modules from cv.md",
+      "type": "content",
+      "priority": "P0",
+      "touchesUi": false,
+      "acceptance": [
+        "src/content/ exports typed modules (types declared, no any) for profile (name, role, stack, location, email, LinkedIn, tagline, summary), experience, products, skills, education, certification and languages",
+        "experience lists the 5 positions from cv.md in reverse chronological order with the exact dates and bullets, including the Soluti promotion to Senior in Apr 2023",
+        "No phone number appears anywhere in src/ (grep for '99991' and '+55' returns nothing)",
+        "WoodFlow public link is represented as an explicit [REVISAR] value and no fact absent from cv.md is introduced",
+        "yarn typecheck and yarn build pass"
+      ],
+      "dependsOn": ["T-002"],
+      "status": "todo",
+      "attempts": 0,
+      "commit": null,
+      "notes": []
+    },
+    {
+      "id": "T-004",
+      "title": "Build page layout and navigation",
+      "type": "feature",
+      "priority": "P0",
+      "touchesUi": true,
+      "acceptance": [
+        "App.tsx renders a header with nav, a <main> landmark and a footer; the template placeholders (including 'Depoimentos') are gone",
+        "A skip link to #main is the first focusable element and becomes visible on focus",
+        "Nav links point to #about, #experience, #products, #skills, #education and #contact, work by keyboard, and collapse into an accessible menu (aria-expanded, Esc closes) at 375px without horizontal scroll",
+        "Page wrapper uses min-h-[100dvh] (no h-screen) and nav items implement hover, focus-visible, :active and disabled-safe styles via tokens from T-001"
+      ],
+      "dependsOn": ["T-001", "T-002", "T-003"],
+      "status": "todo",
+      "attempts": 0,
+      "commit": null,
+      "notes": []
+    },
+    {
+      "id": "T-005",
+      "title": "Build hero section",
+      "type": "feature",
+      "priority": "P0",
+      "touchesUi": true,
+      "acceptance": [
+        "Hero renders name as the page's only <h1>, role, tagline, stack and location, all read from src/content/",
+        "Profile photo from content/assets/profile.jpg renders with descriptive alt text and explicit width/height",
+        "Primary CTA links to #contact (or mailto) and secondary CTA links to the LinkedIn URL with rel=\"noopener noreferrer\"",
+        "Layout has no horizontal scroll at 375px and stacks photo and text on mobile"
+      ],
+      "dependsOn": ["T-004"],
+      "status": "todo",
+      "attempts": 0,
+      "commit": null,
+      "notes": []
+    },
+    {
+      "id": "T-006",
+      "title": "Build about/summary section",
+      "type": "feature",
+      "priority": "P0",
+      "touchesUi": true,
+      "acceptance": [
+        "Section #about renders the Summary text from cv.md via src/content/, with an <h2> heading",
+        "The section is reachable from the nav link and is a labelled region (aria-labelledby pointing to its heading)",
+        "No text in the section is hardcoded in the component"
+      ],
+      "dependsOn": ["T-004"],
+      "status": "todo",
+      "attempts": 0,
+      "commit": null,
+      "notes": []
+    },
+    {
+      "id": "T-007",
+      "title": "Build experience timeline section",
+      "type": "feature",
+      "priority": "P0",
+      "touchesUi": true,
+      "acceptance": [
+        "Section #experience lists the 5 positions from cv.md in reverse chronological order (AsapFlow first, RKM Support last) as an ordered list",
+        "Each item shows role, company, period, location/context and all bullets from cv.md; the Soluti item shows the Apr 2023 promotion",
+        "Dates use <time> elements and the timeline remains readable at 375px without horizontal scroll"
+      ],
+      "dependsOn": ["T-004"],
+      "status": "todo",
+      "attempts": 0,
+      "commit": null,
+      "notes": []
+    },
+    {
+      "id": "T-008",
+      "title": "Build contact section and footer",
+      "type": "feature",
+      "priority": "P0",
+      "touchesUi": true,
+      "acceptance": [
+        "Section #contact shows the e-mail as a mailto link, the LinkedIn link and the location 'Piracicaba, Brazil · Remote', all from src/content/",
+        "No phone number is rendered",
+        "Footer shows the name and current year and contains no placeholder links",
+        "External links use rel=\"noopener noreferrer\" and all links have visible focus styles"
+      ],
+      "dependsOn": ["T-004"],
+      "status": "todo",
+      "attempts": 0,
+      "commit": null,
+      "notes": []
+    },
+    {
+      "id": "T-009",
+      "title": "Build products section (Manda Aí, WoodFlow)",
+      "type": "feature",
+      "priority": "P1",
+      "touchesUi": true,
+      "acceptance": [
+        "Section #products renders Manda Aí and WoodFlow with description and stack exactly as in cv.md",
+        "Manda Aí links to https://mandai.ia.br with rel=\"noopener noreferrer\"",
+        "WoodFlow shows a visible [REVISAR] marker instead of a link while its public URL is undefined",
+        "Cards use rounded-2xl and tokenized tinted shadows and implement hover and focus-visible states"
+      ],
+      "dependsOn": ["T-004"],
+      "status": "todo",
+      "attempts": 0,
+      "commit": null,
+      "notes": []
+    },
+    {
+      "id": "T-010",
+      "title": "Build skills section",
+      "type": "feature",
+      "priority": "P1",
+      "touchesUi": true,
+      "acceptance": [
+        "Section #skills renders the 5 skill groups from cv.md, each with an accessible heading and its items as a list",
+        "All items come from src/content/ and none is added beyond cv.md",
+        "Layout wraps without horizontal scroll at 375px"
+      ],
+      "dependsOn": ["T-004"],
+      "status": "todo",
+      "attempts": 0,
+      "commit": null,
+      "notes": []
+    },
+    {
+      "id": "T-011",
+      "title": "Build education, certification and languages section",
+      "type": "feature",
+      "priority": "P1",
+      "touchesUi": true,
+      "acceptance": [
+        "Section #education lists the 4 courses from cv.md with institution and period, the FIAP MBA marked as expected",
+        "The AWS Certified Cloud Practitioner certification and both languages with levels (Portuguese native, English intermediate B1/B2) are rendered",
+        "All data comes from src/content/"
+      ],
+      "dependsOn": ["T-004"],
+      "status": "todo",
+      "attempts": 0,
+      "commit": null,
+      "notes": []
+    },
+    {
+      "id": "T-012",
+      "title": "Add subtle entrance animations respecting prefers-reduced-motion",
+      "type": "feature",
+      "priority": "P2",
+      "touchesUi": true,
+      "acceptance": [
+        "Sections animate in with opacity/transform only (no layout-shifting properties), duration at most 400ms",
+        "With prefers-reduced-motion: reduce, no animation or transition runs and content is visible immediately",
+        "Content is visible without JavaScript-dependent animation state (no section stays hidden if the observer fails)"
+      ],
+      "dependsOn": ["T-005", "T-006", "T-007", "T-008"],
+      "status": "todo",
+      "attempts": 0,
+      "commit": null,
+      "notes": []
+    },
+    {
+      "id": "T-013",
+      "title": "Add 404 page",
+      "type": "feature",
+      "priority": "P2",
+      "touchesUi": true,
+      "acceptance": [
+        "yarn build produces dist/404.html using the same font and color tokens as the main page",
+        "The 404 page has lang=\"en\", a <main> landmark, an <h1> and a link back to /",
+        "It has no horizontal scroll at 375px"
+      ],
+      "dependsOn": ["T-001", "T-002"],
+      "status": "todo",
+      "attempts": 0,
+      "commit": null,
+      "notes": []
+    },
+    {
+      "id": "T-014",
+      "title": "Optimize profile image delivery",
+      "type": "infra",
+      "priority": "P2",
+      "touchesUi": true,
+      "acceptance": [
+        "The hero photo is served in a modern format (WebP or AVIF) with a JPEG fallback via <picture>, at sizes no larger than its rendered dimensions x2",
+        "The hero image has fetchpriority=\"high\" and no loading=\"lazy\"; any other image below the fold uses loading=\"lazy\"",
+        "Total image bytes for the hero in dist/ are smaller than content/assets/profile.jpg"
+      ],
+      "dependsOn": ["T-005"],
+      "status": "todo",
+      "attempts": 0,
+      "commit": null,
+      "notes": []
+    }
+  ]
 }
