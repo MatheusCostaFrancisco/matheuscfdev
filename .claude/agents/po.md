@@ -51,5 +51,5 @@ Escolha até `maxTasks` tarefas `todo` com todas as dependências `done` (ou sel
 ## Saída
 
 1. Escreva `docs/pipeline/backlog.json` (formato da spec, com `cvHash` atualizado) e valide com `node -e "JSON.parse(require('fs').readFileSync('docs/pipeline/backlog.json','utf8'))"`.
-2. Não faça commit: o backlog é commitado junto com a primeira tarefa entregue ou com o relatório.
+2. Commite **só** o backlog: `git add docs/pipeline/backlog.json && git commit -m "chore: update pipeline backlog"` com o trailer `Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>` (pule se não houve mudança). Isso é obrigatório: a esteira usa `git stash` em tarefas rejeitadas e um backlog não commitado seria perdido junto.
 3. Retorne as tarefas selecionadas, itens para revisão do stakeholder, pendências e o total de `todo` restante.
