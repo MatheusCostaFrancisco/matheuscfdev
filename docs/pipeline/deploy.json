@@ -1,0 +1,12 @@
+{
+  "railway": {
+    "projectId": "c9467586-15f7-469d-829f-fdc99fea5f84",
+    "serviceId": "6beacec6-6e75-460d-a91f-29cdfbe7d8c5",
+    "environment": "production"
+  },
+  "railwayUrl": "https://site-production-5010b1df.up.railway.app",
+  "customDomain": null,
+  "cloudflare": { "zoneId": null, "dnsConfigured": false },
+  "lastDeployedCommit": "8a07ebddc42cf7d1b900118920d4db69ee41245c",
+  "lastStatus": "deployed"
+}
