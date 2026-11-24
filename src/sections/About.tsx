@@ -1,8 +1,9 @@
-import { navigation, profile } from "../content";
-
-const aboutItem = navigation.find((item) => item.id === "about");
+import { useContent } from "../lib/use-content";
 
 export function About() {
+  const { navigation, profile } = useContent();
+  const aboutItem = navigation.find((item) => item.id === "about");
+
   if (!aboutItem) return null;
 
   return (

@@ -1,7 +1,5 @@
-import { experience, navigation } from "../content";
 import { toDateTime } from "../lib/period";
-
-const experienceItem = navigation.find((item) => item.id === "experience");
+import { useContent } from "../lib/use-content";
 
 type PeriodDateProps = { label: string };
 
@@ -11,6 +9,9 @@ function PeriodDate({ label }: PeriodDateProps) {
 }
 
 export function Experience() {
+  const { experience, navigation } = useContent();
+  const experienceItem = navigation.find((item) => item.id === "experience");
+
   if (!experienceItem) return null;
 
   return (
@@ -40,9 +41,13 @@ export function Experience() {
               <p className="mt-1 text-sm text-fg-muted">
                 <PeriodDate label={job.start} /> –{" "}
                 <PeriodDate label={job.end} />
-                <span aria-hidden="true"> · </span>
-                <span className="sr-only">, </span>
-                {job.location}
+                {job.location ? (
+                  <>
+                    <span aria-hidden="true"> · </span>
+                    <span className="sr-only">, </span>
+                    {job.location}
+                  </>
+                ) : null}
               </p>
               {job.context ? (
                 <p className="mt-1 text-sm text-fg-muted">{job.context}</p>
@@ -52,13 +57,15 @@ export function Experience() {
                   {job.note}
                 </p>
               ) : null}
-              <ul className="mt-4 list-disc space-y-2 pl-5 text-base text-fg marker:text-accent-600">
-                {job.bullets.map((bullet) => (
-                  <li key={bullet} className="break-words">
-                    {bullet}
-                  </li>
-                ))}
-              </ul>
+              {job.bullets.length > 0 ? (
+                <ul className="mt-4 list-disc space-y-2 pl-5 text-base text-fg marker:text-accent-600">
+                  {job.bullets.map((bullet) => (
+                    <li key={bullet} className="break-words">
+                      {bullet}
+                    </li>
+                  ))}
+                </ul>
+              ) : null}
             </article>
           </li>
         ))}

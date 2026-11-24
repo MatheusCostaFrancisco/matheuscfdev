@@ -1,7 +1,5 @@
-import { navigation, profile } from '../content'
 import { cn } from '../lib/cn'
-
-const contactItem = navigation.find((item) => item.id === 'contact')
+import { useContent } from '../lib/use-content'
 
 const linkClass = cn(
   'rounded-sm text-lg font-medium text-accent-700 underline underline-offset-4',
@@ -9,6 +7,9 @@ const linkClass = cn(
 )
 
 export function Contact() {
+  const { navigation, profile, ui } = useContent()
+  const contactItem = navigation.find((item) => item.id === 'contact')
+
   if (!contactItem) return null
 
   return (
@@ -21,13 +22,13 @@ export function Contact() {
         {contactItem.label}
       </h2>
       <dl className="mt-4 grid gap-4 sm:grid-cols-[max-content_1fr] sm:gap-x-8">
-        <dt className="text-sm font-medium text-fg-muted">E-mail</dt>
+        <dt className="text-sm font-medium text-fg-muted">{ui.contact.email}</dt>
         <dd>
           <a href={`mailto:${profile.email}`} className={linkClass}>
             {profile.email}
           </a>
         </dd>
-        <dt className="text-sm font-medium text-fg-muted">LinkedIn</dt>
+        <dt className="text-sm font-medium text-fg-muted">{ui.contact.linkedin}</dt>
         <dd>
           <a
             href={profile.linkedin}
@@ -36,10 +37,22 @@ export function Contact() {
             className={linkClass}
           >
             {profile.linkedin.replace('https://www.', '')}
-            <span className="sr-only"> (opens in a new tab)</span>
+            <span className="sr-only"> {ui.opensInNewTab}</span>
           </a>
         </dd>
-        <dt className="text-sm font-medium text-fg-muted">Location</dt>
+        <dt className="text-sm font-medium text-fg-muted">{ui.contact.github}</dt>
+        <dd>
+          <a
+            href={profile.github}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={linkClass}
+          >
+            {profile.github.replace('https://', '')}
+            <span className="sr-only"> {ui.opensInNewTab}</span>
+          </a>
+        </dd>
+        <dt className="text-sm font-medium text-fg-muted">{ui.contact.location}</dt>
         <dd className="text-lg text-fg">{profile.location}</dd>
       </dl>
     </section>

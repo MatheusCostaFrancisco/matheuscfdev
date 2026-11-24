@@ -1,6 +1,6 @@
 import profilePhoto from '../../content/assets/profile.jpg'
-import { profile } from '../content'
 import { cn } from '../lib/cn'
+import { useContent } from '../lib/use-content'
 
 const buttonBase = cn(
   'inline-flex min-h-11 items-center justify-center rounded-2xl px-6 py-2.5 text-base font-medium',
@@ -19,6 +19,8 @@ const secondaryClass = cn(
 )
 
 export function Hero() {
+  const { profile, ui } = useContent()
+
   return (
     <section aria-labelledby="hero-title" className="py-10 md:py-16">
       <div className="flex flex-col items-start gap-8 md:flex-row md:items-center md:gap-12">
@@ -40,7 +42,7 @@ export function Hero() {
           </h1>
           <p className="mt-2 text-xl font-medium text-fg-muted">{profile.role}</p>
           <p className="mt-4 max-w-prose text-lg text-fg">{profile.tagline}</p>
-          <ul aria-label="Main stack" className="mt-6 flex flex-wrap gap-2">
+          <ul aria-label={ui.hero.stackLabel} className="mt-6 flex flex-wrap gap-2">
             {profile.stack.map((item) => (
               <li
                 key={item}
@@ -52,7 +54,7 @@ export function Hero() {
           </ul>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
             <a href="#contact" className={primaryClass}>
-              Get in touch
+              {ui.hero.getInTouch}
             </a>
             <a
               href={profile.linkedin}
@@ -60,8 +62,8 @@ export function Hero() {
               rel="noopener noreferrer"
               className={secondaryClass}
             >
-              LinkedIn
-              <span className="sr-only"> (opens in a new tab)</span>
+              {ui.hero.linkedin}
+              <span className="sr-only"> {ui.opensInNewTab}</span>
             </a>
           </div>
         </div>

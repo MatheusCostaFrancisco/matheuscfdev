@@ -11,6 +11,13 @@ const MONTHS: Readonly<Record<string, string>> = {
   Oct: "10",
   Nov: "11",
   Dec: "12",
+  Fev: "02",
+  Abr: "04",
+  Mai: "05",
+  Ago: "08",
+  Set: "09",
+  Out: "10",
+  Dez: "12",
 };
 
 /** Converts "Feb 2025" into "2025-02". Returns null for non-date text such as "Present". */

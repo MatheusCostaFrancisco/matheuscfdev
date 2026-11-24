@@ -1,8 +1,9 @@
-import { navigation, skills } from "../content";
-
-const skillsItem = navigation.find((item) => item.id === "skills");
+import { useContent } from "../lib/use-content";
 
 export function Skills() {
+  const { navigation, skills } = useContent();
+  const skillsItem = navigation.find((item) => item.id === "skills");
+
   if (!skillsItem) return null;
 
   return (

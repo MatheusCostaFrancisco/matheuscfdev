@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
-import { navigation, profile } from '../content'
 import { cn } from '../lib/cn'
+import { useContent } from '../lib/use-content'
 
 const linkClass = cn(
   'block rounded-2xl px-4 py-2 text-sm font-medium text-fg-muted',
@@ -11,6 +11,7 @@ const linkClass = cn(
 )
 
 export function Header() {
+  const { navigation, profile, ui } = useContent()
   const [open, setOpen] = useState(false)
   const buttonRef = useRef<HTMLButtonElement>(null)
 
@@ -41,7 +42,7 @@ export function Header() {
           type="button"
           aria-expanded={open}
           aria-controls="site-nav"
-          aria-label={open ? 'Close menu' : 'Open menu'}
+          aria-label={open ? ui.header.closeMenu : ui.header.openMenu}
           onClick={() => setOpen((value) => !value)}
           className="inline-flex size-11 items-center justify-center rounded-2xl border border-line-strong text-fg hover:bg-accent-50 active:bg-accent-100 disabled:opacity-50 md:hidden"
         >
@@ -61,7 +62,7 @@ export function Header() {
 
         <nav
           id="site-nav"
-          aria-label="Primary"
+          aria-label={ui.header.navLabel}
           className={cn(
             'absolute inset-x-0 top-full border-b border-line bg-surface-raised px-4 py-3 shadow-md sm:px-6',
             'md:static md:block md:border-0 md:bg-transparent md:p-0 md:shadow-none',
