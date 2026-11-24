@@ -1,12 +1,13 @@
-# Relatório da esteira — 2026-11-24 (rodada 2)
+# Relatório da esteira — 2026-11-24 (rodada 1)
 
-Rodada abortada: há mudança não commitada em `README.md` (fora da esteira). Ação: commite ou descarte essa mudança e rode `/esteira` de novo.
-
-Deploy: https://site-production-5010b1df.up.railway.app · deployed (último deploy, commit `8a07ebd`; nada publicado nesta rodada)
-Resumo: 0 entregues · 12 para revisão · 0 bloqueadas · 12 no backlog
+Deploy: https://site-production-5010b1df.up.railway.app · deployed
+Resumo: 2 entregues · 12 para revisão · 0 bloqueadas · 12 no backlog
 
 ## Entregues
-Nada nesta rodada.
+| Tarefa | Commit | Resumo |
+|---|---|---|
+| T-001 | `070de36` | Tokens do design system no `src/index.css` (Poppins, acento teal, neutros, escala tipográfica, sombras tingidas; paleta padrão do Tailwind desligada), `cn()` em `src/lib/cn.ts` e ADR `docs/adr/0001-visual-direction.md` com razões WCAG e "Quando reabrir". |
+| T-002 | `8a07ebd` | Sobras do template Vite removidas, pastas `components/`, `sections/`, `content/`, `lib/` criadas, `index.html` com `lang="en"`, título, meta description e Open Graph, favicon próprio. |
 
 ## Para revisão
 - [ ] **T-001** Fonte Poppins carregada do Google Fonts — é requisição a terceiro (fonts.googleapis.com/gstatic.com), relevante para LGPD. Alternativa: Poppins self-hosted (`@fontsource/poppins`). Decidir qual.
@@ -23,7 +24,6 @@ Nada nesta rodada.
 - [ ] **Deploy** O site publicado ainda é o placeholder sem estilo (o header verde sumiu de propósito com o reset da paleta) — normal até T-004/T-005 entrarem.
 
 ## Pendências do stakeholder
-- [ ] Commitar ou descartar a mudança em `README.md` (fora da esteira) e rodar `/esteira` de novo — esta rodada abortou por isso.
 - [ ] Definir o domínio do site (registrar se ainda não tiver) e me dizer qual é — hoje `content/cv.md` marca "Domínio do site" como [REVISAR]; `og:url`, URL canônica e `og:image` absoluta dependem dele.
 - [ ] Depois do domínio, criar no Cloudflare um API token com permissão Zone:DNS:Edit para ele — expor como variável de ambiente `CLOUDFLARE_API_TOKEN` (ou conectar o MCP do Cloudflare).
 - [ ] Informar se o WoodFlow tem URL pública — atualizar o [REVISAR] em `content/cv.md`; até lá o site mostra um marcador no lugar do link.
