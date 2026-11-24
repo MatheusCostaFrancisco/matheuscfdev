@@ -1,1 +1,134 @@
 @import "tailwindcss";
+
+/*
+ * Design tokens. Decisions and contrast ratios: docs/adr/0001-visual-direction.md
+ *
+ * Each namespace that could leak a second font, a second accent or an untinted
+ * shadow is reset with `initial` before the project tokens are declared, so
+ * Tailwind's default palette (`bg-green-700`, `shadow-md` in pure black, etc.)
+ * is not generated.
+ */
+@theme {
+  /* Typography: one family */
+  --font-*: initial;
+  --font-sans: "Poppins", ui-sans-serif, system-ui, -apple-system, "Segoe UI",
+    Roboto, "Helvetica Neue", Arial, sans-serif;
+
+  /* Type scale (1.25 ratio from 16px, display is fluid) */
+  --text-*: initial;
+  --text-xs: 0.75rem;
+  --text-xs--line-height: 1rem;
+  --text-sm: 0.875rem;
+  --text-sm--line-height: 1.375rem;
+  --text-base: 1rem;
+  --text-base--line-height: 1.625rem;
+  --text-lg: 1.125rem;
+  --text-lg--line-height: 1.75rem;
+  --text-xl: 1.25rem;
+  --text-xl--line-height: 1.875rem;
+  --text-2xl: 1.5rem;
+  --text-2xl--line-height: 2rem;
+  --text-3xl: 1.875rem;
+  --text-3xl--line-height: 2.375rem;
+  --text-4xl: 2.25rem;
+  --text-4xl--line-height: 2.75rem;
+  --text-4xl--letter-spacing: -0.01em;
+  --text-5xl: 3rem;
+  --text-5xl--line-height: 3.5rem;
+  --text-5xl--letter-spacing: -0.02em;
+  --text-display: clamp(2.5rem, 1.75rem + 3.2vw, 4rem);
+  --text-display--line-height: 1.1;
+  --text-display--letter-spacing: -0.025em;
+
+  /* Colors: neutrals tinted toward the accent hue + one accent scale */
+  --color-*: initial;
+
+  --color-surface: #f8faf9;
+  --color-surface-raised: #ffffff;
+  --color-surface-sunken: #eef3f2;
+
+  --color-fg: #122220;
+  --color-fg-muted: #475a56;
+  --color-on-accent: #ffffff;
+
+  --color-line: #d5dfdc;
+  --color-line-strong: #7c8f8b;
+
+  --color-accent-50: #effcf9;
+  --color-accent-100: #cbf5ec;
+  --color-accent-200: #98eadb;
+  --color-accent-300: #5dd5c3;
+  --color-accent-400: #2db9a8;
+  --color-accent-500: #159a8c;
+  --color-accent-600: #0f7c72;
+  --color-accent-700: #11645d;
+  --color-accent-800: #13504b;
+  --color-accent-900: #14423e;
+  --color-accent-950: #052725;
+
+  /* Radius: rounded-2xl is the default for cards, buttons and inputs */
+  --radius-2xl: 1rem;
+
+  /* Shadows tinted with the fg hue (rgb 18 34 32), never pure black or glow */
+  --shadow-*: initial;
+  --shadow-xs: 0 1px 2px 0 rgb(18 34 32 / 0.05);
+  --shadow-sm: 0 1px 3px 0 rgb(18 34 32 / 0.07), 0 1px 2px -1px rgb(18 34 32 / 0.05);
+  --shadow-md: 0 4px 10px -2px rgb(18 34 32 / 0.08), 0 2px 4px -2px rgb(18 34 32 / 0.05);
+  --shadow-lg: 0 12px 24px -6px rgb(18 34 32 / 0.1), 0 4px 8px -4px rgb(18 34 32 / 0.05);
+  --shadow-xl: 0 24px 48px -12px rgb(18 34 32 / 0.14);
+
+  --inset-shadow-*: initial;
+  --inset-shadow-sm: inset 0 1px 2px rgb(18 34 32 / 0.06);
+
+  --drop-shadow-*: initial;
+  --drop-shadow-md: 0 4px 6px rgb(18 34 32 / 0.08);
+  --drop-shadow-lg: 0 10px 16px rgb(18 34 32 / 0.1);
+}
+
+@layer base {
+  :root {
+    color-scheme: light;
+  }
+
+  /* Preflight falls back to currentColor once the default gray scale is reset */
+  *,
+  ::before,
+  ::after,
+  ::backdrop {
+    border-color: var(--color-line);
+  }
+
+  body {
+    background-color: var(--color-surface);
+    color: var(--color-fg);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  ::selection {
+    background-color: var(--color-accent-200);
+    color: var(--color-fg);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-accent-600);
+    outline-offset: 2px;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    html {
+      scroll-behavior: smooth;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    ::before,
+    ::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
