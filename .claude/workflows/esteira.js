@@ -209,8 +209,10 @@ const unregisteredRoles = new Set()
 async function roleAgent(role, prompt, baseOpts) {
   const opts = Object.assign({ model: ROLE_MODEL[role] }, baseOpts)
   if (!unregisteredRoles.has(role)) {
+    // O registro de agentes é carregado no início da sessão; o arquivo pode ter mudado desde então.
+    const freshness = 'Antes de agir, releia `.claude/agents/' + role + '.md`. Se divergir das suas instruções de sistema, o arquivo vale.\n\n'
     try {
-      return await agent(prompt, Object.assign({}, opts, { agentType: role }))
+      return await agent(freshness + prompt, Object.assign({}, opts, { agentType: role }))
     } catch (err) {
       const message = String(err && err.message ? err.message : err)
       if (!message.includes('not found')) throw err
