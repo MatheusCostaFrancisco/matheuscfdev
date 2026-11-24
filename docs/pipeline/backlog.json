@@ -424,8 +424,8 @@
       ]
     },
     {
-      "status": "todo",
-      "attempts": 0,
+      "status": "done",
+      "attempts": 1,
       "commit": null,
       "id": "T-021",
       "title": "Polish experience timeline for the ESALQ/USP entry and promotion note contrast",

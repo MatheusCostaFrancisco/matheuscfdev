@@ -31,7 +31,7 @@ export function Experience() {
           >
             <span
               aria-hidden="true"
-              className="absolute top-2 -left-[7px] size-3 rounded-full border-2 border-accent-600 bg-surface"
+              className="absolute top-2 -left-1.75 size-3 rounded-full border-2 border-accent-600 bg-surface"
             />
             <article className="min-w-0">
               <h3 className="text-xl font-semibold text-fg">{job.role}</h3>
@@ -53,7 +53,7 @@ export function Experience() {
                 <p className="mt-1 text-sm text-fg-muted">{job.context}</p>
               ) : null}
               {job.note ? (
-                <p className="mt-3 inline-block rounded-2xl bg-accent-50 px-3 py-1 text-sm font-medium text-accent-800">
+                <p className="mt-3 inline-block rounded-2xl border border-accent-600 bg-accent-50 px-3 py-1 text-sm font-medium text-accent-800">
                   {job.note}
                 </p>
               ) : null}
