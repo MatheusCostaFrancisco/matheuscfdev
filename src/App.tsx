@@ -1,3 +1,5 @@
+import { useEffect } from "react";
+import { scrollToHash } from "./lib/scroll-to-hash";
 import { Footer } from "./components/Footer";
 import { Header } from "./components/Header";
 import { SkipLink } from "./components/SkipLink";
@@ -12,6 +14,10 @@ import { Roadmap } from "./sections/Roadmap";
 import { Skills } from "./sections/Skills";
 
 function App() {
+  useEffect(() => {
+    scrollToHash(window.location.hash);
+  }, []);
+
   return (
     <div className="flex min-h-[100dvh] flex-col">
       <SkipLink />

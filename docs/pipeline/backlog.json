@@ -615,8 +615,8 @@
       ]
     },
     {
-      "status": "todo",
-      "attempts": 0,
+      "status": "done",
+      "attempts": 1,
       "commit": null,
       "id": "T-029",
       "title": "Scroll to the URL hash section after the first render",
