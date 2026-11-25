@@ -243,7 +243,7 @@
       ],
       "status": "done",
       "attempts": 1,
-      "commit": null,
+      "commit": "cbca43e",
       "notes": [
         "2026-11-24 rodada 4 (PO): depends on T-018 so animations are built on the localized components.",
         "2026-11-24 rodada 5 (PO): depends on T-028 so its diff is not polluted by CRLF/LF churn (REPORT rodada 4: b968c30, 07b1d62, 8840a35)."
@@ -268,7 +268,7 @@
       ],
       "status": "done",
       "attempts": 1,
-      "commit": null,
+      "commit": "8548644",
       "notes": [
         "2026-11-24 rodada 4 (PO): acceptance updated for the bilingual site (routes /en/ and /pt/ from T-015).",
         "2026-11-24 rodada 5 (PO): depends on T-028 so its diff is not polluted by CRLF/LF churn (REPORT rodada 4: b968c30, 07b1d62, 8840a35)."
@@ -641,7 +641,7 @@
     {
       "status": "done",
       "attempts": 1,
-      "commit": null,
+      "commit": "c36947a",
       "id": "T-030",
       "title": "Localize product link and stack labels with per-locale functions",
       "type": "fix",
@@ -664,7 +664,7 @@
     {
       "status": "done",
       "attempts": 1,
-      "commit": null,
+      "commit": "d6ebad8",
       "id": "T-031",
       "title": "Balance products and skills grids on wide screens",
       "type": "fix",
@@ -686,7 +686,7 @@
     {
       "status": "done",
       "attempts": 1,
-      "commit": null,
+      "commit": "266ab8a",
       "id": "T-032",
       "title": "Self-host the Poppins font and drop Google Fonts requests",
       "type": "infra",
@@ -711,7 +711,7 @@
     {
       "status": "done",
       "attempts": 1,
-      "commit": null,
+      "commit": "9da34ee",
       "id": "T-033",
       "title": "Sync summary, location and education with the updated cv.md",
       "type": "content",
@@ -734,7 +734,7 @@
     {
       "status": "done",
       "attempts": 1,
-      "commit": null,
+      "commit": "ce6cf93",
       "id": "T-034",
       "title": "Sync skill groups with the updated cv.md",
       "type": "content",
@@ -756,7 +756,7 @@
     {
       "status": "done",
       "attempts": 1,
-      "commit": null,
+      "commit": "c734803",
       "id": "T-035",
       "title": "Make canonical, og:url, hreflang and og:image absolute from a validated site URL",
       "type": "infra",
@@ -780,7 +780,7 @@
     {
       "status": "done",
       "attempts": 1,
-      "commit": null,
+      "commit": "d8067cf",
       "id": "T-036",
       "title": "Derive years of experience from the career start dates",
       "type": "feature",
@@ -824,7 +824,7 @@
     {
       "status": "done",
       "attempts": 1,
-      "commit": null,
+      "commit": "5fdd08e",
       "id": "T-038",
       "title": "Mark foreign-language passages with lang attributes",
       "type": "fix",
