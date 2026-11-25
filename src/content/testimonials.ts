@@ -4,6 +4,8 @@
  * `profileTitle` is the recommender's current LinkedIn title and is shown as written there.
  */
 
+import type { Locale } from '../lib/locale'
+
 export const RECOMMENDATIONS_URL = 'https://www.linkedin.com/in/matheus-costa-francisco/details/recommendations/'
 
 export type TestimonialCompany = 'Soluti Digital' | 'GAtec Gestão Agroindustrial' | 'RKM Sistemas'
@@ -13,6 +15,8 @@ export type TestimonialRelationship = 'same-team' | 'direct-supervisor'
 export interface Testimonial {
   readonly name: string
   readonly profileTitle: string
+  /** Language `profileTitle` is written in (the majority of its words). */
+  readonly profileTitleLang: Locale
   readonly company: TestimonialCompany
   readonly relationship: TestimonialRelationship
   /** ISO date (YYYY-MM-DD) of the recommendation. */
@@ -32,6 +36,7 @@ export const testimonials: readonly Testimonial[] = [
     name: 'Neilton Gomes',
     profileTitle:
       'Senior Software Engineer · Microservices · Distributed Systems Engineer · Fintech · PHP · Laravel · Node.js · Payments · PIX',
+    profileTitleLang: 'en',
     company: 'Soluti Digital',
     relationship: 'same-team',
     date: '2026-02-28',
@@ -58,6 +63,7 @@ export const testimonials: readonly Testimonial[] = [
   {
     name: 'Áiska Hacine',
     profileTitle: 'Product Owner | Gestão de Produtos | Transformação Digital | Experiência do Cliente e Inovação',
+    profileTitleLang: 'pt-BR',
     company: 'Soluti Digital',
     relationship: 'same-team',
     date: '2023-10-17',
@@ -84,6 +90,7 @@ export const testimonials: readonly Testimonial[] = [
   {
     name: 'William Fontanetti',
     profileTitle: 'Software Developer at Jambo | ReactJs | React Native | Mobile Developer | UI/UX Enthusiast',
+    profileTitleLang: 'en',
     company: 'GAtec Gestão Agroindustrial',
     relationship: 'direct-supervisor',
     date: '2022-10-10',
@@ -106,6 +113,7 @@ export const testimonials: readonly Testimonial[] = [
   {
     name: 'Victor Colacelli',
     profileTitle: 'Analista de Operações',
+    profileTitleLang: 'pt-BR',
     company: 'RKM Sistemas',
     relationship: 'same-team',
     date: '2022-10-07',
@@ -127,6 +135,7 @@ export const testimonials: readonly Testimonial[] = [
     name: 'Gabriel Vicente',
     profileTitle:
       'Senior Mobile Developer & Tech Lead · React Native | Arquitetura Offline-First | IA aplicada ao desenvolvimento',
+    profileTitleLang: 'en',
     company: 'GAtec Gestão Agroindustrial',
     relationship: 'same-team',
     date: '2022-09-09',
@@ -146,6 +155,7 @@ export const testimonials: readonly Testimonial[] = [
     name: 'Gian Paulo Seneda',
     profileTitle:
       'Front End Developer | React, React Native, TypeScript, Next.js | Design Systems, UX, Testing, APIs | Building Digital Products | EN/PT/ES',
+    profileTitleLang: 'en',
     company: 'GAtec Gestão Agroindustrial',
     relationship: 'same-team',
     date: '2022-09-01',

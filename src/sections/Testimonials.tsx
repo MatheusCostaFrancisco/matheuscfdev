@@ -1,5 +1,6 @@
 import { RECOMMENDATIONS_URL, testimonials } from "../content/testimonials";
 import type { Testimonial } from "../content/testimonials";
+import { langAttr } from "../lib/lang-attr";
 import { useLocale } from "../lib/locale-context";
 import { useContent } from "../lib/use-content";
 
@@ -38,7 +39,9 @@ function TestimonialCard({ testimonial }: TestimonialCardProps) {
         </span>
         <span className="mt-1 block">
           <span className="sr-only">{ui.testimonials.profileTitleLabel}: </span>
-          {testimonial.profileTitle}
+          <span lang={langAttr(testimonial.profileTitleLang, locale)}>
+            {testimonial.profileTitle}
+          </span>
         </span>
         <span className="mt-1 block font-medium text-accent-700">
           {testimonial.company}

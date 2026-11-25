@@ -33,6 +33,7 @@ type ProgressBookProps = {
 };
 
 function ProgressBook({ book }: ProgressBookProps) {
+  const locale = useLocale();
   return (
     <li className="min-w-0 rounded-2xl border border-line bg-surface-raised p-5 shadow-sm">
       <BookLine book={book} />
@@ -42,6 +43,7 @@ function ProgressBook({ book }: ProgressBookProps) {
             value={book.progress}
             max={100}
             aria-label={book.title}
+            lang={langAttr(book.titleLang, locale)}
             className="h-2 min-w-0 flex-1 appearance-none overflow-hidden rounded-2xl border-0 bg-line-strong [&::-moz-progress-bar]:rounded-2xl [&::-moz-progress-bar]:bg-accent-900 [&::-webkit-progress-bar]:rounded-2xl [&::-webkit-progress-bar]:bg-line-strong [&::-webkit-progress-value]:rounded-2xl [&::-webkit-progress-value]:bg-accent-900"
           />
           <span className="text-sm font-medium text-fg">{book.progress}%</span>

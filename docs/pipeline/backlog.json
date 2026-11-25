@@ -1206,8 +1206,8 @@
       ]
     },
     {
-      "status": "todo",
-      "attempts": 0,
+      "status": "done",
+      "attempts": 1,
       "commit": null,
       "id": "T-055",
       "title": "Mark the language of testimonial profile titles and remaining unmarked passages",
