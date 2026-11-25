@@ -11,6 +11,7 @@
       "package.json",
       "yarn.lock",
       "vite.config.ts",
+      ".env.production",
       "tsconfig*.json",
       "railway.json"
     ]

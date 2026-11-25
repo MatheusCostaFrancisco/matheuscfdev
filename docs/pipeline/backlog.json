@@ -754,8 +754,8 @@
       ]
     },
     {
-      "status": "todo",
-      "attempts": 0,
+      "status": "done",
+      "attempts": 1,
       "commit": null,
       "id": "T-035",
       "title": "Make canonical, og:url, hreflang and og:image absolute from a validated site URL",
