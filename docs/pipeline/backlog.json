@@ -455,7 +455,7 @@
     {
       "status": "done",
       "attempts": 1,
-      "commit": null,
+      "commit": "2fb6702",
       "id": "T-022",
       "title": "Add GitHub link to contact section and fix link wrapping and target size",
       "type": "fix",
@@ -478,7 +478,7 @@
     {
       "status": "done",
       "attempts": 1,
-      "commit": null,
+      "commit": "c58f017",
       "id": "T-023",
       "title": "Fix mobile menu focus handling, labels and target sizes",
       "type": "fix",
@@ -502,7 +502,7 @@
     {
       "status": "done",
       "attempts": 1,
-      "commit": null,
+      "commit": "cee1643",
       "id": "T-024",
       "title": "Create typed 2027 study roadmap content and stage status helper",
       "type": "content",
@@ -526,7 +526,7 @@
     {
       "status": "done",
       "attempts": 1,
-      "commit": null,
+      "commit": "13ca17a",
       "id": "T-025",
       "title": "Build 2027 roadmap section as a hero's journey",
       "type": "feature",
@@ -550,7 +550,7 @@
     {
       "status": "done",
       "attempts": 1,
-      "commit": null,
+      "commit": "69b5832",
       "id": "T-026",
       "title": "Create typed books content",
       "type": "content",
@@ -573,7 +573,7 @@
     {
       "status": "done",
       "attempts": 1,
-      "commit": null,
+      "commit": "eeafd74",
       "id": "T-027",
       "title": "Build books section",
       "type": "feature",
@@ -597,7 +597,7 @@
     {
       "status": "done",
       "attempts": 1,
-      "commit": null,
+      "commit": "3e983f6",
       "id": "T-028",
       "title": "Add .gitattributes and normalize line endings to LF",
       "type": "infra",
@@ -617,7 +617,7 @@
     {
       "status": "done",
       "attempts": 1,
-      "commit": null,
+      "commit": "8004f1a",
       "id": "T-029",
       "title": "Scroll to the URL hash section after the first render",
       "type": "fix",
