@@ -197,6 +197,13 @@ export const createPtBR = (years: ExperienceYears): SiteContent => ({
       status: { done: 'Concluída', current: 'Em andamento', upcoming: 'Adiante' },
     },
     books: { heading: 'Livros', groups: { reading: 'Lendo agora', read: 'Lidos', wantToRead: 'Quero ler' }, seriesBooks: 'livros' },
+    teasers: {
+      heading: 'Estudando e lendo',
+      roadmapLabel: 'Estudando agora',
+      roadmapFallback: 'Roadmap de estudos 2027',
+      booksLabel: 'Lendo',
+      booksFallback: 'Livros',
+    },
     opensInNewTab: '(abre em nova aba)',
     footerRights: '©',
   },

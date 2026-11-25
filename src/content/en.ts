@@ -197,6 +197,13 @@ export const createEn = (years: ExperienceYears): SiteContent => ({
       status: { done: 'Done', current: 'In progress', upcoming: 'Ahead' },
     },
     books: { heading: 'Books', groups: { reading: 'Reading now', read: 'Read', wantToRead: 'Want to read' }, seriesBooks: 'books' },
+    teasers: {
+      heading: 'Studying and reading',
+      roadmapLabel: 'Studying now',
+      roadmapFallback: 'Study roadmap 2027',
+      booksLabel: 'Reading',
+      booksFallback: 'Books',
+    },
     opensInNewTab: '(opens in a new tab)',
     footerRights: '©',
   },

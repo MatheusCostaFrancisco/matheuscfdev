@@ -96,6 +96,13 @@ export interface UiStrings {
     readonly groups: Record<'reading' | 'read' | 'wantToRead', string>
     readonly seriesBooks: string
   }
+  readonly teasers: {
+    readonly heading: string
+    readonly roadmapLabel: string
+    readonly roadmapFallback: string
+    readonly booksLabel: string
+    readonly booksFallback: string
+  }
   readonly opensInNewTab: string
   readonly footerRights: string
 }

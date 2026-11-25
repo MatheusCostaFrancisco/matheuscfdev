@@ -12,6 +12,7 @@ import { Hero } from "./sections/Hero";
 import { Products } from "./sections/Products";
 import { Books } from "./sections/Books";
 import { Roadmap } from "./sections/Roadmap";
+import { Teasers } from "./sections/Teasers";
 import { Skills } from "./sections/Skills";
 
 function Home() {
@@ -23,6 +24,7 @@ function Home() {
       <Products />
       <Skills />
       <Education />
+      <Teasers />
       <Contact />
     </>
   );
