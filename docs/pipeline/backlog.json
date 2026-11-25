@@ -1025,8 +1025,8 @@
       ]
     },
     {
-      "status": "todo",
-      "attempts": 0,
+      "status": "done",
+      "attempts": 1,
       "commit": null,
       "id": "T-047",
       "title": "Link the 404 page to the roadmap and books pages",
