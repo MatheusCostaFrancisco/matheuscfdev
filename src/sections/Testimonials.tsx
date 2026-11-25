@@ -62,7 +62,7 @@ export function Testimonials() {
     <section
       id="testimonials"
       aria-labelledby="testimonials-title"
-      className="scroll-mt-20 py-10"
+      className="section-offset py-10"
     >
       <h2 id="testimonials-title" className="text-2xl font-semibold text-fg">
         {ui.testimonials.heading}

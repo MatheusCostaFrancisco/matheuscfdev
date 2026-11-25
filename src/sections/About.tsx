@@ -10,7 +10,7 @@ export function About() {
     <section
       id={aboutItem.id}
       aria-labelledby="about-title"
-      className="scroll-mt-20 py-10"
+      className="section-offset py-10"
     >
       <h2 id="about-title" className="text-2xl font-semibold text-fg">
         {aboutItem.label}

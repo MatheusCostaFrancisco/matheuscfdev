@@ -64,7 +64,7 @@ export function Books() {
     <section
       id={item.id}
       aria-labelledby="books-title"
-      className="scroll-mt-20 py-10"
+      className="section-offset py-10"
     >
       <h1 id="books-title" className="text-3xl font-bold text-fg sm:text-4xl [overflow-wrap:anywhere]">
         {ui.books.heading}

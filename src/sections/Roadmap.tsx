@@ -24,7 +24,7 @@ export function Roadmap() {
     <section
       id={item.id}
       aria-labelledby="roadmap-title"
-      className="scroll-mt-20 py-10"
+      className="section-offset py-10"
     >
       <h1
         id="roadmap-title"

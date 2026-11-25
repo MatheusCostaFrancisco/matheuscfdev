@@ -25,7 +25,7 @@ export function Products() {
     <section
       id={productsItem.id}
       aria-labelledby="products-title"
-      className="scroll-mt-20 py-10"
+      className="section-offset py-10"
     >
       <h2 id="products-title" className="text-2xl font-semibold text-fg">
         {productsItem.label}

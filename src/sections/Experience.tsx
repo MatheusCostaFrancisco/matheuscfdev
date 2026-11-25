@@ -18,7 +18,7 @@ export function Experience() {
     <section
       id={experienceItem.id}
       aria-labelledby="experience-title"
-      className="scroll-mt-20 py-10"
+      className="section-offset py-10"
     >
       <h2 id="experience-title" className="text-2xl font-semibold text-fg">
         {experienceItem.label}

@@ -10,7 +10,7 @@ export function Education() {
     <section
       id={educationItem.id}
       aria-labelledby="education-title"
-      className="scroll-mt-20 py-10"
+      className="section-offset py-10"
     >
       <h2 id="education-title" className="text-2xl font-semibold text-fg">
         {educationItem.label}

@@ -916,8 +916,8 @@
       ]
     },
     {
-      "status": "todo",
-      "attempts": 0,
+      "status": "done",
+      "attempts": 1,
       "commit": null,
       "id": "T-042",
       "title": "Keep the header on one line and tie section scroll offset to its height",

@@ -81,6 +81,9 @@
  * is not generated.
  */
 @theme {
+  /* Sticky header height: the single source for the header and section scroll offset */
+  --spacing-header: 4.5rem;
+
   /* Typography: one family */
   --font-*: initial;
   --font-sans: "Poppins", ui-sans-serif, system-ui, -apple-system, "Segoe UI",
@@ -273,4 +276,8 @@
   .journey-fill {
     transform: none !important;
   }
+}
+
+@utility section-offset {
+  scroll-margin-top: calc(var(--spacing-header) + 1px + 1rem);
 }

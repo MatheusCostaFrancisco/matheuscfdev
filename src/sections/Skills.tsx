@@ -13,7 +13,7 @@ export function Skills() {
     <section
       id={skillsItem.id}
       aria-labelledby="skills-title"
-      className="scroll-mt-20 py-10"
+      className="section-offset py-10"
     >
       <h2 id="skills-title" className="text-2xl font-semibold text-fg">
         {skillsItem.label}

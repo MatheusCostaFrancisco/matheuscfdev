@@ -16,7 +16,7 @@ export function Contact() {
     <section
       id={contactItem.id}
       aria-labelledby="contact-title"
-      className="scroll-mt-20 py-10"
+      className="section-offset py-10"
     >
       <h2 id="contact-title" className="text-2xl font-semibold text-fg">
         {contactItem.label}
