@@ -895,8 +895,8 @@
       ]
     },
     {
-      "status": "todo",
-      "attempts": 0,
+      "status": "done",
+      "attempts": 1,
       "commit": null,
       "id": "T-041",
       "title": "Close the mobile menu on outside tap, including iOS Safari",

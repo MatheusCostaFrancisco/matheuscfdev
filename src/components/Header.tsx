@@ -48,6 +48,7 @@ export function Header({ page }: HeaderProps) {
   const hash = useHash()
   const buttonRef = useRef<HTMLButtonElement>(null)
   const headerRef = useRef<HTMLElement>(null)
+  const navRef = useRef<HTMLElement>(null)
 
   useEffect(() => {
     if (!open) return
@@ -57,8 +58,18 @@ export function Header({ page }: HeaderProps) {
         buttonRef.current?.focus()
       }
     }
+    const onPointerDown = (event: PointerEvent) => {
+      const target = event.target
+      if (!(target instanceof Node)) return
+      if (navRef.current?.contains(target) || buttonRef.current?.contains(target)) return
+      setOpen(false)
+    }
     document.addEventListener('keydown', onKeyDown)
-    return () => document.removeEventListener('keydown', onKeyDown)
+    document.addEventListener('pointerdown', onPointerDown)
+    return () => {
+      document.removeEventListener('keydown', onKeyDown)
+      document.removeEventListener('pointerdown', onPointerDown)
+    }
   }, [open])
 
   useEffect(() => {
@@ -112,6 +123,7 @@ export function Header({ page }: HeaderProps) {
         </button>
 
         <nav
+          ref={navRef}
           id="site-nav"
           aria-label={ui.header.navLabel}
           className={cn(
