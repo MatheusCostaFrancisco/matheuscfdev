@@ -935,8 +935,8 @@
       ]
     },
     {
-      "status": "todo",
-      "attempts": 0,
+      "status": "done",
+      "attempts": 1,
       "commit": null,
       "id": "T-043",
       "title": "Remove the stale lang=\"en\" from #root in the pt-BR page",
