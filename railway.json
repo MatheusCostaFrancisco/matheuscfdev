@@ -6,6 +6,7 @@
       "src/**",
       "public/**",
       "index.html",
+      "404.html",
       "en/**",
       "pt/**",
       "package.json",

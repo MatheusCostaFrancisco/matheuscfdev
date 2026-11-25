@@ -78,6 +78,7 @@ export default defineConfig(({ command, mode }) => {
       rollupOptions: {
         input: {
           root: "index.html",
+          notFound: "404.html",
           en: "en/index.html",
           pt: "pt/index.html",
         },

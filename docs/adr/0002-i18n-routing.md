@@ -68,7 +68,7 @@ Os `id` de seção são os mesmos nos dois idiomas (`#about`, `#experience`, `#p
 - O conteúdo do React ainda não é pré-renderizado: as duas páginas chegam com `#root` vazio e só o `<head>` difere. A tradução das strings visíveis vem em T-016 a T-018; até lá `/pt/` mostra o texto em inglês. Para não falhar WCAG 3.1.1, `pt/index.html` mantém `<html lang="pt-BR">` e marca `<div id="root" lang="en">` enquanto o conteúdo renderizado for inglês; T-018 remove o atributo quando o texto estiver em pt-BR.
 - Quem acessa `/` faz um redirecionamento extra (custo de uma navegação). Links públicos (LinkedIn, CV) devem apontar direto para `/en/` ou `/pt/`.
 - `hreflang`, `og:image` e (futuramente) `og:url` e canonical estão com caminho relativo porque o domínio não existe ainda. O Google exige URL absoluta em `hreflang`, então isso precisa ser trocado quando o domínio for definido.
-- Rotas desconhecidas resolvem para `en`. Se o servidor responder `/qualquer-coisa` com `dist/index.html`, o visitante cai no redirecionamento por idioma; a página 404 de verdade é T-013.
+- Rotas desconhecidas resolvem para `en`. Se o servidor responder `/qualquer-coisa` com `dist/index.html`, o visitante cai no redirecionamento por idioma; a página 404 de verdade é `404.html` (T-013), que depende de o servidor estático servi-la em rotas desconhecidas.
 - Nenhuma dependência nova.
 
 ## Quando reabrir
