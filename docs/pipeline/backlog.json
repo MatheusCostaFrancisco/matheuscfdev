@@ -897,7 +897,7 @@
     {
       "status": "done",
       "attempts": 1,
-      "commit": null,
+      "commit": "05532bf",
       "id": "T-041",
       "title": "Close the mobile menu on outside tap, including iOS Safari",
       "type": "fix",
@@ -918,7 +918,7 @@
     {
       "status": "done",
       "attempts": 1,
-      "commit": null,
+      "commit": "8094fcf",
       "id": "T-042",
       "title": "Keep the header on one line and tie section scroll offset to its height",
       "type": "fix",
@@ -1142,7 +1142,7 @@
     {
       "status": "done",
       "attempts": 1,
-      "commit": null,
+      "commit": "fc36c76",
       "id": "T-052",
       "title": "Never leave revealed content hidden at 400% zoom or small viewports",
       "type": "fix",
@@ -1164,7 +1164,7 @@
     {
       "status": "done",
       "attempts": 1,
-      "commit": null,
+      "commit": "82a8472",
       "id": "T-053",
       "title": "Replace :has() in the journey progress hook",
       "type": "fix",
@@ -1185,7 +1185,7 @@
     {
       "status": "done",
       "attempts": 1,
-      "commit": null,
+      "commit": "8358ee1",
       "id": "T-054",
       "title": "Serve real 404 status and long cache for static assets on Railway, with ADR",
       "type": "infra",
@@ -1208,7 +1208,7 @@
     {
       "status": "done",
       "attempts": 1,
-      "commit": null,
+      "commit": "61c3540",
       "id": "T-055",
       "title": "Mark the language of testimonial profile titles and remaining unmarked passages",
       "type": "fix",
