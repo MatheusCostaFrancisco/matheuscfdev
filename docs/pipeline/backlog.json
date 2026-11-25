@@ -296,7 +296,8 @@
         "2026-11-24 rodada 5 (PO): depends on T-028 so its diff is not polluted by CRLF/LF churn (REPORT rodada 4: b968c30, 07b1d62, 8840a35).",
         "2026-11-24 rodada 5 (PO): profile photo not yet confirmed by the stakeholder (pending item in REPORT); the task optimizes whatever content/assets/profile.jpg is, so it stays todo.",
         "2026-11-24 rodada 6 (PO): stakeholder answered the photo pending item with \"vou enviar outra depois\". Optimizing the current photo now would be redone when the new one arrives, so the task waits. Back to todo when content/assets/profile.jpg is replaced or the stakeholder marks the photo pending item [x].",
-        "2026-11-25 rodada 7 retomada (PO): content/assets/profile.jpg unchanged since dc647ca and the photo pending item is still [ ]. Stays blocked."
+        "2026-11-25 rodada 7 retomada (PO): content/assets/profile.jpg unchanged since dc647ca and the photo pending item is still [ ]. Stays blocked.",
+        "2026-11-25 rodada 8 (PO): content/assets/profile.jpg still unchanged since dc647ca and the photo pending item is still [ ]. Stays blocked."
       ]
     },
     {
@@ -921,19 +922,21 @@
       "id": "T-042",
       "title": "Keep the header on one line and tie section scroll offset to its height",
       "type": "fix",
-      "priority": "P2",
+      "priority": "P1",
       "touchesUi": true,
       "acceptance": [
-        "The brand \"Matheus Costa Francisco\" does not wrap at 1024px and 1280px in either locale, and the pt-BR nav does not overflow the header at 1024px",
-        "Section scroll-margin-top comes from a single CSS variable for the header height (no separate hardcoded scroll-mt-20), and the rendered header height never exceeds it",
-        "No horizontal scroll at 375px, 768px and 1024px in /en/ and /pt/, and yarn typecheck, yarn lint and yarn build pass"
+        "The brand \"Matheus Costa Francisco\" stays on one line and the header keeps a single row at every width from the md breakpoint to 1440px (checked at 768, 1009, 1093, 1150, 1280 and 1440px) on the 6 pages in both locales",
+        "Section scroll-margin-top comes from a single CSS variable for the header height (no separate hardcoded scroll-mt-20), and the rendered header height never exceeds it at the widths above",
+        "Opening /pt/#contact and /en/#experience at 1093px leaves the section heading fully visible below the header",
+        "No horizontal scroll at 375px, 768px and 1024px on the 6 pages, and yarn typecheck, yarn lint and yarn build pass"
       ],
       "dependsOn": [
         "T-023",
         "T-025"
       ],
       "notes": [
-        "2026-11-24 rodada 6 (PO): PO decision on the REPORT rodada 5 \"Sem tarefa: header\" item: the header reaches ~103px in pt-BR, above the 80px scroll offset, so anchored sections land under the header."
+        "2026-11-24 rodada 6 (PO): PO decision on the REPORT rodada 5 \"Sem tarefa: header\" item: the header reaches ~103px in pt-BR, above the 80px scroll offset, so anchored sections land under the header.",
+        "2026-11-25 rodada 8 (PO): raised to P1 and acceptance widened (REPORT rodada 7 review item T-045/T-042). The wrap happens between ~1009 and ~1150px, which includes 1366x768 laptops at 125% scaling (~1093 CSS px), so hash links from LinkedIn land under the header for a common recruiter setup. How to fit (shorter brand, later menu breakpoint, tighter nav) is left to the implementer; a shorter brand text must come from locale content and goes to stakeholder review."
       ]
     },
     {
@@ -1134,6 +1137,95 @@
       ],
       "notes": [
         "2026-11-24 rodada 7 (PO): stakeholder decision 2 (REPORT rodada 6, T-024/T-025 content item marked [x]): animated journey line with a pulsing current stage. Deliverables and the Method block stay as they are. Depends on T-050 to reuse its reduced-motion and observer approach."
+      ]
+    },
+    {
+      "status": "todo",
+      "attempts": 0,
+      "commit": null,
+      "id": "T-052",
+      "title": "Never leave revealed content hidden at 400% zoom or small viewports",
+      "type": "fix",
+      "priority": "P1",
+      "touchesUi": true,
+      "acceptance": [
+        "At viewports 320x256 and 640x360, scrolling /en/ and /pt/ from top to bottom (wheel steps and End key) leaves zero elements with data-reveal=\"hidden\" and none with computed opacity below 1; the counts measured per viewport and locale are written in the task summary",
+        "Any hidden element whose top is at or above the viewport bottom is revealed (elements jumped over by fast scroll, End or a hash link included), and a fallback reveals every remaining hidden element if the observer has not fired for it within 1s after it enters or passes the viewport",
+        "Revealing does not depend on the element fitting the viewport: threshold and rootMargin work for elements taller than a 256px viewport, and no element is hidden before JavaScript runs",
+        "Without IntersectionObserver and under prefers-reduced-motion: reduce nothing is hidden, and yarn typecheck, yarn lint and yarn build pass"
+      ],
+      "dependsOn": [
+        "T-050"
+      ],
+      "notes": [
+        "2026-11-25 rodada 8 (PO): stakeholder session decision 1 (REPORT rodada 7, \"Decisões para a próxima rodada\") and the open T-050 review item. Content hidden at 400% zoom fails WCAG 1.4.10 (Reflow) and 1.4.4, the project bar. T-050 is done and is not reopened. The UI reviewer must measure 320x256 and 640x360 in both locales scrolling the whole page."
+      ]
+    },
+    {
+      "status": "todo",
+      "attempts": 0,
+      "commit": null,
+      "id": "T-053",
+      "title": "Replace :has() in the journey progress hook",
+      "type": "fix",
+      "priority": "P1",
+      "touchesUi": true,
+      "acceptance": [
+        "grep ':has(' in src/ returns nothing; src/lib/use-journey-progress.ts finds the last stage through the marker elements (e.g. querySelectorAll of [data-journey-marker] plus closest('li')) instead of li:has(...)",
+        "On /en/roadmap/ and /pt/roadmap/ the track still ends at the center of the last stage marker at 375px and 1280px, as in 25ba711",
+        "The roadmap pages log no console error in Chromium, and yarn typecheck, yarn lint and yarn build pass"
+      ],
+      "dependsOn": [
+        "T-051"
+      ],
+      "notes": [
+        "2026-11-25 rodada 8 (PO): stakeholder session decision 2 (REPORT rodada 7) and the open T-051 review item: querySelectorAll with :has() throws in Firefox < 121 and Safari < 15.4 and the layout effect error can blank the roadmap page. T-051 is done and is not reopened."
+      ]
+    },
+    {
+      "status": "todo",
+      "attempts": 0,
+      "commit": null,
+      "id": "T-054",
+      "title": "Serve real 404 status and long cache for static assets on Railway, with ADR",
+      "type": "infra",
+      "priority": "P1",
+      "touchesUi": false,
+      "acceptance": [
+        "The repo commits the static server configuration used by Railpack (e.g. a Caddyfile at the root) and railway.json watchPatterns include it; the SPA fallback to index.html is gone",
+        "Served from dist/ with that configuration, /, the 6 pages, robots.txt, sitemap.xml, favicon.svg, /assets/* and /fonts/* answer 200, and /qualquer-coisa, /en/nope/ and /pt/livros/nope answer 404 with the body of dist/404.html; the curl -i output of a local run (e.g. caddy in Docker) is in the task summary",
+        "/assets/* and /fonts/* answer Cache-Control: public, max-age=31536000, immutable, and HTML responses answer a revalidating policy (no-cache or max-age=0) so a deploy shows up on the next visit",
+        "docs/adr/0006-static-server-404-and-cache.md records the server choice, the 404 rule, both cache policies, the rule that a replaced font file gets a new file name (fonts in public/ are not hashed) and a 'Quando reabrir' section; earlier ADRs are not edited",
+        "The task summary lists the curl -i commands the deployer runs in production after the push (/qualquer-coisa -> 404, /en/ -> 200, one /assets/ and one /fonts/ file -> immutable), and yarn typecheck, yarn lint and yarn build pass"
+      ],
+      "dependsOn": [
+        "T-047"
+      ],
+      "notes": [
+        "2026-11-25 rodada 8 (PO): stakeholder session decision 3 (REPORT rodada 7; pending items \"404 no Railway\" and \"Cache de /fonts/\" marked [x]): any unknown URL answers 200 with the home, so search engines see every typo as a duplicate page, and fonts/assets get only 4h of cache. No npm dependency; the server is the Caddy that Railpack already runs. Production check happens after the deployer pushes, since deploy is not a task."
+      ]
+    },
+    {
+      "status": "todo",
+      "attempts": 0,
+      "commit": null,
+      "id": "T-055",
+      "title": "Mark the language of testimonial profile titles and remaining unmarked passages",
+      "type": "fix",
+      "priority": "P1",
+      "touchesUi": true,
+      "acceptance": [
+        "The testimonial type has an optional profileTitleLang set in content (components only render it): on /en/ the Portuguese titles (e.g. Victor Colacelli, Áiska Hacine) are inside an element with lang=\"pt-BR\", and on /pt/ the English titles (e.g. William Fontanetti) are inside an element with lang=\"en\"; a mixed title takes the language of most of its words",
+        "On /en/books/, /en/ (teaser) and /en/roadmap/, every book title, author or series name written in Portuguese is inside an element with lang=\"pt-BR\", including headings and aria-labels that repeat a title",
+        "Existing marks are kept: \"Andrew Hunt e David Thomas\" stays lang=\"pt-BR\" on /en/ (the conjunction is Portuguese) and \"AI Engineering\" stays lang=\"en\" on /pt/",
+        "axe-core on the 6 pages reports no new violation compared with the previous commit, and yarn typecheck, yarn lint and yarn build pass"
+      ],
+      "dependsOn": [
+        "T-038",
+        "T-049"
+      ],
+      "notes": [
+        "2026-11-25 rodada 8 (PO): PO decision on the open T-038/T-039/T-049 review item about language marks: the gaps break WCAG 3.1.2 (Language of Parts, AA), the project bar, so they become a task instead of waiting. Profile titles stay as written on LinkedIn (T-048); only their language is marked. The two existing marks the reviewer questioned are correct and are kept."
       ]
     }
   ]
