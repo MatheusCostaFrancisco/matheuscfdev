@@ -30,7 +30,7 @@ export interface SiteProfile {
   readonly linkedin: string
   readonly github: string
   readonly tagline: string
-  readonly summary: string
+  readonly summary: readonly string[]
   readonly photoAlt: string
 }
 

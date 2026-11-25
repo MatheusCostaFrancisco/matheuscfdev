@@ -709,8 +709,8 @@
       ]
     },
     {
-      "status": "todo",
-      "attempts": 0,
+      "status": "done",
+      "attempts": 1,
       "commit": null,
       "id": "T-033",
       "title": "Sync summary, location and education with the updated cv.md",

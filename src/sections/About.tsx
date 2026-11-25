@@ -15,7 +15,11 @@ export function About() {
       <h2 id="about-title" className="text-2xl font-semibold text-fg">
         {aboutItem.label}
       </h2>
-      <p className="mt-4 max-w-prose text-lg text-fg">{profile.summary}</p>
+      {profile.summary.map((paragraph) => (
+        <p key={paragraph} className="mt-4 max-w-prose text-lg text-fg">
+          {paragraph}
+        </p>
+      ))}
     </section>
   );
 }

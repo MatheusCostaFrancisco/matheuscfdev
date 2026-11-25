@@ -5,13 +5,15 @@ export const ptBR = {
     name: 'Matheus Costa Francisco',
     role: 'Engenheiro de Software Front-End Sênior',
     stack: ['React', 'TypeScript', 'Vue.js', 'React Native', 'Node.js'],
-    location: 'Piracicaba, Brasil · Remoto',
+    location: 'Piracicaba, SP · Remoto',
     email: 'contato.matheuscf@gmail.com',
     linkedin: 'https://www.linkedin.com/in/matheus-costa-francisco/',
     github: 'https://github.com/MatheusCostaFrancisco',
     tagline: '8 anos do suporte à engenharia sênior',
-    summary:
-      'Engenheiro de Software Front-End com mais de 7 anos colocando aplicações web e mobile em produção, também atuando no back-end com Node.js. Me especializei em resolver problemas crônicos que os times já tinham abandonado: migrações de sistemas legados, memory leaks, bibliotecas de componentes compartilhadas e CI/CD na AWS. Em paralelo, construo meus próprios produtos SaaS do zero até os primeiros clientes pagantes.',
+    summary: [
+      "Engenheiro de software front-end com mais de 7 anos construindo interfaces web e mobile em produção, com foco em React, TypeScript e Vue.js. Na AsapFlow, conduzo a migração de um editor visual de fluxos de Vue 2 para React + TypeScript e reestruturei o CI/CD na AWS.",
+      "Atuo também no back-end com Node.js e entrego produtos de ponta a ponta: pela ElevaTech, minha consultoria, e em SaaS próprios com pagamento, integrações de API e deploy em produção. Curso MBA em Arquitetura de Software na FIAP.",
+    ],
     photoAlt: 'Retrato de Matheus Costa Francisco sorrindo, de camiseta escura, em ambiente fechado numa academia',
   },
   experience: [
@@ -50,7 +52,7 @@ export const ptBR = {
       company: 'GAtec Gestão Agroindustrial',
       start: 'Ago 2021',
       end: 'Ago 2022',
-      location: 'Piracicaba, Brasil',
+      location: 'Piracicaba, SP',
       context: 'Software para o agronegócio',
       bullets: [
         'Substituí o react-native-maps por uma solução validada na minha própria POC depois que o time tinha desistido, ajudando a manter um contrato de R$ 1 milhão',
@@ -63,7 +65,7 @@ export const ptBR = {
       company: 'RKM Sistemas',
       start: 'Nov 2019',
       end: 'Ago 2021',
-      location: 'Piracicaba, Brasil',
+      location: 'Piracicaba, SP',
       bullets: [
         'Encontrei a causa raiz de um bug de saldo de estoque de 5 anos: o front-end subtraía do valor exibido sem consultar o servidor de novo',
         'Mantive e evoluí um sistema legado de gestão de farmácias com JavaScript/jQuery, PHP e SQL',
@@ -75,7 +77,7 @@ export const ptBR = {
       company: 'RKM Sistemas',
       start: 'Jul 2018',
       end: 'Out 2019',
-      location: 'Piracicaba, Brasil',
+      location: 'Piracicaba, SP',
       bullets: [
         'Relatórios e scripts de correção de dados em SQL e PHP no Firebird (procedures, triggers, generators)',
         'Atendimento a clientes e triagem de bugs no código-fonte e no banco de dados',
@@ -140,7 +142,7 @@ export const ptBR = {
   ],
   education: [
     { course: 'MBA em Arquitetura de Software', institution: 'FIAP', period: 'Abr 2026 – Abr 2027 (em andamento)' },
-    { course: 'Pós-graduação em Desenvolvimento Front-End', institution: 'IGTI (XP Educação)', period: '2021 – 2022' },
+    { course: 'MBA em Desenvolvimento Front-End', institution: 'IGTI (XP Educação)', period: 'Mai 2021 – Fev 2022' },
     { course: 'Bacharelado em Sistemas de Informação', institution: 'UNIMEP', period: '2016 – 2020' },
     { course: 'Técnico em Informática', institution: 'Senac Piracicaba', period: '2012 – 2014' },
   ],

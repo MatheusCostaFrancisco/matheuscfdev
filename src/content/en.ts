@@ -5,13 +5,15 @@ export const en = {
     name: 'Matheus Costa Francisco',
     role: 'Senior Front-End Software Engineer',
     stack: ['React', 'TypeScript', 'Vue.js', 'React Native', 'Node.js'],
-    location: 'Piracicaba, Brazil · Remote',
+    location: 'Piracicaba, SP, Brazil · Remote',
     email: 'contato.matheuscf@gmail.com',
     linkedin: 'https://www.linkedin.com/in/matheus-costa-francisco/',
     github: 'https://github.com/MatheusCostaFrancisco',
     tagline: '8 years from support to senior engineering',
-    summary:
-      'Front-End Software Engineer with 7+ years shipping web and mobile applications to production, also working on the back end with Node.js. I specialize in solving chronic problems teams had given up on: legacy migrations, memory leaks, shared component libraries and CI/CD on AWS. On the side, I build my own SaaS products from zero to paying customers.',
+    summary: [
+      "Front-End Software Engineer with 7+ years building web and mobile interfaces in production, focused on React, TypeScript and Vue.js. At AsapFlow, I lead the migration of a visual flow editor from Vue 2 to React + TypeScript, and I rebuilt the CI/CD pipeline on AWS.",
+      "I also work on the back end with Node.js and ship products end to end: through ElevaTech, my consultancy, and in my own SaaS products with payments, API integrations and production deploys. I'm pursuing an MBA in Software Architecture at FIAP.",
+    ],
     photoAlt: 'Portrait of Matheus Costa Francisco smiling, wearing a dark t-shirt, taken indoors at a gym',
   },
   experience: [
@@ -50,7 +52,7 @@ export const en = {
       company: 'GAtec Gestão Agroindustrial',
       start: 'Aug 2021',
       end: 'Aug 2022',
-      location: 'Piracicaba, Brazil',
+      location: 'Piracicaba, SP, Brazil',
       context: 'Agribusiness software',
       bullets: [
         'Replaced react-native-maps with a solution validated through my own POC after the team had given up, helping retain a BRL 1M contract',
@@ -63,7 +65,7 @@ export const en = {
       company: 'RKM Sistemas',
       start: 'Nov 2019',
       end: 'Aug 2021',
-      location: 'Piracicaba, Brazil',
+      location: 'Piracicaba, SP, Brazil',
       bullets: [
         'Found the root cause of a 5-year-old inventory balance bug: the front-end subtracted from the displayed value without re-querying the server',
         'Maintained and evolved a legacy pharmacy management system with JavaScript/jQuery, PHP and SQL',
@@ -75,7 +77,7 @@ export const en = {
       company: 'RKM Sistemas',
       start: 'Jul 2018',
       end: 'Oct 2019',
-      location: 'Piracicaba, Brazil',
+      location: 'Piracicaba, SP, Brazil',
       bullets: [
         'Reports and data-fix scripts in SQL and PHP on Firebird (procedures, triggers, generators)',
         'Customer support and bug triage in source code and database',
@@ -140,7 +142,7 @@ export const en = {
   ],
   education: [
     { course: 'MBA in Software Architecture', institution: 'FIAP', period: 'Apr 2026 – Apr 2027 (expected)' },
-    { course: 'Postgraduate Specialization in Front-End Development', institution: 'IGTI (XP Educação)', period: '2021 – 2022' },
+    { course: 'MBA in Front-End Development', institution: 'IGTI (XP Educação)', period: 'May 2021 – Feb 2022' },
     { course: 'B.S. in Information Systems', institution: 'UNIMEP', period: '2016 – 2020' },
     { course: 'IT Technician', institution: 'Senac Piracicaba', period: '2012 – 2014' },
   ],
