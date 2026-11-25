@@ -7,10 +7,15 @@
   "railwayUrl": "https://site-production-5010b1df.up.railway.app",
   "customDomain": "www.matheuscfrancisco.dev.br",
   "cloudflare": {
-    "zoneId": null,
-    "dnsConfigured": false
+    "zoneId": "dd090d1a1ddffe53bbc2e4b1e703efaa",
+    "dnsConfigured": true,
+    "zoneStatus": "pending",
+    "nameservers": [
+      "cartman.ns.cloudflare.com",
+      "maxine.ns.cloudflare.com"
+    ]
   },
-  "lastDeployedCommit": "8004f1a",
+  "lastDeployedCommit": "266ab8a",
   "lastStatus": "deployed",
   "railwayCustomDomains": {
     "www.matheuscfrancisco.dev.br": {
