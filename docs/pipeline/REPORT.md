@@ -1,78 +1,80 @@
-# Relatório da esteira — 2026-11-24 (rodada 6)
+# Relatório da esteira — 2026-11-25 (rodada 1)
 
-Deploy: https://site-production-5010b1df.up.railway.app · parcial (build de `266ab8a` publicado pelo plano B; domínio customizado aguarda nameservers)
-Resumo: 10 entregues · 23 para revisão · 1 bloqueadas · 5 no backlog
+Deploy: https://www.matheuscfrancisco.dev.br · publicado (commit 59e76f9, deploy a9e1e611)
+Resumo: 10 entregues · 30 para revisão · 1 bloqueadas · 2 no backlog
 
 ## Entregues
 | Tarefa | Commit | Resumo |
 |---|---|---|
-| T-030 | `c36947a` | Rótulos de produto por idioma: "Stack do Manda Aí" e "Site do Manda Aí" em pt-BR; "Manda Aí stack" em en. |
-| T-033 | `9da34ee` | Resumo em 2 parágrafos por idioma, localização com SP e IGTI como MBA (en e pt-BR), sincronizados com o cv.md. |
-| T-034 | `ce6cf93` | Competências com os 8 grupos do cv.md em en e pt-BR. |
-| T-035 | `c734803` | Canonical, og:url, hreflang e og:image absolutos a partir de `SITE_URL` em `.env.production`, com validação no build. ADR 0003. |
-| T-036 | `d8067cf` | Anos de experiência calculados pelas datas do cv.md: "8 years" na tagline e "7+" no resumo. |
-| T-038 | `5fdd08e` | `lang` em trechos em outro idioma: livros em pt-BR no /en/ e termos de roadmap em en no /pt/. |
-| T-012 | `cbca43e` | Animação de entrada das seções (opacity e transform, 400ms, só com movimento permitido). |
-| T-013 | `8548644` | Página 404 gerada no build, em en e pt-BR. |
-| T-031 | `d6ebad8` | Produtos em 3 colunas a partir de lg; último grupo de Skills ocupa a linha inteira quando o número de grupos é ímpar. |
-| T-032 | `266ab8a` | Poppins servida pelo próprio site, sem Google Fonts. ADR 0004. |
+| T-045 | `48d0d2a` | Header e seletor de idioma apontam para as páginas de roadmap e livros, com estado da página atual. |
+| T-037 | `1d44523` | robots.txt e sitemap.xml cobrindo as 6 páginas, com hreflang (en, pt-BR, x-default). |
+| T-046 | `375b283` | Teasers na home: etapa atual do roadmap e livro em leitura. |
+| T-047 | `8183a76` | 404 com links para home, roadmap e livros em cada idioma. |
+| T-048 | `579eea5` | Conteúdo tipado dos 6 depoimentos. Versão en marcada como tradução. |
+| T-049 | `cf173d5` | Seção de depoimentos depois de Experience, com link para as recomendações do LinkedIn. |
+| T-050 | `2cf9cfb` | Reveal ao entrar na tela, escalonado por card. Substitui a animação só no carregamento. Ver item de zoom 400%. |
+| T-051 | `25ba711` | Linha da jornada e marcador da etapa atual animados, com reduced motion respeitado. Ver item de `:has()`. |
+| T-039 | `908d77a` | Barras de progresso arredondadas no Safari (não testado em Safari real) e trilha com contraste 3:1. |
+| T-040 | `59e76f9` | Foco vai para a seção aberta por hash. |
 
 ## Para revisão
+- [ ] **T-050** zoom 400% (viewport 320x256): Experience, Recomendações e Produtos podem ficar com opacity 0 para sempre. O revisor de UI escreveu que a tarefa não deveria ser commitada antes de corrigir, e o JSON não registra verificação em 320x256 ou 640x360 depois da aprovação — verificar no navegador, rolando a página inteira; se confirmar, peça ao PO tarefa de correção com prioridade alta.
+- [ ] **T-051** `src/lib/use-journey-progress.ts` ainda usa `li:has(...)`. Em Firefox < 121 e Safari < 15.4 isso lança erro e a página de roadmap pode ficar em branco. Revisores pediram troca por `closest`; não foi aplicado — peça ao PO tarefa de correção.
+- [ ] **Smoke de layout** nada foi medido no navegador em 375, 768 e 1024px nos dois idiomas, exceto /en/ e /404.html em 375. Conferir antes do próximo deploy: #skills, #products, #roadmap, #books, #contact, #experience, teasers, depoimentos, /roadmap/, /livros/ (ou /books/), 404 e aria-labels de produto (T-030).
+- [ ] **T-046** teaser do roadmap mostra o tema da etapa ("Fechar o MBA e mapear as lacunas reais do dia a dia"), não o rótulo "Aquecimento" que o critério 2 cita, e ocupa 3 linhas em 375px — decidir: tema, rótulo ou os dois.
+- [ ] **T-046** teaser de livros mostra o livro com maior progresso informado (hoje Código Limpo, 70%), não o primeiro da lista. Seção sem título visível (h2 só para leitor de tela) e Roadmap/Livros aparecem duas vezes na home (nav e teasers) — confirmar que é isso mesmo.
+- [ ] **T-045 / T-042** entre ~1009 e ~1150px o nome do header quebra em 2–3 linhas (~103px de altura) e a âncora de seção (`scroll-mt-20`) cai sob ele. Coberto pela T-042 (P2). Decidir: subir a prioridade, encurtar a marca (ex.: "Matheus C. Francisco") ou mover o menu para breakpoint maior.
+- [ ] **T-045** conferir no navegador, em 375px com menu aberto e fechado, que não há scroll horizontal nas 6 páginas, e que /pt/#experience vindo de /pt/livros/ cai abaixo do header. Decidir se o nome do header nas páginas internas deve levar à home (hoje vai para `#main`).
+- [ ] **T-049** posição e volume dos depoimentos: são 6 inteiros, cerca de 5000px no celular, e a seção fica entre Experience e Products. Decidir a posição (ou antes de Contato), se mostra todos, resumidos ou com `<details>`, e o texto do link em pt ("Ver original no LinkedIn" soa estranho; sugestão: "Ver recomendações no LinkedIn").
+- [ ] **T-048** traduções en dos 6 depoimentos (feitas pelo implementador, ex.: "absurda" virou "outstanding"), marcadas "Translated from Portuguese". Revisar em `src/content/testimonials.ts`. Confirmar se as quebras simples do depoimento da Áiska Hacine viram 5 parágrafos.
+- [ ] **T-027 / T-039** barra de progresso dos livros: trilha `line-strong` e preenchimento `accent-900` passam 3:1, mas ficam mais pesados que a versão anterior. Confirmar o visual no navegador. Safari e Firefox reais não foram testados. "A Maneira Rápida e Fácil de Falar com Eficácia" segue sem barra — acrescentar percentual em `livros.md` ou aceitar.
+- [ ] **T-040** a seção aberta por hash fica sem anel de foco (por desenho). Testar Tab em /en/#contact e decidir se quer alguma pista visual. Clicar duas vezes no mesmo link de hash não move o foco (sem `hashchange`); aceitar ou pedir tarefa.
+- [ ] **T-050** movimento: confirmar 16px, 400ms e stagger de 70ms (teto 280ms), e se o Hero deve animar ao carregar. Cards de Produtos (~1600px em 1024px) nunca animam; ver item de layout de Produtos abaixo.
+- [ ] **T-051** conector e marcador: (a) o preenchimento passa pelas etapas "Adiante" — manter como indicador de leitura ou parar na etapa atual; (b) o pulso do marcador para após 5 ciclos (4s) — confirmar ou pedir contínuo/único. Conferir o alinhamento e o fim da linha em 375px e 1080p.
+- [ ] **T-038 / T-039 / T-049** marcações de idioma: "Andrew Hunt e David Thomas" como pt-BR, "AI Engineering" como en, "Musashi" e frases mistas sem marca. Também faltam: títulos de livros em pt sem `lang` em /en/ e títulos de perfil em pt nos depoimentos (WCAG 3.1.2). Confirmar a lista e pedir tarefa de correção.
+- [ ] **T-047 / T-013** 404: texto em en e pt-BR (tom) e título só "404" — quer o nome na página ou os títulos das mensagens como h2? Os dois grupos de links não mostram o idioma e "Roadmap" repete com o mesmo visual: aceitar, legenda visível ("English" / "Português (Brasil)") ou layout compacto.
+- [ ] **T-031** em 1024px+ o WoodFlow (8 bullets) deixa ElevaTech e Manda Aí com 700 a 850px de card vazio, e os cards de Produtos ficam com ~1600px. Escolha: (a) 3 colunas só em xl, com último card em linha inteira abaixo; (b) 3 colunas com alturas desiguais e `items-start`; (c) resumir o WoodFlow.
 - [ ] **T-029** scroll inicial ao abrir `/en/#contact` é sempre instantâneo — quer suave para quem não pediu redução de movimento?
 - [ ] **T-023** botão "Menu" nos dois idiomas — confirme "Menu" em pt-BR e diga se quer outro estilo no drawer mobile.
 - [ ] **T-022** contato — confirme em 375px que e-mail e URL do LinkedIn quebram sem estourar. Quer ícones Lucide ao lado de cada canal?
 - [ ] **T-024 / T-025** status do roadmap — Aquecimento aparece "Em andamento" antes de 01/12/2026. Quer "Adiante" até a data de início? Destino nunca vira "Concluída" depois de dez/2027. Confirme os rótulos ("Adiante" ou "A seguir"; nav "Roadmap" ou "Estudos 2027").
-- [x] **T-024 / T-025** conteúdo do roadmap — RESPOSTA: a trilha ganha conector visual animado (ver Decisões abaixo). Entregáveis e bloco Método: manter como está.
-- [ ] **T-027** livros — "A Maneira Rápida e Fácil de Falar com Eficácia" fica sem barra. Acrescentar percentual em `livros.md`?
-- [ ] **Herdado** copy e CTAs — "Get in touch", rodapé só com © e nome, contato sem CTA de destaque, "Visit site" no Manda Aí, hero em pt-BR quebra em 375px. Aprove ou diga o que trocar.
-- [ ] **Herdado** densidade de Experience (17 bullets, RKM separado) e Education (lista simples) — cards ou lista? Agrupar RKM sob uma empresa?
-- [ ] **Herdado** decisões de base (ADR 0001 e afins): acento teal, só tema claro, `clsx` e `tailwind-merge` no `cn()`, ignore do ESLint em `.claude`, favicon "M", card OG 1200x630, meta description, reset de `--radius-*`. Confirme ou aponte o que muda.
 - [ ] **T-030** pt-BR — "Stack do Manda Aí" (artigo masculino) ou neutro "Stack: Manda Aí"? Produtos como a ElevaTech, tratada como empresa, pedem "da".
 - [ ] **T-033** localização em pt-BR sai "Piracicaba, SP · Remoto" (sem Brasil), e em en "Piracicaba, SP, Brazil · Remote". A assimetria é desejada?
 - [ ] **T-033** Formação agora tem dois MBAs seguidos (FIAP e "MBA em Desenvolvimento Front-End", IGTI). A leitura está boa?
 - [ ] **T-034** Competências com 8 cards: em 375px a seção ocupa ~2,5 telas. Densidade OK ou compactar (chips menores, ou fundir "IA aplicada" em "Práticas")? "IA aplicada" tem só 2 itens: adicionar conteúdo ao cv.md ou fundir?
 - [ ] **T-035 / T-036** página raiz `/` — tem hreflang e og:image absolutos, mas nenhum canonical. A meta description termina em "Choose English or Portuguese." e a og:description termina na lista de stack. Quer canonical na raiz e o mesmo texto nos dois?
 - [ ] **T-036** dois números na primeira dobra: tagline "8 anos do suporte à engenharia sênior" (desde jul/2018) e resumo "mais de 7 anos" (desde nov/2019). Confirme os dois. O número muda sozinho em jul e nov, sem commit (a página usa a data do visitante; a meta, a data do build). Aceita, ou fixo em `career.ts`?
-- [x] **T-038** `pt/index.html` linha 46 tem `lang="en"` no #root — RESPOSTA: sim, criar tarefa P1.
-- [ ] **T-038** marcações de idioma — "Andrew Hunt e David Thomas" como pt-BR e "AI Engineering" como en. "Musashi", nomes de autores e frases mistas como "Product Engineer full-stack com IA" ficaram sem marca. Confirme.
-- [x] **T-012** animação roda só no carregamento — RESPOSTA: quero animação ao entrar na tela (observer), ver Decisões abaixo.
-- [ ] **T-012** link com hash — a seção pode parar 12px sob o header (medido em `/pt/#skills`, por causa do translateY ainda ativo). Sugiro tarefa P2 de correção, que pode ir junto com T-040. Quer criar?
-- [ ] **T-013** texto da 404 em en e pt-BR (tom) e título só "404". Quer o nome na página, ou os títulos das mensagens como h2?
-- [ ] **T-031** em 1024px+ o WoodFlow (8 bullets) deixa ElevaTech e Manda Aí com 700 a 850px de card vazio. Escolha: (a) 3 colunas só em xl, com último card em linha inteira abaixo; (b) 3 colunas com alturas desiguais e `items-start`; (c) resumir o WoodFlow.
 - [ ] **T-032** ADR ficou `docs/adr/0004-self-hosted-font.md`, mas o critério pedia 0003, número já usado por `0003-site-url-build-time.md`. Aceita o 0004?
-- [ ] **Smoke de layout** nada foi medido no navegador em 375, 768 e 1024px nos dois idiomas, exceto /en/ e /404.html em 375. Conferir antes do próximo deploy: #skills (chip "Desenvolvimento orientado a especificação com agentes de IA"), #products, #roadmap, #books, #contact, #experience, e os aria-labels de produto (T-030).
+- [ ] **Herdado** copy e CTAs — "Get in touch", rodapé só com © e nome, contato sem CTA de destaque, "Visit site" no Manda Aí, hero em pt-BR quebra em 375px. Aprove ou diga o que trocar.
+- [ ] **Herdado** densidade de Experience (17 bullets, RKM separado) e Education (lista simples) — cards ou lista? Agrupar RKM sob uma empresa?
+- [ ] **Herdado** decisões de base (ADR 0001 e afins): acento teal, só tema claro, `clsx` e `tailwind-merge` no `cn()`, ignore do ESLint em `.claude`, favicon "M", card OG 1200x630, meta description, reset de `--radius-*`. Confirme ou aponte o que muda.
 
 ## Pendências do stakeholder
-- [x] **Nameservers do domínio** — RESPOSTA: trocados no Registro.br em 2026-11-24 para cartman/maxine.ns.cloudflare.com. Aguardando o .br publicar (o Cloudflare já responde pela zona).
-- [ ] **Redirect 301 sem www** — depois da propagação, no Cloudflare em Rules > Redirect Rules: `matheuscfrancisco.dev.br/*` para `https://www.matheuscfrancisco.dev.br/$1`, com 301. Ou me peça para criar via MCP.
-- [ ] **Registro DNS `!`** — no Cloudflare há um CNAME com nome `!.matheuscfrancisco.dev.br` apontando para `ptkaqk0u.up.railway.app`. Parece erro; deveria ser o apex (`@`). Corrija se não for intencional.
-- [ ] **Deploy automático por push** — não disparou nesta rodada (o plano B foi usado). Confirme no Railway, no serviço em Settings > Source, que o trigger de push está ligado no repo MatheusCostaFrancisco/matheuscfdev, branch main.
-- [ ] **Foto de perfil nova** — substituir `content/assets/profile.jpg`. T-014 espera a foto.
-- [x] **Depoimentos** — RESPOSTA: usar as recomendações do LinkedIn. Feito: `content/depoimentos.md` (6 depoimentos, empresas confirmadas) e `content/cv.md` > Depoimentos.
-- [ ] **404 no Railway** — depois do deploy, `curl -i https://www.matheuscfrancisco.dev.br/qualquer-coisa` deve responder 404 com o conteúdo de `404.html`. Se responder 200 com index.html, a configuração de SPA do Railway precisa de ajuste — peça ao PO uma tarefa.
-- [ ] **Cache de `/fonts/`** — depois do deploy, conferir `Content-Type: font/woff2` e cache longo em `https://www.matheuscfrancisco.dev.br/fonts/`. A ADR 0004 tem gatilho para isso.
-- [ ] **Teste de preview** — quando o domínio resolver, conferir que `/assets/profile-*.jpg` responde 200 e testar o link no LinkedIn Post Inspector e no Facebook Sharing Debugger.
+- [ ] **Redirect 301 sem www** — no Cloudflare em Rules > Redirect Rules: `matheuscfrancisco.dev.br/*` para `https://www.matheuscfrancisco.dev.br/$1`, com 301. O apex ainda responde 200. Ou me peça para criar via MCP.
+- [x] **Registro DNS `!`** — corrigido pelo stakeholder para `@` em 2026-11-24; o nome `!` não resolve mais.
+- [x] **Deploy automático por push** — funcionando após reconectar a fonte no Railway (deploy `a9e1e611` disparado pelo push).
+- [ ] **Foto de perfil nova** — substituir `content/assets/profile.jpg`. A T-014 espera a foto.
+- [x] **404 no Railway** — conferido em 2026-11-25: `/qualquer-coisa` responde **200 com a home** (fallback de SPA). Virou tarefa P1 nas Decisões abaixo.
+- [x] **Cache de `/fonts/`** — conferido: `Content-Type: font/woff2` ok, mas `Cache-Control: max-age=14400` (4h). Cache longo entra na mesma tarefa do 404.
+- [ ] **Teste de preview** — conferir que `/assets/profile-*.jpg` responde 200 e testar o link no LinkedIn Post Inspector e no Facebook Sharing Debugger.
+- [ ] **Search Console** — depois do deploy, enviar `https://www.matheuscfrancisco.dev.br/sitemap.xml` ao Google Search Console (conta do stakeholder). Antes, decidir se quer `<lastmod>` no sitemap: o build não tem data confiável por página.
+- [ ] **Stash antigo** — `stash@{0}` (`esteira/2026-11-24/interrompida/T-037`) segue guardado. O conteúdo já está na T-037. Para descartar: `git stash drop stash@{0}`, depois de conferir com `git stash show -p stash@{0}` se quiser.
+- [ ] **Campo `zoneStatus`** em `docs/pipeline/deploy.json` ainda diz `pending`, embora o domínio já responda. Confirme e peça ao PO para atualizar.
 
-## Decisões do stakeholder para a próxima rodada
+## Decisões para a próxima rodada
 
-Tomadas em 2026-11-24, depois da rodada 6. O PO cria as tarefas abaixo antes das P2 do backlog.
+Registradas em 2026-11-25 pela sessão principal. O PO cria estas tarefas antes das P2 do backlog.
 
-1. **Páginas próprias para Roadmap 2027 e Livros (P1).** Saem da home e ganham rota própria nos dois idiomas, na mesma aba (nunca nova aba para página interna; links externos continuam em nova aba). A home mantém Produtos e ganha um teaser curto de cada um, ex.: "Estudando agora: <etapa atual> → ver roadmap" e "Lendo: <livro> (<%>) → ver estante". Nav atualizado; canonical, hreflang, sitemap e 404 cobrindo as rotas novas. Slugs decididos em ADR.
-2. **Efeitos, intensidade sutil e profissional (P1).** Durações de 200 a 500ms, deslocamento pequeno, sem dependência nova (CSS e IntersectionObserver), tudo desligado com `prefers-reduced-motion`.
-   - Entrada no scroll: seções e cards com fade e leve deslize, escalonados, ao entrar na tela (substitui a animação só no carregamento da T-012). Não pode deixar a seção sob o header ao abrir link com hash.
-   - Jornada animada no roadmap: linha que se desenha conforme o scroll ligando as etapas, com o marcador da etapa atual pulsando.
-3. **Seção de depoimentos (P1).** Fonte: `content/depoimentos.md` (6 recomendações do LinkedIn). Mostrar citação, nome, título, empresa, relação e data, com link para a página de recomendações. pt-BR com o texto original; en com tradução marcada "Translated from Portuguese" e link para o original (item de revisão para o stakeholder conferir as traduções).
-4. **`lang="en"` no #root de `pt/index.html` (P1).** Correção de uma linha (WCAG 3.1.1).
+1. **Conteúdo invisível com zoom 400% (P1, fix da T-050).** Em viewport 320x256 e 640x360, seções com reveal podem ficar com opacity 0 para sempre. O conteúdo tem que aparecer sempre: fallback que revela tudo se o observer não disparar, `threshold`/`rootMargin` que funcionem com seções maiores que a viewport, e nada escondido sem JS. Revisor de UI precisa medir em 320x256 e 640x360 rolando a página inteira, nos dois idiomas.
+2. **`:has()` na jornada (P1, fix da T-051).** Trocar `li:has(...)` em `src/lib/use-journey-progress.ts` por `closest` ou equivalente sem `:has()`, para a página de roadmap não quebrar em navegadores antigos.
+3. **404 de verdade e cache dos assets (P1).** Hoje qualquer URL inexistente responde 200 com a home. Fazer o servidor do Railway (Railpack/Caddy) responder 404 com o `404.html` para rotas que não existem, mantendo as 6 páginas e os assets. Na mesma tarefa: `Cache-Control` longo e `immutable` para `/assets/` e `/fonts/` (arquivos com hash). Registrar em ADR. Verificar com `curl -i` em produção.
 
 ## Bloqueadas
 | Tarefa | Motivo | Tentativas |
 |---|---|---|
-| T-014 | Aguarda a foto nova (pendência acima). Voltará a todo quando `content/assets/profile.jpg` for substituído. | 0 |
+| T-014 | Aguarda a foto nova (pendência acima). Volta a todo quando `content/assets/profile.jpg` for substituído. | 0 |
 
 ## Próxima rodada
-T-037 · Add robots.txt and sitemap.xml with the canonical URLs · P2
-T-039 · Polish book progress bars for Safari and track contrast · P2
-T-040 · Move focus to the section opened by a URL hash · P2
 T-041 · Close the mobile menu on outside tap, including iOS Safari · P2
 T-042 · Keep the header on one line and tie section scroll offset to its height · P2
 
