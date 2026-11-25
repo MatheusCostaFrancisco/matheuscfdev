@@ -177,7 +177,10 @@ export const en = {
     },
     hero: { stackLabel: 'Main stack', getInTouch: 'Get in touch', linkedin: 'LinkedIn' },
     contact: { email: 'E-mail', linkedin: 'LinkedIn', github: 'GitHub', location: 'Location' },
-    products: { stackLabelSuffix: 'stack', websitePrefix: 'website' },
+    products: {
+      stackLabel: (productName) => `${productName} stack`,
+      websiteLabel: (productName) => `${productName} website`,
+    },
     education: { certificationsHeading: 'Certifications', languagesHeading: 'Languages' },
     roadmap: {
       from: 'From',

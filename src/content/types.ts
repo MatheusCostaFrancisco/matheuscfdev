@@ -76,8 +76,8 @@ export interface UiStrings {
     readonly location: string
   }
   readonly products: {
-    readonly stackLabelSuffix: string
-    readonly websitePrefix: string
+    readonly stackLabel: (productName: string) => string
+    readonly websiteLabel: (productName: string) => string
   }
   readonly education: {
     readonly certificationsHeading: string

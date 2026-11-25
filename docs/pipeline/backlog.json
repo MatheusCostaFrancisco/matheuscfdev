@@ -639,8 +639,8 @@
       ]
     },
     {
-      "status": "todo",
-      "attempts": 0,
+      "status": "done",
+      "attempts": 1,
       "commit": null,
       "id": "T-030",
       "title": "Localize product link and stack labels with per-locale functions",

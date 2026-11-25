@@ -177,7 +177,10 @@ export const ptBR = {
     },
     hero: { stackLabel: 'Stack principal', getInTouch: 'Entre em contato', linkedin: 'LinkedIn' },
     contact: { email: 'E-mail', linkedin: 'LinkedIn', github: 'GitHub', location: 'Localização' },
-    products: { stackLabelSuffix: 'stack', websitePrefix: 'site' },
+    products: {
+      stackLabel: (productName) => `Stack do ${productName}`,
+      websiteLabel: (productName) => `Site do ${productName}`,
+    },
     education: { certificationsHeading: 'Certificações', languagesHeading: 'Idiomas' },
     roadmap: {
       from: 'De',

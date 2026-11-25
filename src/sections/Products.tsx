@@ -52,7 +52,7 @@ export function Products() {
               ) : null}
               {product.stack.length > 0 ? (
                 <ul
-                  aria-label={`${product.name} ${ui.products.stackLabelSuffix}`}
+                  aria-label={ui.products.stackLabel(product.name)}
                   className="mt-4 flex flex-wrap gap-2"
                 >
                   {product.stack.map((tech) => (
@@ -74,7 +74,7 @@ export function Products() {
                     className={linkClass}
                   >
                     <span className="sr-only">
-                      {product.name} {ui.products.websitePrefix}:{" "}
+                      {ui.products.websiteLabel(product.name)}:{" "}
                     </span>
                     {new URL(product.url).host}
                     <span className="sr-only"> {ui.opensInNewTab}</span>
