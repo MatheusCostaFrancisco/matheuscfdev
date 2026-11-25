@@ -188,6 +188,10 @@
     outline-offset: 2px;
   }
 
+  section[tabindex="-1"]:focus {
+    outline: none;
+  }
+
   @media (prefers-reduced-motion: no-preference) {
     html {
       scroll-behavior: smooth;

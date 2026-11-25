@@ -1,6 +1,6 @@
 import { useEffect, type ComponentType } from "react";
 import type { Page } from "./lib/routes";
-import { scrollToHash } from "./lib/scroll-to-hash";
+import { focusHashTarget, scrollToHash } from "./lib/scroll-to-hash";
 import { useReveal } from "./lib/use-reveal";
 import { Footer } from "./components/Footer";
 import { Header } from "./components/Header";
@@ -48,6 +48,10 @@ function App({ page }: AppProps) {
 
   useEffect(() => {
     scrollToHash(window.location.hash);
+
+    const onHashChange = () => focusHashTarget(window.location.hash);
+    window.addEventListener("hashchange", onHashChange);
+    return () => window.removeEventListener("hashchange", onHashChange);
   }, []);
 
   const Content = pageContent[page];

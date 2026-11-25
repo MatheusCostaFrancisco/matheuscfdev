@@ -873,8 +873,8 @@
       ]
     },
     {
-      "status": "todo",
-      "attempts": 0,
+      "status": "done",
+      "attempts": 1,
       "commit": null,
       "id": "T-040",
       "title": "Move focus to the section opened by a URL hash",
