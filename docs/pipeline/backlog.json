@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "cvHash": "aff938c0bd160a5b9e18a9f8d59e2438cd7e6d8c0d7e7ed117876722f0a1ea18",
+  "cvHash": "f85c18b9b22a2884bae8a973d6e0ce7d3c55d953a5fd9bafb9e60859a295cc14",
   "tasks": [
     {
       "id": "T-001",
@@ -805,20 +805,23 @@
       "attempts": 0,
       "commit": null,
       "id": "T-037",
-      "title": "Add robots.txt and sitemap.xml with the canonical URLs",
+      "title": "Add robots.txt and sitemap.xml covering home, roadmap and books pages",
       "type": "infra",
-      "priority": "P2",
+      "priority": "P1",
       "touchesUi": false,
       "acceptance": [
         "dist/robots.txt allows all crawlers and points to the absolute sitemap URL on the canonical domain",
-        "dist/sitemap.xml lists /en/ and /pt/ with absolute URLs and xhtml:link alternates for en, pt-BR and x-default",
-        "Both files are generated from SITE_URL (T-035), with no domain string hardcoded outside .env.production, and yarn build passes"
+        "dist/sitemap.xml lists the 6 pages (home, roadmap and books in en and pt-BR) with absolute URLs, each with xhtml:link alternates for en, pt-BR and x-default",
+        "The page list comes from the typed route map of T-044 (no slug duplicated) and the domain only from SITE_URL in .env.production",
+        "yarn typecheck, yarn lint and yarn build pass"
       ],
       "dependsOn": [
-        "T-035"
+        "T-035",
+        "T-044"
       ],
       "notes": [
-        "2026-11-24 rodada 6 (PO): PO decision: follows the canonical domain so search engines index /en/ and /pt/ as alternates of each other."
+        "2026-11-24 rodada 6 (PO): PO decision: follows the canonical domain so search engines index /en/ and /pt/ as alternates of each other.",
+        "2026-11-24 rodada 7 (PO): stakeholder decision 1 (REPORT rodada 6): the sitemap must cover the new roadmap and books pages. Raised to P1 because it is part of that P1 decision; now depends on T-044 for the route map."
       ]
     },
     {
@@ -929,6 +932,205 @@
       ],
       "notes": [
         "2026-11-24 rodada 6 (PO): PO decision on the REPORT rodada 5 \"Sem tarefa: header\" item: the header reaches ~103px in pt-BR, above the 80px scroll offset, so anchored sections land under the header."
+      ]
+    },
+    {
+      "status": "todo",
+      "attempts": 0,
+      "commit": null,
+      "id": "T-043",
+      "title": "Remove the stale lang=\"en\" from #root in the pt-BR page",
+      "type": "fix",
+      "priority": "P1",
+      "touchesUi": true,
+      "acceptance": [
+        "pt/index.html has no lang attribute on #root and the stale \"Remove the attribute in T-018\" comment is gone; dist/pt/index.html exposes only <html lang=\"pt-BR\"> as the page language",
+        "Passages marked by T-038 (lang=\"en\" roadmap terms) keep their own lang attribute on /pt/",
+        "axe-core on /pt/ reports no html-has-lang, html-lang-valid or valid-lang violation, and yarn typecheck, yarn lint and yarn build pass"
+      ],
+      "dependsOn": [],
+      "notes": [
+        "2026-11-24 rodada 7 (PO): stakeholder decision 4 (REPORT rodada 6, T-038 item marked [x]): one-line WCAG 3.1.1 fix. First in the round because every pt-BR text is announced with the wrong language until it lands."
+      ]
+    },
+    {
+      "status": "todo",
+      "attempts": 0,
+      "commit": null,
+      "id": "T-044",
+      "title": "Move roadmap and books to their own pages per locale with ADR",
+      "type": "infra",
+      "priority": "P1",
+      "touchesUi": true,
+      "acceptance": [
+        "docs/adr/0005-internal-pages.md records the slugs (/en/roadmap/, /pt/roadmap/, /en/books/, /pt/livros/), the static multi-page choice, same-tab navigation for internal pages and a 'Quando reabrir' section; ADR 0002 is not edited",
+        "src/lib exports a typed route map (page 'home' | 'roadmap' | 'books' per Locale) and a resolver from pathname to { locale, page } (unknown path resolves to the en home); no slug string is repeated outside the map",
+        "yarn build emits dist/en/roadmap/index.html, dist/pt/roadmap/index.html, dist/en/books/index.html and dist/pt/livros/index.html, each with its own <html lang>, title, meta description, absolute canonical and og:url, and hreflang en, pt-BR and x-default pointing to the equivalent page",
+        "The home in both locales no longer renders #roadmap or #books; each new page renders its section with the same skip link, header and footer and a single <h1>",
+        "yarn typecheck, yarn lint and yarn build pass"
+      ],
+      "dependsOn": [
+        "T-043"
+      ],
+      "notes": [
+        "2026-11-24 rodada 7 (PO): stakeholder decision 1 (REPORT rodada 6): roadmap and books leave the home. PO decision on slugs: roadmap keeps the same word in both locales (it is already the pt-BR nav label); books is localized to livros because that is the pt-BR nav label. Static HTML per page (same approach as ADR 0002) so each page has its own lang and meta without JS. Depends on T-043 because both edit pt/index.html."
+      ]
+    },
+    {
+      "status": "todo",
+      "attempts": 0,
+      "commit": null,
+      "id": "T-045",
+      "title": "Update header navigation and language switcher for multi-page routes",
+      "type": "feature",
+      "priority": "P1",
+      "touchesUi": true,
+      "acceptance": [
+        "On the roadmap and books pages, section links (About, Experience, ...) point to the home of the same locale with the anchor (e.g. /pt/#experience) and land on that section below the header",
+        "The Roadmap and Books nav items link to their pages (not to anchors) in the desktop nav and the mobile menu, with aria-current=\"page\" on the current page and no target=\"_blank\" on any internal link",
+        "The language switcher on each page links to the equivalent page in the other locale (/en/books/ <-> /pt/livros/) through the T-044 route map, and keeps the hash on the home",
+        "No horizontal scroll at 375px with the menu open or closed on all 6 pages, and yarn typecheck, yarn lint and yarn build pass"
+      ],
+      "dependsOn": [
+        "T-044"
+      ],
+      "notes": [
+        "2026-11-24 rodada 7 (PO): stakeholder decision 1 (REPORT rodada 6): nav updated; internal pages open in the same tab, external links keep the new tab."
+      ]
+    },
+    {
+      "status": "todo",
+      "attempts": 0,
+      "commit": null,
+      "id": "T-046",
+      "title": "Add roadmap and books teasers to the home",
+      "type": "feature",
+      "priority": "P1",
+      "touchesUi": true,
+      "acceptance": [
+        "The home renders, where #roadmap and #books used to be (after #education, before #contact), a roadmap teaser \"Studying now: <current stage theme>\" / \"Estudando agora: <tema da etapa atual>\" linking to the roadmap page and a books teaser \"Reading: <title> (<n>%)\" / \"Lendo: <título> (<n>%)\" linking to the books page, both in the same tab",
+        "The stage comes from the T-024 helper and the book from a pure function that picks the reading-now book with the highest informed progress (falling back to the first reading-now book, without a percentage); on 2026-11-24 they resolve to Warm-up/Aquecimento and Código Limpo (Clean Code) (70%)",
+        "When no stage is current the roadmap teaser still renders its link without a stage name, and on /en/ the book title keeps the lang=\"pt-BR\" attribute from T-038",
+        "All teaser text comes from locale content, links have a visible focus style and a target at least 44px tall, no horizontal scroll at 375px, and yarn typecheck, yarn lint and yarn build pass"
+      ],
+      "dependsOn": [
+        "T-044",
+        "T-045"
+      ],
+      "notes": [
+        "2026-11-24 rodada 7 (PO): stakeholder decision 1 (REPORT rodada 6). PO decision on which book: the first reading-now entry (Dale Carnegie) has no percentage, so the teaser picks the highest informed progress; it is a function, not a hardcoded title, so it follows livros.md. Depends on T-045 to reuse its route links."
+      ]
+    },
+    {
+      "status": "todo",
+      "attempts": 0,
+      "commit": null,
+      "id": "T-047",
+      "title": "Link the 404 page to the roadmap and books pages",
+      "type": "fix",
+      "priority": "P1",
+      "touchesUi": true,
+      "acceptance": [
+        "dist/404.html links, in each language block, to the home, roadmap and books pages of that locale (/en/, /en/roadmap/, /en/books/ and /pt/, /pt/roadmap/, /pt/livros/), matching the T-044 route map",
+        "Each block keeps its own lang attribute, the page keeps a single <h1> and a <main> landmark, and no internal link has target=\"_blank\"",
+        "No horizontal scroll at 375px, and yarn typecheck, yarn lint and yarn build pass"
+      ],
+      "dependsOn": [
+        "T-044"
+      ],
+      "notes": [
+        "2026-11-24 rodada 7 (PO): stakeholder decision 1 (REPORT rodada 6): \"404 cobrindo as rotas novas\". Interpreted as the 404 offering the new pages as exits; unknown paths under the new routes already fall to the same 404."
+      ]
+    },
+    {
+      "status": "todo",
+      "attempts": 0,
+      "commit": null,
+      "id": "T-048",
+      "title": "Create typed testimonials content from depoimentos.md",
+      "type": "content",
+      "priority": "P1",
+      "touchesUi": false,
+      "acceptance": [
+        "src/content exports the 6 testimonials of content/depoimentos.md in file order, each with name, profile title, company (Soluti Digital, GAtec Gestão Agroindustrial or RKM Sistemas, from \"Contexto\"), relationship, ISO date (YYYY-MM-DD) and the quote as a list of paragraphs",
+        "pt-BR quotes are the original text without edits; en quotes are translations flagged in the type as translated from pt-BR, with the label \"Translated from Portuguese\" in the en UI strings",
+        "Both locales use one recommendations URL constant (https://www.linkedin.com/in/matheus-costa-francisco/details/recommendations/), and the section heading and labels exist in both locales",
+        "No fact absent from depoimentos.md is introduced (no photo, no recommender profile URL), and yarn typecheck, yarn lint and yarn build pass"
+      ],
+      "dependsOn": [
+        "T-044"
+      ],
+      "notes": [
+        "2026-11-24 rodada 7 (PO): reconciliation of cv.md change (hash aff938c -> f85c18b, commit 6301fb0: Depoimentos now published) and stakeholder decision 3 (REPORT rodada 6). No done task is affected. Depends on T-044 only to avoid concurrent edits in src/content. The en translations go to stakeholder review."
+      ]
+    },
+    {
+      "status": "todo",
+      "attempts": 0,
+      "commit": null,
+      "id": "T-049",
+      "title": "Build testimonials section",
+      "type": "feature",
+      "priority": "P1",
+      "touchesUi": true,
+      "acceptance": [
+        "Section #testimonials renders on the home of both locales right after #experience, as a labelled region with an <h2>, each testimonial as a <figure> with <blockquote> and <figcaption> showing name, profile title, company, relationship and a <time> date",
+        "On /en/ each quote shows the visible \"Translated from Portuguese\" label and on /pt/ it does not; the section links to the LinkedIn recommendations page with target=\"_blank\", rel=\"noopener noreferrer\" and an accessible name that mentions the new tab",
+        "No text is hardcoded in the component, the section adds no nav item, and long profile titles wrap with no horizontal scroll at 375px in both locales",
+        "yarn typecheck, yarn lint and yarn build pass"
+      ],
+      "dependsOn": [
+        "T-048"
+      ],
+      "notes": [
+        "2026-11-24 rodada 7 (PO): stakeholder decision 3 (REPORT rodada 6). PO decisions: placed after #experience because the quotes back the career claims where a recruiter reads them; no nav item because the header already overflows in pt-BR at 1024px (T-042) and a 9th item makes it worse. Both sent to review."
+      ]
+    },
+    {
+      "status": "todo",
+      "attempts": 0,
+      "commit": null,
+      "id": "T-050",
+      "title": "Replace load-only entrance with scroll-triggered staggered reveal",
+      "type": "feature",
+      "priority": "P1",
+      "touchesUi": true,
+      "acceptance": [
+        "Sections and cards fade in with a translate of at most 16px when they enter the viewport (IntersectionObserver), staggered within a section, each duration between 200 and 500ms, using only opacity and transform; the load-only section-enter rule from T-012 is removed and no dependency is added",
+        "Content is visible without JavaScript, when IntersectionObserver is unavailable and under prefers-reduced-motion: reduce (the hidden state is applied by JS only after checking both)",
+        "Opening /pt/#skills or /en/#contact leaves the target heading fully visible below the header (the hash target and everything above it start revealed, with no pending translateY)",
+        "Each element animates once (it is unobserved after reveal), and yarn typecheck, yarn lint and yarn build pass"
+      ],
+      "dependsOn": [
+        "T-044",
+        "T-046",
+        "T-049"
+      ],
+      "notes": [
+        "2026-11-24 rodada 7 (PO): stakeholder decision 2 (REPORT rodada 6, T-012 item marked [x]): animation when entering the viewport, subtle, 200-500ms, CSS + IntersectionObserver. Also closes the open T-012 review item (section 12px under the header on hash links). Depends on T-046 and T-049 so their cards get the reveal."
+      ]
+    },
+    {
+      "status": "todo",
+      "attempts": 0,
+      "commit": null,
+      "id": "T-051",
+      "title": "Animate the roadmap journey connector and current stage marker",
+      "type": "feature",
+      "priority": "P1",
+      "touchesUi": true,
+      "acceptance": [
+        "On the roadmap page a connector line links the 6 stages and draws progressively with scroll (scaleY or stroke-dashoffset, no layout-affecting property), reaching full length at the last stage",
+        "The current stage marker pulses with opacity/scale only, with each motion phase between 200 and 500ms, and the status stays readable as text with aria-current=\"step\"",
+        "Under prefers-reduced-motion: reduce the line is drawn in full and the marker does not pulse; without JavaScript the full line is visible",
+        "Scroll handling runs through requestAnimationFrame or an observer (no unthrottled layout read per scroll event), no dependency is added, and yarn typecheck, yarn lint and yarn build pass"
+      ],
+      "dependsOn": [
+        "T-044",
+        "T-050"
+      ],
+      "notes": [
+        "2026-11-24 rodada 7 (PO): stakeholder decision 2 (REPORT rodada 6, T-024/T-025 content item marked [x]): animated journey line with a pulsing current stage. Deliverables and the Method block stay as they are. Depends on T-050 to reuse its reduced-motion and observer approach."
       ]
     }
   ]
