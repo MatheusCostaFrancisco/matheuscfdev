@@ -9,12 +9,14 @@ export interface RoadmapStage {
   readonly label: string
   readonly period: string
   readonly theme: string
+  readonly themeLang?: Locale
   readonly study: readonly string[]
   readonly deliverable: string
 }
 
 export interface RoadmapPillar {
   readonly title: string
+  readonly titleLang?: Locale
   readonly description: string
 }
 
@@ -28,6 +30,7 @@ export interface Roadmap {
   readonly title: string
   readonly destination: {
     readonly from: string
+    readonly fromLang?: Locale
     readonly to: string
     readonly phrase: string
   }
@@ -48,6 +51,7 @@ const ptBR: Roadmap = {
   title: 'Roadmap de estudos 2027',
   destination: {
     from: 'Senior Front-End Engineer',
+    fromLang: 'en',
     to: 'Product Engineer full-stack com IA',
     phrase:
       'Continuo dono do frontend. Passo a resolver o problema inteiro: dado, infra, qualidade e IA aplicada ao produto.',
@@ -56,9 +60,11 @@ const ptBR: Roadmap = {
     title: 'Por que agora',
     intro: 'O que o mercado pede de um engenheiro sênior:',
     pillars: [
-      { title: 'Full-stack ownership', description: 'Ser dono da feature de ponta a ponta' },
+      { title: 'Full-stack ownership',
+        titleLang: 'en', description: 'Ser dono da feature de ponta a ponta' },
       {
         title: 'Frontend system design',
+        titleLang: 'en',
         description: 'Estado em escala, performance e arquitetura de componentes',
       },
       {
@@ -121,6 +127,7 @@ const ptBR: Roadmap = {
       label: 'Q2',
       period: 'abr–jun/2027',
       theme: 'Full-stack ownership',
+      themeLang: 'en',
       study: ['AWS Solutions Architect', 'Postgres e modelagem', 'Observabilidade'],
       deliverable: 'Certificação AWS Solutions Architect + uma feature entregue de ponta a ponta',
     },
@@ -130,6 +137,7 @@ const ptBR: Roadmap = {
       label: 'Q3',
       period: 'jul–set/2027',
       theme: 'AI engineering',
+      themeLang: 'en',
       study: ['Evals', 'Orquestração multi-agente', 'MCP', 'RAG'],
       deliverable: 'Agente com evals e métricas de qualidade',
     },

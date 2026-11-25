@@ -1,19 +1,29 @@
 import { books } from "../content/books";
 import type { Book } from "../content/books";
+import { langAttr } from "../lib/lang-attr";
+import { useLocale } from "../lib/locale-context";
 import { useContent } from "../lib/use-content";
 
 type BookLineProps = {
-  title: string;
-  author: string;
+  book: Pick<Book, "title" | "titleLang" | "author" | "authorLang">;
 };
 
-function BookLine({ title, author }: BookLineProps) {
+function BookLine({ book }: BookLineProps) {
+  const locale = useLocale();
   return (
     <>
-      <p className="text-base font-semibold text-fg [overflow-wrap:anywhere]">
-        {title}
+      <p
+        lang={langAttr(book.titleLang, locale)}
+        className="text-base font-semibold text-fg [overflow-wrap:anywhere]"
+      >
+        {book.title}
       </p>
-      <p className="text-sm text-fg-muted [overflow-wrap:anywhere]">{author}</p>
+      <p
+        lang={langAttr(book.authorLang, locale)}
+        className="text-sm text-fg-muted [overflow-wrap:anywhere]"
+      >
+        {book.author}
+      </p>
     </>
   );
 }
@@ -25,7 +35,7 @@ type ProgressBookProps = {
 function ProgressBook({ book }: ProgressBookProps) {
   return (
     <li className="min-w-0 rounded-2xl border border-line bg-surface-raised p-5 shadow-sm">
-      <BookLine title={book.title} author={book.author} />
+      <BookLine book={book} />
       {book.progress !== null && (
         <div className="mt-3 flex items-center gap-3">
           <progress
@@ -43,6 +53,7 @@ function ProgressBook({ book }: ProgressBookProps) {
 
 export function Books() {
   const { navigation, ui } = useContent();
+  const locale = useLocale();
   const item = navigation.find((nav) => nav.id === "books");
 
   if (!item) return null;
@@ -75,7 +86,7 @@ export function Books() {
               className="min-w-0 rounded-2xl bg-surface-sunken p-5"
             >
               <h4 className="text-base font-semibold text-fg [overflow-wrap:anywhere]">
-                {entry.name}
+                <span lang={langAttr(entry.nameLang, locale)}>{entry.name}</span>
                 <span className="font-normal text-fg-muted">
                   {" · "}
                   {entry.books.length} {seriesBooks}
@@ -89,7 +100,12 @@ export function Books() {
                     className="flex gap-2 [overflow-wrap:anywhere]"
                   >
                     <span className="text-fg-muted">{book.position}.</span>
-                    <span className="min-w-0">{book.title}</span>
+                    <span
+                      lang={langAttr(book.titleLang, locale)}
+                      className="min-w-0"
+                    >
+                      {book.title}
+                    </span>
                   </li>
                 ))}
               </ol>
@@ -99,7 +115,7 @@ export function Books() {
               key={entry.title}
               className="min-w-0 rounded-2xl border border-line bg-surface-raised p-5"
             >
-              <BookLine title={entry.title} author={entry.author} />
+              <BookLine book={entry} />
             </li>
           ),
         )}
@@ -114,7 +130,7 @@ export function Books() {
             key={book.title}
             className="min-w-0 rounded-2xl border border-dashed border-line bg-surface-raised p-5"
           >
-            <BookLine title={book.title} author={book.author} />
+            <BookLine book={book} />
           </li>
         ))}
       </ul>

@@ -1,4 +1,5 @@
 import { roadmap } from "../content/roadmap";
+import { langAttr } from "../lib/lang-attr";
 import { cn } from "../lib/cn";
 import { useLocale } from "../lib/locale-context";
 import { getStageStatuses } from "../lib/roadmap-stage";
@@ -28,7 +29,10 @@ export function Roadmap() {
         <dl className="grid gap-4 sm:grid-cols-2">
           <div className="min-w-0">
             <dt className="text-sm font-medium text-fg-muted">{ui.roadmap.from}</dt>
-            <dd className="mt-1 text-lg font-semibold text-fg [overflow-wrap:anywhere]">
+            <dd
+              lang={langAttr(destination.fromLang, locale)}
+              className="mt-1 text-lg font-semibold text-fg [overflow-wrap:anywhere]"
+            >
               {destination.from}
             </dd>
           </div>
@@ -50,7 +54,12 @@ export function Roadmap() {
             key={pillar.title}
             className="min-w-0 rounded-2xl bg-surface-sunken p-5"
           >
-            <h4 className="text-base font-semibold text-fg">{pillar.title}</h4>
+            <h4
+              lang={langAttr(pillar.titleLang, locale)}
+              className="text-base font-semibold text-fg"
+            >
+              {pillar.title}
+            </h4>
             <p className="mt-1 text-sm text-fg-muted">{pillar.description}</p>
           </li>
         ))}
@@ -98,7 +107,10 @@ export function Roadmap() {
                   {ui.roadmap.status[status]}
                 </span>
               </div>
-              <p className="mt-2 text-base font-medium text-accent-800">
+              <p
+                lang={langAttr(stage.themeLang, locale)}
+                className="mt-2 text-base font-medium text-accent-800"
+              >
                 {stage.theme}
               </p>
               {stage.study.length > 0 && (
