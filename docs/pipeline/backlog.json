@@ -1183,8 +1183,8 @@
       ]
     },
     {
-      "status": "todo",
-      "attempts": 0,
+      "status": "done",
+      "attempts": 1,
       "commit": null,
       "id": "T-054",
       "title": "Serve real 404 status and long cache for static assets on Railway, with ADR",

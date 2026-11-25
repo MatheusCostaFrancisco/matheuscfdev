@@ -14,7 +14,8 @@
       "vite.config.ts",
       ".env.production",
       "tsconfig*.json",
-      "railway.json"
+      "railway.json",
+      "Caddyfile"
     ]
   }
 }
