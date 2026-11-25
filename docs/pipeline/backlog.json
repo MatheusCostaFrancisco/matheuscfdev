@@ -662,8 +662,8 @@
       ]
     },
     {
-      "status": "todo",
-      "attempts": 0,
+      "status": "done",
+      "attempts": 1,
       "commit": null,
       "id": "T-031",
       "title": "Balance products and skills grids on wide screens",

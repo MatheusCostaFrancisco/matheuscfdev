@@ -30,7 +30,7 @@ export function Products() {
       <h2 id="products-title" className="text-2xl font-semibold text-fg">
         {productsItem.label}
       </h2>
-      <ul className="mt-8 grid gap-6 sm:grid-cols-2">
+      <ul className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {products.map((product) => (
           <li key={product.name} className="flex">
             <article className={cn(cardClass, "w-full min-w-0", product.url && interactiveCardClass)}>

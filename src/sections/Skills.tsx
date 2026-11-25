@@ -1,3 +1,4 @@
+import { cn } from "../lib/cn";
 import { useContent } from "../lib/use-content";
 
 export function Skills() {
@@ -5,6 +6,8 @@ export function Skills() {
   const skillsItem = navigation.find((item) => item.id === "skills");
 
   if (!skillsItem) return null;
+
+  const hasOddGroups = skills.length % 2 === 1;
 
   return (
     <section
@@ -18,10 +21,14 @@ export function Skills() {
       <div className="mt-8 grid gap-6 sm:grid-cols-2">
         {skills.map((skill, index) => {
           const headingId = `skills-group-${index}`;
+          const isLast = index === skills.length - 1;
           return (
             <div
               key={skill.group}
-              className="min-w-0 rounded-2xl border border-line bg-surface-raised p-6 shadow-sm"
+              className={cn(
+                "min-w-0 rounded-2xl border border-line bg-surface-raised p-6 shadow-sm",
+                hasOddGroups && isLast && "sm:col-span-2",
+              )}
             >
               <h3 id={headingId} className="text-xl font-semibold text-fg">
                 {skill.group}
