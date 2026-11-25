@@ -1,2 +1,2 @@
-// Mirrors Tailwind's md breakpoint (48rem); keep in sync with the md: classes in Header.
-export const DESKTOP_NAV_QUERY = '(min-width: 48rem)'
+// Mirrors Tailwind's lg breakpoint (64rem); keep in sync with the lg: classes in Header.
+export const DESKTOP_NAV_QUERY = '(min-width: 64rem)'

@@ -83,6 +83,14 @@ export interface UiStrings {
     readonly certificationsHeading: string
     readonly languagesHeading: string
   }
+  readonly roadmap: {
+    readonly from: string
+    readonly to: string
+    readonly studyHeading: string
+    readonly deliverableHeading: string
+    readonly stagesHeading: string
+    readonly status: Record<'done' | 'current' | 'upcoming', string>
+  }
   readonly opensInNewTab: string
   readonly footerRights: string
 }

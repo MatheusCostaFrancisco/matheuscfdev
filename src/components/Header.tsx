@@ -16,7 +16,7 @@ function useHash(): string {
 }
 
 const linkClass = cn(
-  'flex min-h-11 items-center rounded-2xl px-4 text-sm font-medium text-fg-muted',
+  'flex min-h-11 items-center whitespace-nowrap rounded-2xl px-4 lg:px-3 text-sm font-medium text-fg-muted',
   'hover:bg-accent-50 hover:text-accent-800',
   'active:bg-accent-100 active:text-accent-900',
   'aria-disabled:pointer-events-none aria-disabled:opacity-50',
@@ -85,7 +85,7 @@ export function Header() {
           aria-controls="site-nav"
           aria-label={ui.header.menu}
           onClick={() => setOpen((value) => !value)}
-          className="inline-flex size-11 items-center justify-center rounded-2xl border border-line-strong text-fg hover:bg-accent-50 active:bg-accent-100 disabled:opacity-50 md:hidden"
+          className="inline-flex size-11 items-center justify-center rounded-2xl border border-line-strong text-fg hover:bg-accent-50 active:bg-accent-100 disabled:opacity-50 lg:hidden"
         >
           <svg
             aria-hidden="true"
@@ -106,11 +106,11 @@ export function Header() {
           aria-label={ui.header.navLabel}
           className={cn(
             'absolute inset-x-0 top-full border-b border-line bg-surface-raised px-4 py-3 shadow-md sm:px-6',
-            'md:static md:block md:border-0 md:bg-transparent md:p-0 md:shadow-none',
+            'lg:static lg:block lg:border-0 lg:bg-transparent lg:p-0 lg:shadow-none',
             open ? 'block' : 'hidden',
           )}
         >
-          <ul className="flex flex-col gap-1 md:flex-row md:items-center">
+          <ul className="flex flex-col gap-1 lg:flex-row lg:items-center">
             {navigation.map((item) => (
               <li key={item.id}>
                 <a
@@ -122,7 +122,7 @@ export function Header() {
                 </a>
               </li>
             ))}
-            <li className="mt-1 border-t border-line pt-2 md:ml-2 md:mt-0 md:border-l md:border-t-0 md:pl-2 md:pt-0">
+            <li className="mt-1 border-t border-line pt-2 lg:ml-2 lg:mt-0 lg:border-l lg:border-t-0 lg:pl-2 lg:pt-0">
               <ul aria-label={ui.header.language.groupLabel} className="flex gap-1">
                 {locales.map((locale) => {
                   const option = ui.header.language.options[locale]

@@ -160,6 +160,7 @@ export const ptBR = {
     { id: 'products', label: 'Produtos' },
     { id: 'skills', label: 'Competências' },
     { id: 'education', label: 'Formação' },
+    { id: 'roadmap', label: 'Roadmap' },
     { id: 'contact', label: 'Contato' },
   ],
   ui: {
@@ -177,6 +178,14 @@ export const ptBR = {
     contact: { email: 'E-mail', linkedin: 'LinkedIn', github: 'GitHub', location: 'Localização' },
     products: { stackLabelSuffix: 'stack', websitePrefix: 'site' },
     education: { certificationsHeading: 'Certificações', languagesHeading: 'Idiomas' },
+    roadmap: {
+      from: 'De',
+      to: 'Para',
+      studyHeading: 'Estudo',
+      deliverableHeading: 'Entregável',
+      stagesHeading: 'Etapas',
+      status: { done: 'Concluída', current: 'Em andamento', upcoming: 'Adiante' },
+    },
     opensInNewTab: '(abre em nova aba)',
     footerRights: '©',
   },

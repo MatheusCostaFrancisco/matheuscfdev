@@ -160,6 +160,7 @@ export const en = {
     { id: 'products', label: 'Products' },
     { id: 'skills', label: 'Skills' },
     { id: 'education', label: 'Education' },
+    { id: 'roadmap', label: 'Roadmap' },
     { id: 'contact', label: 'Contact' },
   ],
   ui: {
@@ -177,6 +178,14 @@ export const en = {
     contact: { email: 'E-mail', linkedin: 'LinkedIn', github: 'GitHub', location: 'Location' },
     products: { stackLabelSuffix: 'stack', websitePrefix: 'website' },
     education: { certificationsHeading: 'Certifications', languagesHeading: 'Languages' },
+    roadmap: {
+      from: 'From',
+      to: 'To',
+      studyHeading: 'Study',
+      deliverableHeading: 'Deliverable',
+      stagesHeading: 'Stages',
+      status: { done: 'Done', current: 'In progress', upcoming: 'Ahead' },
+    },
     opensInNewTab: '(opens in a new tab)',
     footerRights: '©',
   },
