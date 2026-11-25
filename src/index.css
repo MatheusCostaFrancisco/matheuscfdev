@@ -132,3 +132,25 @@
     }
   }
 }
+
+/*
+ * Entrance animation for page sections: opacity + transform only, 400ms max.
+ * Pure CSS, no observer or JS state: if the animation never runs, the section
+ * is already visible. Gated on no-preference so reduce users see no motion.
+ */
+@keyframes section-enter {
+  from {
+    opacity: 0;
+    transform: translateY(0.75rem);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  main > section {
+    animation: section-enter 400ms ease-out backwards;
+  }
+}

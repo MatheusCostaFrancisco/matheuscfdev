@@ -241,8 +241,8 @@
         "T-018",
         "T-028"
       ],
-      "status": "todo",
-      "attempts": 0,
+      "status": "done",
+      "attempts": 1,
       "commit": null,
       "notes": [
         "2026-11-24 rodada 4 (PO): depends on T-018 so animations are built on the localized components.",
