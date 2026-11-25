@@ -78,19 +78,69 @@ function fillRoutes(html: string, htmlPath: string, siteUrl: string): string {
     )
   }
   return withPaths.replace(ROUTE_URL_RE, (match, target: string | undefined) => {
-    if (target === undefined) return `${siteUrl}${routes[current][page]}`
-    if (target === "x-default") {
-      return page === "home" ? `${siteUrl}/` : `${siteUrl}${routes[defaultLocale][page]}`
-    }
-    if (isLocale(target)) return `${siteUrl}${routes[target][page]}`
+    if (target === undefined) return pageUrl(siteUrl, current, page)
+    if (target === "x-default" || isLocale(target)) return pageUrl(siteUrl, target, page)
     throw new Error(`[routes] Unknown route placeholder ${match} in ${htmlPath}.`)
   })
+}
+
+type AlternateTarget = Locale | "x-default"
+
+const alternateTargets: readonly AlternateTarget[] = [...locales, "x-default"]
+
+// Absolute URL of a page in a locale. x-default is the root language redirect
+// for the home and the default-locale page for the other pages (there is no
+// root /roadmap/). Shared by the HTML hreflang links and the sitemap.
+function pageUrl(siteUrl: string, target: AlternateTarget, page: Page): string {
+  if (target !== "x-default") return `${siteUrl}${routes[target][page]}`
+  return page === "home" ? `${siteUrl}/` : `${siteUrl}${routes[defaultLocale][page]}`
+}
+
+function escapeXml(value: string): string {
+  return value
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&apos;")
+}
+
+// sitemap.xml: one <url> per page of the route map in each locale, each with
+// the hreflang alternates (en, pt-BR, x-default) used in the HTML <head>.
+// No <lastmod>: the build has no reliable per-page modification date.
+function buildSitemap(siteUrl: string): string {
+  const entries = locales.flatMap((locale) =>
+    pages.map((page) => {
+      const alternates = alternateTargets
+        .map(
+          (target) =>
+            `    <xhtml:link rel="alternate" hreflang="${target}" href="${escapeXml(pageUrl(siteUrl, target, page))}" />`,
+        )
+        .join("\n")
+      return `  <url>
+    <loc>${escapeXml(pageUrl(siteUrl, locale, page))}</loc>
+${alternates}
+  </url>`
+    }),
+  )
+  return [
+    '<?xml version="1.0" encoding="UTF-8"?>',
+    '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">',
+    ...entries,
+    "</urlset>",
+    "",
+  ].join("\n")
+}
+
+function buildRobots(siteUrl: string): string {
+  return ["User-agent: *", "Allow: /", "", `Sitemap: ${siteUrl}/sitemap.xml`, ""].join("\n")
 }
 
 // Replaces %SITE_URL%, the route placeholders and the %YEARS_DEV_*% experience phrases (derived from
 // the career start dates) in the HTML entries before Vite processes them, and
 // after Vite has emitted the hashed og:image asset, prefixes its root-relative
-// path with the site URL (link previews require an absolute og:image).
+// path with the site URL (link previews require an absolute og:image). On build
+// it also emits robots.txt and sitemap.xml from the route map and SITE_URL.
 function siteUrlPlugin(siteUrl: string): Plugin {
   const ogImageRE = /(<meta\s+property="og:image"\s+content=")(\/[^"]*)"/g
   return {
@@ -108,6 +158,8 @@ function siteUrlPlugin(siteUrl: string): Plugin {
     },
     generateBundle(_options, bundle) {
       if (siteUrl === "") return
+      this.emitFile({ type: "asset", fileName: "robots.txt", source: buildRobots(siteUrl) })
+      this.emitFile({ type: "asset", fileName: "sitemap.xml", source: buildSitemap(siteUrl) })
       for (const file of Object.values(bundle)) {
         if (file.type !== "asset" || !file.fileName.endsWith(".html")) continue
         if (typeof file.source !== "string") continue

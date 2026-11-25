@@ -802,8 +802,8 @@
       ]
     },
     {
-      "status": "todo",
-      "attempts": 0,
+      "status": "done",
+      "attempts": 1,
       "commit": null,
       "id": "T-037",
       "title": "Add robots.txt and sitemap.xml covering home, roadmap and books pages",
