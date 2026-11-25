@@ -851,8 +851,8 @@
       ]
     },
     {
-      "status": "todo",
-      "attempts": 0,
+      "status": "done",
+      "attempts": 1,
       "commit": null,
       "id": "T-039",
       "title": "Polish book progress bars for Safari and track contrast",

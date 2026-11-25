@@ -42,7 +42,7 @@ function ProgressBook({ book }: ProgressBookProps) {
             value={book.progress}
             max={100}
             aria-label={book.title}
-            className="h-2 min-w-0 flex-1 overflow-hidden rounded-2xl bg-surface-sunken [&::-moz-progress-bar]:bg-accent-700 [&::-webkit-progress-bar]:bg-surface-sunken [&::-webkit-progress-value]:rounded-2xl [&::-webkit-progress-value]:bg-accent-700"
+            className="h-2 min-w-0 flex-1 appearance-none overflow-hidden rounded-2xl border-0 bg-line-strong [&::-moz-progress-bar]:rounded-2xl [&::-moz-progress-bar]:bg-accent-900 [&::-webkit-progress-bar]:rounded-2xl [&::-webkit-progress-bar]:bg-line-strong [&::-webkit-progress-value]:rounded-2xl [&::-webkit-progress-value]:bg-accent-900"
           />
           <span className="text-sm font-medium text-fg">{book.progress}%</span>
         </div>
