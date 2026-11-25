@@ -1140,8 +1140,8 @@
       ]
     },
     {
-      "status": "todo",
-      "attempts": 0,
+      "status": "done",
+      "attempts": 1,
       "commit": null,
       "id": "T-052",
       "title": "Never leave revealed content hidden at 400% zoom or small viewports",
