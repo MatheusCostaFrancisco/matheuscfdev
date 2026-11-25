@@ -1,5 +1,6 @@
 ---
 source: doc "Matheus Costa Francisco — CV (PT)" (https://claude.ai/artifact/HfR4cAUZbVXgJeRb85YGwM), lido em 2026-11-24
+updated: 2026-11-24 (skills alinhadas com cv.md; resumo pt-BR aprovado como o mais recente)
 pair: content/cv.md
 ---
 
@@ -26,12 +27,13 @@ Atuo também no back-end com Node.js e entrego produtos de ponta a ponta: pela E
 
 | Área | Tecnologias |
 |---|---|
-| Front-end | React, Vue.js (2 e 3), TypeScript, Next.js, Tailwind, Styled Components |
+| Front-end | React, Vue.js (2 e 3), TypeScript, JavaScript, Next.js, Tailwind CSS, Styled Components, Vite |
 | Mobile | React Native, Google Maps, Mapbox, MapTiler, OpenStreetMap |
-| Back-end | Node.js, Express, APIs REST, MySQL, PostgreSQL, Laravel |
+| Back-end e dados | Node.js, Express, APIs REST, Laravel, MySQL, PostgreSQL, Prisma, SQL |
 | Arquitetura | Domain-Driven Design (DDD), Clean Architecture, Arquitetura Hexagonal, Event Storming |
 | Cloud e CI/CD | AWS (S3, CloudFront, IAM, OIDC, EKS), Docker, Kubernetes, Terraform, GitHub Actions, Railway |
-| Qualidade e segurança | Vitest, React Testing Library, Content Security Policy, Trivy, Sonar |
+| Qualidade e segurança | Jest, Vitest, React Testing Library, Content Security Policy, Trivy, Sonar |
+| IA aplicada | LLMs (Claude, OpenAI), agentes de IA |
 | Práticas | Desenvolvimento orientado a especificação com agentes de IA, Scrum, Kanban |
 
 ## Experiência

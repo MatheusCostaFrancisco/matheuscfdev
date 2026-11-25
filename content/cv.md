@@ -2,7 +2,7 @@
 source: Matheus_Costa_Francisco_-_Resume.pdf (enviado pelo stakeholder em 2026-11-24)
 linkedin: https://www.linkedin.com/in/matheus-costa-francisco/
 pair: content/cv.pt-BR.md
-updated: 2026-11-24 (e-mail, GitHub, WoodFlow e fatos do CV em português aprovados pelo stakeholder)
+updated: 2026-11-24 (respostas do stakeholder ao REPORT da rodada 5: resumo, skills, MBA IGTI, local, domínio, anos, depoimentos)
 photo: content/assets/profile.jpg (480x480, extraída do PDF do CV)
 ---
 
@@ -20,14 +20,15 @@ Fonte única de verdade sobre o Matheus (em inglês). `content/cv.pt-BR.md` tem 
 | E-mail | Sim |
 | GitHub | Sim |
 | LinkedIn | Sim |
-| Cidade (Piracicaba, Brazil · Remote) | Sim |
+| Cidade (Piracicaba, SP, Brazil · Remote) | Sim |
+| Depoimentos | Sim, quando o stakeholder enviar (ver "Depoimentos") |
 
 ## Identidade
 
 - **Nome:** Matheus Costa Francisco
 - **Cargo:** Senior Front-End Software Engineer
 - **Stack principal:** React · TypeScript · Vue.js · React Native · Node.js
-- **Local:** Piracicaba, Brazil · Remote
+- **Local:** Piracicaba, SP, Brazil · Remote
 - **E-mail:** contato.matheuscf@gmail.com
 - **LinkedIn:** https://www.linkedin.com/in/matheus-costa-francisco/
 - **GitHub:** https://github.com/MatheusCostaFrancisco
@@ -35,7 +36,22 @@ Fonte única de verdade sobre o Matheus (em inglês). `content/cv.pt-BR.md` tem 
 
 ## Summary
 
-Front-End Software Engineer with 7+ years shipping web and mobile applications to production, also working on the back end with Node.js. I specialize in solving chronic problems teams had given up on: legacy migrations, memory leaks, shared component libraries and CI/CD on AWS. On the side, I build my own SaaS products from zero to paying customers.
+Front-End Software Engineer with 7+ years building web and mobile interfaces in production, focused on React, TypeScript and Vue.js. At AsapFlow, I lead the migration of a visual flow editor from Vue 2 to React + TypeScript, and I rebuilt the CI/CD pipeline on AWS.
+
+I also work on the back end with Node.js and ship products end to end: through ElevaTech, my consultancy, and in my own SaaS products with payments, API integrations and production deploys. I'm pursuing an MBA in Software Architecture at FIAP.
+
+(Resumo atualizado a partir do CV em pt-BR, aprovado pelo stakeholder como o mais recente.)
+
+## Anos de experiência
+
+Contas feitas com as datas da seção Experience, em 2026-11-24. Os dois números estão certos e medem coisas diferentes:
+
+| Medida | Desde | Anos | Onde aparece |
+|---|---|---|---|
+| Carreira em tecnologia (suporte → sênior) | Jul 2018 (Support Analyst, RKM) | 8 (8 anos e 4 meses) | Tagline: "8 years from support to senior engineering" |
+| Desenvolvendo software em produção | Nov 2019 (Web Developer, RKM) | 7 (7 anos) | Resumo e meta description: "7+ years" |
+
+O estágio na ESALQ/USP (Jun 2017) não entra nas contas. O site deve calcular os dois números a partir dessas datas de início (não fixar no texto), para não ficarem desatualizados; ao exibir, usar anos completos.
 
 ## Timeline
 
@@ -52,11 +68,14 @@ Front-End Software Engineer with 7+ years shipping web and mobile applications t
 
 | Grupo | Itens |
 |---|---|
-| Front-end | React · Vue.js · TypeScript · JavaScript · React Native · Tailwind CSS · Vite |
-| Back-end and data | Node.js · Express · Laravel · PostgreSQL · Prisma · SQL |
-| Cloud and DevOps | AWS · GitHub Actions · Docker · Kubernetes · Terraform |
-| Quality and process | Jest · Vitest · Testing Library · Scrum · Kanban |
-| Applied AI | LLMs (Claude, OpenAI) · AI agents · Spec-driven development |
+| Front-end | React · Vue.js (2 and 3) · TypeScript · JavaScript · Next.js · Tailwind CSS · Styled Components · Vite |
+| Mobile | React Native · Google Maps · Mapbox · MapTiler · OpenStreetMap |
+| Back-end and data | Node.js · Express · REST APIs · Laravel · MySQL · PostgreSQL · Prisma · SQL |
+| Architecture | Domain-Driven Design (DDD) · Clean Architecture · Hexagonal Architecture · Event Storming |
+| Cloud and CI/CD | AWS (S3, CloudFront, IAM, OIDC, EKS) · Docker · Kubernetes · Terraform · GitHub Actions · Railway |
+| Quality and security | Jest · Vitest · React Testing Library · Content Security Policy · Trivy · Sonar |
+| Applied AI | LLMs (Claude, OpenAI) · AI agents |
+| Practices | Spec-driven development with AI agents · Scrum · Kanban |
 
 ## Experience
 
@@ -81,7 +100,7 @@ Aug 2022 – Feb 2025 · Remote · digital certificates and e-signatures · prom
 
 ### Front-End/Mobile Developer · GAtec Gestão Agroindustrial
 
-Aug 2021 – Aug 2022 · Piracicaba, Brazil · agribusiness software
+Aug 2021 – Aug 2022 · Piracicaba, SP, Brazil · agribusiness software
 
 - Replaced react-native-maps with a solution validated through my own POC after the team had given up, helping retain a BRL 1M contract
 - Built React Native and TypeScript apps with Styled Components and React Testing Library
@@ -89,7 +108,7 @@ Aug 2021 – Aug 2022 · Piracicaba, Brazil · agribusiness software
 
 ### Web Developer · RKM Sistemas
 
-Nov 2019 – Aug 2021 · Piracicaba, Brazil
+Nov 2019 – Aug 2021 · Piracicaba, SP, Brazil
 
 - Found the root cause of a 5-year-old inventory balance bug: the front-end subtracted from the displayed value without re-querying the server
 - Maintained and evolved a legacy pharmacy management system with JavaScript/jQuery, PHP and SQL
@@ -97,7 +116,7 @@ Nov 2019 – Aug 2021 · Piracicaba, Brazil
 
 ### Support Analyst · RKM Sistemas
 
-Jul 2018 – Oct 2019 · Piracicaba, Brazil
+Jul 2018 – Oct 2019 · Piracicaba, SP, Brazil
 
 - Reports and data-fix scripts in SQL and PHP on Firebird (procedures, triggers, generators)
 - Customer support and bug triage in source code and database
@@ -146,7 +165,7 @@ Stack: TypeScript, React 19, NestJS, TypeORM, MySQL, Stripe, OpenAI API
 | Curso | Instituição | Período |
 |---|---|---|
 | MBA in Software Architecture | FIAP | Apr 2026 – Apr 2027 (expected) |
-| Postgraduate Specialization in Front-End Development | IGTI (XP Educação) | 2021 – 2022 |
+| MBA in Front-End Development | IGTI (XP Educação) | May 2021 – Feb 2022 |
 | B.S. in Information Systems | UNIMEP | 2016 – 2020 |
 | IT Technician | Senac Piracicaba | 2012 – 2014 |
 
@@ -164,9 +183,20 @@ Stack: TypeScript, React 19, NestJS, TypeORM, MySQL, Stripe, OpenAI API
 
 ## Site
 
-- **Idiomas:** pt-BR e en, com os mesmos fatos. O idioma abre pela preferência do navegador (português → pt-BR; qualquer outro → en), com seletor visível e rotas `/pt` e `/en`.
+- **Idiomas:** pt-BR e en, com os mesmos fatos. O idioma abre pela preferência do navegador (português → pt-BR; qualquer outro → en), com seletor visível e rotas `/pt` e `/en`. Roteamento do ADR 0002 (`pt*` → `/pt/`, demais → `/en/`) e âncoras em inglês nos dois idiomas confirmados pelo stakeholder em 2026-11-24.
 - **Conteúdo extra:** roadmap de estudos 2027 em `content/estudos-2027.md` (apresentado como jornada do herói) e livros em `content/livros.md`. Ambos precisam aparecer nos dois idiomas.
+
+## Domínio
+
+- **Domínio do site:** https://www.matheuscfrancisco.dev.br (canônico, com `www`).
+- O domínio sem `www` (`matheuscfrancisco.dev.br`) redireciona para o `www` com 301.
+- DNS no Cloudflare. canonical, og:url e hreflang usam o domínio canônico absoluto (via variável de ambiente no build).
+
+## Depoimentos
+
+Seção autorizada pelo stakeholder em 2026-11-24. Ainda não há textos: **não criar a seção nem inventar depoimentos** até existir ao menos um aqui, com nome, cargo/empresa, texto e autorização de publicação.
 
 ## Lacunas conhecidas
 
-- Domínio do site: [REVISAR: o stakeholder configura domínio e Cloudflare depois]
+- Foto de perfil: o stakeholder vai enviar outra; até lá, manter `content/assets/profile.jpg`.
+- Depoimentos: [REVISAR: aguardando o stakeholder enviar os textos]

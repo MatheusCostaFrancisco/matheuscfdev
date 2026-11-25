@@ -35,15 +35,15 @@ Resumo: 8 entregues · 16 para revisão · 0 bloqueadas · 6 no backlog
 - [ ] **T-032 Poppins self-host** decisão do PO: self-host por LGPD e performance, com ADR 0003 previsto. Para manter o Google Fonts, marque `[x]` e escreva isso ao lado.
 
 ## Pendências do stakeholder
-- [ ] **Deploy automático por push** — o Railway GitHub App não tem acesso ao repo. Em GitHub > Settings > Applications > Railway > Configure, adicione `matheuscfdev` (ou "All repositories"). Até lá, a esteira publica pelo MCP.
-- [ ] **Autores dos livros** — os autores marcados com `*` em `content/livros.md` foram preenchidos pelo assistente com a autoria pública, não por você. Confirme antes de publicar. Se algum estiver errado, corrija em `content/livros.md`.
-- [ ] **Domínio do site** — defina e me diga qual é (`content/cv.md` tem [REVISAR]). Depois: og:url, canonical e hreflang absolutos por variável de ambiente; token do Cloudflare com Zone:DNS:Edit em `CLOUDFLARE_API_TOKEN`; adicionar a zona no Cloudflare.
-- [ ] **Anos de experiência** — a tagline diz "8 years" e o resumo diz "7+ years". Escolha e corrija `content/cv.md` e `content/cv.pt-BR.md`.
-- [ ] **Alinhar `cv.md` e `cv.pt-BR.md`** — (a) nome do IGTI: "Postgraduate Specialization" x "MBA"; (b) 7 grupos de skills só no pt-BR (Next.js, DDD, EKS, Railway, Trivy, Sonar etc.): são reais?; (c) resumo pt-BR cita AsapFlow, ElevaTech e MBA na FIAP; (d) local: "Piracicaba, SP" ou "Piracicaba, Brasil".
-- [ ] **Foto de perfil** — confirme `content/assets/profile.jpg` (selfie na academia) ou envie outra. T-014 otimiza o arquivo que estiver lá.
-- [ ] **Roteamento de idioma e âncoras** — confirme ADR 0002: `pt*` vai para `/pt/`, demais para `/en/`; e as âncoras em inglês (`#about`, `#experience`, `#products`, `#skills`, `#education`, `#contact`) nos dois idiomas.
-- [ ] **Liberar axe-core** — permita o script do cdnjs no revisor, ou autorize `@axe-core/playwright` / `vitest-axe` como devDependency. Desde T-022, nenhuma seção teve axe rodado; a checagem foi manual.
-- [ ] **Depoimentos** (opcional) — o cv.md não tem. Mande se quiser a seção.
+- [x] **Deploy automático por push** — RESPOSTA: permissão aplicada no GitHub. Plano B do deployer continua como reserva.
+- [x] **Autores dos livros** — RESPOSTA: deixar como está.
+- [x] **Domínio do site** — RESPOSTA: www.matheuscfrancisco.dev.br (canônico); sem www redireciona para www. Já em `content/cv.md` > Domínio. Registros do Cloudflare: o stakeholder cria (passos na sessão de 2026-11-24) ou expõe `CLOUDFLARE_API_TOKEN` para o deployer.
+- [x] **Anos de experiência** — RESPOSTA: calcular pelo histórico. Feito em `content/cv.md` > Anos de experiência: 8 anos desde o suporte (jul/2018) e 7 anos desenvolvendo (nov/2019). Os dois ficam; o site deve calcular pelas datas.
+- [x] **Alinhar `cv.md` e `cv.pt-BR.md`** — RESPOSTA: (a) MBA; (b) são reais, entraram no cv.md; (c) resumo pt-BR é o mais recente e foi levado para o en; (d) "Piracicaba, SP" em pt e "Piracicaba, SP, Brazil" em en. Aplicado nos dois arquivos.
+- [ ] **Foto de perfil** — RESPOSTA: vou enviar outra depois. Manter a atual; T-014 espera a foto nova.
+- [x] **Roteamento de idioma e âncoras** — RESPOSTA: ok, confirmado.
+- [x] **Liberar axe-core** — RESPOSTA: autorizado. `axe-core` entrou como devDependency e o a11y-reviewer injeta o arquivo local pelo dev server (sem CDN).
+- [ ] **Depoimentos** — RESPOSTA: pode colocar. Falta o conteúdo: mandar nome, cargo/empresa e texto de cada depoimento, com autorização da pessoa. Não criar a seção sem texto real.
 
 ## Bloqueadas
 Nada nesta rodada.
