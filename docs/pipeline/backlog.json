@@ -778,8 +778,8 @@
       ]
     },
     {
-      "status": "todo",
-      "attempts": 0,
+      "status": "done",
+      "attempts": 1,
       "commit": null,
       "id": "T-036",
       "title": "Derive years of experience from the career start dates",

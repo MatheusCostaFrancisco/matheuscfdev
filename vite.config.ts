@@ -1,6 +1,11 @@
 import { defineConfig, loadEnv, type Plugin } from "vite"
 import react from "@vitejs/plugin-react"
 import tailwindcss from "@tailwindcss/vite"
+import {
+  developmentYearsEn,
+  developmentYearsPt,
+  experienceYears,
+} from "./src/content/career"
 
 const SITE_URL_PLACEHOLDER = "%SITE_URL%"
 
@@ -24,7 +29,8 @@ function parseSiteUrl(value: string | undefined): string {
   return value
 }
 
-// Replaces %SITE_URL% in the HTML entries before Vite processes them, and
+// Replaces %SITE_URL% and the %YEARS_DEV_*% experience phrases (derived from
+// the career start dates) in the HTML entries before Vite processes them, and
 // after Vite has emitted the hashed og:image asset, prefixes its root-relative
 // path with the site URL (link previews require an absolute og:image).
 function siteUrlPlugin(siteUrl: string): Plugin {
@@ -34,7 +40,13 @@ function siteUrlPlugin(siteUrl: string): Plugin {
     enforce: "post",
     transformIndexHtml: {
       order: "pre",
-      handler: (html) => html.replaceAll(SITE_URL_PLACEHOLDER, siteUrl),
+      handler: (html) => {
+        const years = experienceYears(new Date())
+        return html
+          .replaceAll(SITE_URL_PLACEHOLDER, siteUrl)
+          .replaceAll("%YEARS_DEV_EN%", developmentYearsEn(years))
+          .replaceAll("%YEARS_DEV_PT%", developmentYearsPt(years))
+      },
     },
     generateBundle(_options, bundle) {
       if (siteUrl === "") return

@@ -1,6 +1,7 @@
+import { developmentYearsPt, type ExperienceYears } from './career'
 import type { SiteContent } from './types'
 
-export const ptBR = {
+export const createPtBR = (years: ExperienceYears): SiteContent => ({
   profile: {
     name: 'Matheus Costa Francisco',
     role: 'Engenheiro de Software Front-End Sênior',
@@ -9,9 +10,9 @@ export const ptBR = {
     email: 'contato.matheuscf@gmail.com',
     linkedin: 'https://www.linkedin.com/in/matheus-costa-francisco/',
     github: 'https://github.com/MatheusCostaFrancisco',
-    tagline: '8 anos do suporte à engenharia sênior',
+    tagline: `${years.career} anos do suporte à engenharia sênior`,
     summary: [
-      "Engenheiro de software front-end com mais de 7 anos construindo interfaces web e mobile em produção, com foco em React, TypeScript e Vue.js. Na AsapFlow, conduzo a migração de um editor visual de fluxos de Vue 2 para React + TypeScript e reestruturei o CI/CD na AWS.",
+      `Engenheiro de software front-end com ${developmentYearsPt(years)} construindo interfaces web e mobile em produção, com foco em React, TypeScript e Vue.js. Na AsapFlow, conduzo a migração de um editor visual de fluxos de Vue 2 para React + TypeScript e reestruturei o CI/CD na AWS.`,
       "Atuo também no back-end com Node.js e entrego produtos de ponta a ponta: pela ElevaTech, minha consultoria, e em SaaS próprios com pagamento, integrações de API e deploy em produção. Curso MBA em Arquitetura de Software na FIAP.",
     ],
     photoAlt: 'Retrato de Matheus Costa Francisco sorrindo, de camiseta escura, em ambiente fechado numa academia',
@@ -199,4 +200,4 @@ export const ptBR = {
     opensInNewTab: '(abre em nova aba)',
     footerRights: '©',
   },
-} satisfies SiteContent
+})

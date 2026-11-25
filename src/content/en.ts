@@ -1,6 +1,7 @@
+import { developmentYearsEn, type ExperienceYears } from './career'
 import type { SiteContent } from './types'
 
-export const en = {
+export const createEn = (years: ExperienceYears): SiteContent => ({
   profile: {
     name: 'Matheus Costa Francisco',
     role: 'Senior Front-End Software Engineer',
@@ -9,9 +10,9 @@ export const en = {
     email: 'contato.matheuscf@gmail.com',
     linkedin: 'https://www.linkedin.com/in/matheus-costa-francisco/',
     github: 'https://github.com/MatheusCostaFrancisco',
-    tagline: '8 years from support to senior engineering',
+    tagline: `${years.career} years from support to senior engineering`,
     summary: [
-      "Front-End Software Engineer with 7+ years building web and mobile interfaces in production, focused on React, TypeScript and Vue.js. At AsapFlow, I lead the migration of a visual flow editor from Vue 2 to React + TypeScript, and I rebuilt the CI/CD pipeline on AWS.",
+      `Front-End Software Engineer with ${developmentYearsEn(years)} building web and mobile interfaces in production, focused on React, TypeScript and Vue.js. At AsapFlow, I lead the migration of a visual flow editor from Vue 2 to React + TypeScript, and I rebuilt the CI/CD pipeline on AWS.`,
       "I also work on the back end with Node.js and ship products end to end: through ElevaTech, my consultancy, and in my own SaaS products with payments, API integrations and production deploys. I'm pursuing an MBA in Software Architecture at FIAP.",
     ],
     photoAlt: 'Portrait of Matheus Costa Francisco smiling, wearing a dark t-shirt, taken indoors at a gym',
@@ -199,4 +200,4 @@ export const en = {
     opensInNewTab: '(opens in a new tab)',
     footerRights: '©',
   },
-} satisfies SiteContent
+})
