@@ -476,8 +476,8 @@
       ]
     },
     {
-      "status": "todo",
-      "attempts": 0,
+      "status": "done",
+      "attempts": 1,
       "commit": null,
       "id": "T-023",
       "title": "Fix mobile menu focus handling, labels and target sizes",

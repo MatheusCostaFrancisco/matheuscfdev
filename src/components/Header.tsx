@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { cn } from '../lib/cn'
+import { DESKTOP_NAV_QUERY } from '../lib/breakpoints'
 import { locales, localePaths, storeLocale } from '../lib/locale'
 import { useLocale } from '../lib/locale-context'
 import { useContent } from '../lib/use-content'
@@ -15,7 +16,7 @@ function useHash(): string {
 }
 
 const linkClass = cn(
-  'block rounded-2xl px-4 py-2 text-sm font-medium text-fg-muted',
+  'flex min-h-11 items-center rounded-2xl px-4 text-sm font-medium text-fg-muted',
   'hover:bg-accent-50 hover:text-accent-800',
   'active:bg-accent-100 active:text-accent-900',
   'aria-disabled:pointer-events-none aria-disabled:opacity-50',
@@ -36,6 +37,7 @@ export function Header() {
   const currentLocale = useLocale()
   const hash = useHash()
   const buttonRef = useRef<HTMLButtonElement>(null)
+  const headerRef = useRef<HTMLElement>(null)
 
   useEffect(() => {
     if (!open) return
@@ -49,12 +51,29 @@ export function Header() {
     return () => document.removeEventListener('keydown', onKeyDown)
   }, [open])
 
+  useEffect(() => {
+    const query = window.matchMedia(DESKTOP_NAV_QUERY)
+    const onChange = (event: MediaQueryListEvent) => {
+      if (event.matches) setOpen(false)
+    }
+    query.addEventListener('change', onChange)
+    return () => query.removeEventListener('change', onChange)
+  }, [])
+
   return (
-    <header className="sticky top-0 z-40 border-b border-line bg-surface-raised">
+    <header
+      ref={headerRef}
+      onBlur={(event) => {
+        const next = event.relatedTarget
+        if (next instanceof Node && event.currentTarget.contains(next)) return
+        setOpen(false)
+      }}
+      className="sticky top-0 z-40 border-b border-line bg-surface-raised"
+    >
       <div className="mx-auto flex max-w-5xl items-center justify-between gap-4 px-4 py-3 sm:px-6">
         <a
           href="#main"
-          className="rounded-2xl text-base font-semibold text-fg hover:text-accent-700 active:text-accent-800"
+          className="inline-flex min-h-11 items-center rounded-2xl text-base font-semibold text-fg hover:text-accent-700 active:text-accent-800"
         >
           {profile.name}
         </a>
@@ -64,7 +83,7 @@ export function Header() {
           type="button"
           aria-expanded={open}
           aria-controls="site-nav"
-          aria-label={open ? ui.header.closeMenu : ui.header.openMenu}
+          aria-label={ui.header.menu}
           onClick={() => setOpen((value) => !value)}
           className="inline-flex size-11 items-center justify-center rounded-2xl border border-line-strong text-fg hover:bg-accent-50 active:bg-accent-100 disabled:opacity-50 md:hidden"
         >

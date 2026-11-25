@@ -164,7 +164,7 @@ export const en = {
   ],
   ui: {
     skipLink: 'Skip to main content',
-    header: { navLabel: 'Primary', openMenu: 'Open menu', closeMenu: 'Close menu',
+    header: { navLabel: 'Primary', menu: 'Menu',
       language: {
         groupLabel: 'Language',
         options: {

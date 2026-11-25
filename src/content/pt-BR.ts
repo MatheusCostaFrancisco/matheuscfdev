@@ -164,7 +164,7 @@ export const ptBR = {
   ],
   ui: {
     skipLink: 'Ir para o conteúdo principal',
-    header: { navLabel: 'Principal', openMenu: 'Abrir menu', closeMenu: 'Fechar menu',
+    header: { navLabel: 'Principal', menu: 'Menu',
       language: {
         groupLabel: 'Idioma',
         options: {

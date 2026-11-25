@@ -58,8 +58,7 @@ export interface UiStrings {
   readonly skipLink: string
   readonly header: {
     readonly navLabel: string
-    readonly openMenu: string
-    readonly closeMenu: string
+    readonly menu: string
     readonly language: {
       readonly groupLabel: string
       readonly options: Record<'en' | 'pt-BR', { readonly short: string; readonly name: string }>
