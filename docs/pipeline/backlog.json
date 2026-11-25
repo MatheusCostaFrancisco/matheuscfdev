@@ -979,8 +979,8 @@
       ]
     },
     {
-      "status": "todo",
-      "attempts": 0,
+      "status": "done",
+      "attempts": 1,
       "commit": null,
       "id": "T-045",
       "title": "Update header navigation and language switcher for multi-page routes",

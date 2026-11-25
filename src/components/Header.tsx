@@ -3,7 +3,7 @@ import { cn } from '../lib/cn'
 import { DESKTOP_NAV_QUERY } from '../lib/breakpoints'
 import { locales } from '../lib/locale'
 import { storeLocale } from '../lib/locale-storage'
-import { routes } from '../lib/routes'
+import { routes, type Page } from '../lib/routes'
 import { useLocale } from '../lib/locale-context'
 import { useContent } from '../lib/use-content'
 
@@ -33,7 +33,15 @@ const languageLinkClass = cn(
   'motion-safe:transition-colors',
 )
 
-export function Header() {
+type HeaderProps = {
+  page: Page
+}
+
+function isPageId(id: string): id is Exclude<Page, 'home'> {
+  return id === 'roadmap' || id === 'books'
+}
+
+export function Header({ page }: HeaderProps) {
   const { navigation, profile, ui } = useContent()
   const [open, setOpen] = useState(false)
   const currentLocale = useLocale()
@@ -113,17 +121,29 @@ export function Header() {
           )}
         >
           <ul className="flex flex-col gap-1 lg:flex-row lg:items-center">
-            {navigation.map((item) => (
-              <li key={item.id}>
-                <a
-                  href={`#${item.id}`}
-                  onClick={() => setOpen(false)}
-                  className={linkClass}
-                >
-                  {item.label}
-                </a>
-              </li>
-            ))}
+            {navigation.map((item) => {
+              const isPage = isPageId(item.id)
+              const href = isPage
+                ? routes[currentLocale][item.id]
+                : page === 'home'
+                  ? `#${item.id}`
+                  : `${routes[currentLocale].home}#${item.id}`
+              return (
+                <li key={item.id}>
+                  <a
+                    href={href}
+                    aria-current={isPage && item.id === page ? 'page' : undefined}
+                    onClick={() => setOpen(false)}
+                    className={cn(
+                      linkClass,
+                      'aria-[current=page]:bg-accent-100 aria-[current=page]:text-accent-900',
+                    )}
+                  >
+                    {item.label}
+                  </a>
+                </li>
+              )
+            })}
             <li className="mt-1 border-t border-line pt-2 lg:ml-2 lg:mt-0 lg:border-l lg:border-t-0 lg:pl-2 lg:pt-0">
               <ul aria-label={ui.header.language.groupLabel} className="flex gap-1">
                 {locales.map((locale) => {
@@ -132,7 +152,7 @@ export function Header() {
                   return (
                     <li key={locale}>
                       <a
-                        href={`${routes[locale].home}${hash}`}
+                        href={`${routes[locale][page]}${page === 'home' ? hash : ''}`}
                         hrefLang={locale}
                         lang={locale}
                         aria-label={option.name}

@@ -48,7 +48,7 @@ function App({ page }: AppProps) {
   return (
     <div className="flex min-h-[100dvh] flex-col">
       <SkipLink />
-      <Header />
+      <Header page={page} />
       <main
         id="main"
         tabIndex={-1}
