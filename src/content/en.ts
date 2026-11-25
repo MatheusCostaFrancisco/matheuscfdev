@@ -161,6 +161,7 @@ export const en = {
     { id: 'skills', label: 'Skills' },
     { id: 'education', label: 'Education' },
     { id: 'roadmap', label: 'Roadmap' },
+    { id: 'books', label: 'Books' },
     { id: 'contact', label: 'Contact' },
   ],
   ui: {

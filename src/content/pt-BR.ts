@@ -161,6 +161,7 @@ export const ptBR = {
     { id: 'skills', label: 'Competências' },
     { id: 'education', label: 'Formação' },
     { id: 'roadmap', label: 'Roadmap' },
+    { id: 'books', label: 'Livros' },
     { id: 'contact', label: 'Contato' },
   ],
   ui: {

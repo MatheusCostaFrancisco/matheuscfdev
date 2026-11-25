@@ -7,6 +7,7 @@ import { Education } from "./sections/Education";
 import { Experience } from "./sections/Experience";
 import { Hero } from "./sections/Hero";
 import { Products } from "./sections/Products";
+import { Books } from "./sections/Books";
 import { Roadmap } from "./sections/Roadmap";
 import { Skills } from "./sections/Skills";
 
@@ -27,6 +28,7 @@ function App() {
         <Skills />
         <Education />
         <Roadmap />
+        <Books />
         <Contact />
       </main>
       <Footer />
