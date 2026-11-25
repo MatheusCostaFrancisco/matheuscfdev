@@ -732,8 +732,8 @@
       ]
     },
     {
-      "status": "todo",
-      "attempts": 0,
+      "status": "done",
+      "attempts": 1,
       "commit": null,
       "id": "T-034",
       "title": "Sync skill groups with the updated cv.md",
