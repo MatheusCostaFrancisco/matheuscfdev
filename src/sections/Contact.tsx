@@ -2,8 +2,8 @@ import { cn } from '../lib/cn'
 import { useContent } from '../lib/use-content'
 
 const linkClass = cn(
-  'rounded-sm text-lg font-medium text-accent-700 underline underline-offset-4',
-  'break-all motion-safe:transition-colors hover:text-accent-800 active:text-accent-900',
+  'inline-flex min-h-11 max-w-full items-center rounded-sm text-lg font-medium text-accent-700 underline underline-offset-4',
+  '[overflow-wrap:anywhere] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-600 motion-safe:transition-colors hover:text-accent-800 active:text-accent-900',
 )
 
 export function Contact() {
