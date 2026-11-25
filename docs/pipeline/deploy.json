@@ -5,8 +5,26 @@
     "environment": "production"
   },
   "railwayUrl": "https://site-production-5010b1df.up.railway.app",
-  "customDomain": null,
-  "cloudflare": { "zoneId": null, "dnsConfigured": false },
+  "customDomain": "www.matheuscfrancisco.dev.br",
+  "cloudflare": {
+    "zoneId": null,
+    "dnsConfigured": false
+  },
   "lastDeployedCommit": "8004f1a",
-  "lastStatus": "deployed"
+  "lastStatus": "deployed",
+  "railwayCustomDomains": {
+    "www.matheuscfrancisco.dev.br": {
+      "id": "4caba76e-669e-4b1a-845f-fb6d08d03333",
+      "cname": "8euee04q.up.railway.app",
+      "txtName": "_railway-verify.www",
+      "txt": "railway-verify=f3ec0675535f2c76ec1c8caeca9d2e3c8ede70cec285a55d01f4550961f7e4d2"
+    },
+    "matheuscfrancisco.dev.br": {
+      "id": "775e17bd-647d-4437-9381-f765d9ca94bb",
+      "cname": "ptkaqk0u.up.railway.app",
+      "txtName": "_railway-verify",
+      "txt": "railway-verify=ade852e3446066282a5024be6d7c9825cfa488dedb5fc22a8ac71d8bd11925a8",
+      "note": "apex; redireciona 301 para www via Redirect Rule do Cloudflare"
+    }
+  }
 }
