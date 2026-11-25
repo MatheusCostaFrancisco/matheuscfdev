@@ -295,7 +295,8 @@
       "notes": [
         "2026-11-24 rodada 5 (PO): depends on T-028 so its diff is not polluted by CRLF/LF churn (REPORT rodada 4: b968c30, 07b1d62, 8840a35).",
         "2026-11-24 rodada 5 (PO): profile photo not yet confirmed by the stakeholder (pending item in REPORT); the task optimizes whatever content/assets/profile.jpg is, so it stays todo.",
-        "2026-11-24 rodada 6 (PO): stakeholder answered the photo pending item with \"vou enviar outra depois\". Optimizing the current photo now would be redone when the new one arrives, so the task waits. Back to todo when content/assets/profile.jpg is replaced or the stakeholder marks the photo pending item [x]."
+        "2026-11-24 rodada 6 (PO): stakeholder answered the photo pending item with \"vou enviar outra depois\". Optimizing the current photo now would be redone when the new one arrives, so the task waits. Back to todo when content/assets/profile.jpg is replaced or the stakeholder marks the photo pending item [x].",
+        "2026-11-25 rodada 7 retomada (PO): content/assets/profile.jpg unchanged since dc647ca and the photo pending item is still [ ]. Stays blocked."
       ]
     },
     {
@@ -821,7 +822,8 @@
       ],
       "notes": [
         "2026-11-24 rodada 6 (PO): PO decision: follows the canonical domain so search engines index /en/ and /pt/ as alternates of each other.",
-        "2026-11-24 rodada 7 (PO): stakeholder decision 1 (REPORT rodada 6): the sitemap must cover the new roadmap and books pages. Raised to P1 because it is part of that P1 decision; now depends on T-044 for the route map."
+        "2026-11-24 rodada 7 (PO): stakeholder decision 1 (REPORT rodada 6): the sitemap must cover the new roadmap and books pages. Raised to P1 because it is part of that P1 decision; now depends on T-044 for the route map.",
+        "2026-11-25 rodada 7 retomada (PO): a half-done attempt from the interrupted run is in git stash (esteira/2026-11-24/interrompida/T-037), reference only; the dev redoes it from HEAD."
       ]
     },
     {
@@ -983,7 +985,7 @@
       "id": "T-045",
       "title": "Update header navigation and language switcher for multi-page routes",
       "type": "feature",
-      "priority": "P1",
+      "priority": "P0",
       "touchesUi": true,
       "acceptance": [
         "On the roadmap and books pages, section links (About, Experience, ...) point to the home of the same locale with the anchor (e.g. /pt/#experience) and land on that section below the header",
@@ -995,7 +997,8 @@
         "T-044"
       ],
       "notes": [
-        "2026-11-24 rodada 7 (PO): stakeholder decision 1 (REPORT rodada 6): nav updated; internal pages open in the same tab, external links keep the new tab."
+        "2026-11-24 rodada 7 (PO): stakeholder decision 1 (REPORT rodada 6): nav updated; internal pages open in the same tab, external links keep the new tab.",
+        "2026-11-25 rodada 7 retomada (PO): raised to P0. Since T-044 (5924cae) the Roadmap and Books nav items still point to #roadmap/#books, which no longer exist on the home; the deploy at the end of this round would publish broken nav links. Runs first."
       ]
     },
     {
