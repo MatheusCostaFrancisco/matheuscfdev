@@ -10,14 +10,14 @@
     />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 
-    <!-- O placeholder SITE_URL é preenchido no build a partir de .env.production (ADR 0003) -->
-    <link vite-ignore rel="canonical" href="%SITE_URL%/pt/" />
-    <link vite-ignore rel="alternate" hreflang="en" href="%SITE_URL%/en/" />
-    <link vite-ignore rel="alternate" hreflang="pt-BR" href="%SITE_URL%/pt/" />
-    <link vite-ignore rel="alternate" hreflang="x-default" href="%SITE_URL%/" />
+    <!-- Os placeholders ROUTE_URL são preenchidos no build a partir de SITE_URL (ADR 0003) e do mapa de rotas em src/lib/routes.ts (ADR 0005) -->
+    <link vite-ignore rel="canonical" href="%ROUTE_URL%" />
+    <link vite-ignore rel="alternate" hreflang="en" href="%ROUTE_URL:en%" />
+    <link vite-ignore rel="alternate" hreflang="pt-BR" href="%ROUTE_URL:pt-BR%" />
+    <link vite-ignore rel="alternate" hreflang="x-default" href="%ROUTE_URL:x-default%" />
 
     <meta property="og:type" content="profile" />
-    <meta property="og:url" content="%SITE_URL%/pt/" />
+    <meta property="og:url" content="%ROUTE_URL%" />
     <meta property="og:locale" content="pt_BR" />
     <meta property="og:locale:alternate" content="en_US" />
     <meta

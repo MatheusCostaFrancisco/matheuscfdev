@@ -21,9 +21,9 @@ export function Roadmap() {
       aria-labelledby="roadmap-title"
       className="scroll-mt-20 py-10"
     >
-      <h2 id="roadmap-title" className="text-2xl font-semibold text-fg">
+      <h1 id="roadmap-title" className="text-3xl font-bold text-fg sm:text-4xl [overflow-wrap:anywhere]">
         {title}
-      </h2>
+      </h1>
 
       <div className="mt-8 rounded-2xl border border-line bg-surface-raised p-6 shadow-sm">
         <dl className="grid gap-4 sm:grid-cols-2">
@@ -46,7 +46,7 @@ export function Roadmap() {
         <p className="mt-4 text-base text-fg-muted">{destination.phrase}</p>
       </div>
 
-      <h3 className="mt-10 text-xl font-semibold text-fg">{whyNow.title}</h3>
+      <h2 className="mt-10 text-xl font-semibold text-fg">{whyNow.title}</h2>
       <p className="mt-2 text-base text-fg-muted">{whyNow.intro}</p>
       <ul className="mt-4 grid gap-4 sm:grid-cols-3">
         {whyNow.pillars.map((pillar) => (
@@ -54,20 +54,20 @@ export function Roadmap() {
             key={pillar.title}
             className="min-w-0 rounded-2xl bg-surface-sunken p-5"
           >
-            <h4
+            <h3
               lang={langAttr(pillar.titleLang, locale)}
               className="text-base font-semibold text-fg"
             >
               {pillar.title}
-            </h4>
+            </h3>
             <p className="mt-1 text-sm text-fg-muted">{pillar.description}</p>
           </li>
         ))}
       </ul>
 
-      <h3 className="mt-10 text-xl font-semibold text-fg">
+      <h2 className="mt-10 text-xl font-semibold text-fg">
         {ui.roadmap.stagesHeading}
-      </h3>
+      </h2>
       <ol className="mt-4 space-y-4">
         {stages.map((stage, index) => {
           const status = statuses[index] ?? "upcoming";
@@ -86,13 +86,13 @@ export function Roadmap() {
               )}
             >
               <div className="flex flex-wrap items-center justify-between gap-2">
-                <h4 id={headingId} className="text-lg font-semibold text-fg">
+                <h3 id={headingId} className="text-lg font-semibold text-fg">
                   {stage.label}
                   <span className="font-normal text-fg-muted">
                     {" · "}
                     {stage.period}
                   </span>
-                </h4>
+                </h3>
                 <span
                   className={cn(
                     "inline-flex items-center gap-1.5 rounded-2xl px-3 py-1 text-sm font-medium",
@@ -115,9 +115,9 @@ export function Roadmap() {
               </p>
               {stage.study.length > 0 && (
                 <>
-                  <h5 className="mt-4 text-sm font-semibold text-fg">
+                  <h4 className="mt-4 text-sm font-semibold text-fg">
                     {ui.roadmap.studyHeading}
-                  </h5>
+                  </h4>
                   <ul className="mt-1 list-disc space-y-1 pl-5 text-sm text-fg-muted">
                     {stage.study.map((entry) => (
                       <li key={entry} className="[overflow-wrap:anywhere]">
@@ -127,9 +127,9 @@ export function Roadmap() {
                   </ul>
                 </>
               )}
-              <h5 className="mt-4 text-sm font-semibold text-fg">
+              <h4 className="mt-4 text-sm font-semibold text-fg">
                 {ui.roadmap.deliverableHeading}
-              </h5>
+              </h4>
               <p className="mt-1 text-sm text-fg-muted">{stage.deliverable}</p>
             </li>
           );

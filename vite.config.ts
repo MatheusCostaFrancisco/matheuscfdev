@@ -6,6 +6,8 @@ import {
   developmentYearsPt,
   experienceYears,
 } from "./src/content/career"
+import { defaultLocale, locales, type Locale } from "./src/lib/locale"
+import { pages, resolveRoute, routes, type Page } from "./src/lib/routes"
 
 const SITE_URL_PLACEHOLDER = "%SITE_URL%"
 
@@ -29,7 +31,63 @@ function parseSiteUrl(value: string | undefined): string {
   return value
 }
 
-// Replaces %SITE_URL% and the %YEARS_DEV_*% experience phrases (derived from
+// HTML entry of every page in the route map (ADR 0005): the route "/a/b/" is built
+// from "a/b/index.html".
+function pageEntryFile(locale: Locale, page: Page): string {
+  return `${routes[locale][page].slice(1)}index.html`
+}
+
+const pageInputs: Record<string, string> = Object.fromEntries(
+  locales.flatMap((locale) =>
+    pages.map((page) => [`${locale}-${page}`, pageEntryFile(locale, page)]),
+  ),
+)
+
+const ROUTE_URL_RE = /%ROUTE_URL(?::([a-zA-Z-]+))?%/g
+const ROUTE_PATH_RE = /%ROUTE_PATH:([a-zA-Z-]+):([a-z]+)%/g
+
+function isLocale(value: string): value is Locale {
+  return locales.some((locale) => locale === value)
+}
+
+function isPage(value: string): value is Page {
+  return pages.some((page) => page === value)
+}
+
+// Fills the route placeholders of an HTML entry from the route map:
+// - %ROUTE_URL% is the absolute URL of the page the file builds (canonical, og:url);
+// - %ROUTE_URL:<locale>% is the same page in that locale (hreflang);
+// - %ROUTE_URL:x-default% is the root language redirect for the home and the
+//   default-locale page for the other pages (there is no root /roadmap/);
+// - %ROUTE_PATH:<locale>:<page>% is a root-relative path, for pages outside the
+//   map such as the root redirect.
+// A %ROUTE_URL% in a file that is not a page of the map fails the build.
+function fillRoutes(html: string, htmlPath: string, siteUrl: string): string {
+  const withPaths = html.replace(ROUTE_PATH_RE, (match, locale: string, page: string) => {
+    if (!isLocale(locale) || !isPage(page)) {
+      throw new Error(`[routes] Unknown route placeholder ${match} in ${htmlPath}.`)
+    }
+    return routes[locale][page]
+  })
+  if (!withPaths.includes("%ROUTE_URL")) return withPaths
+
+  const { locale: current, page } = resolveRoute(htmlPath)
+  if (`/${pageEntryFile(current, page)}` !== htmlPath) {
+    throw new Error(
+      `[routes] ${htmlPath} uses ROUTE_URL placeholders but is not a page of the route map (src/lib/routes.ts).`,
+    )
+  }
+  return withPaths.replace(ROUTE_URL_RE, (match, target: string | undefined) => {
+    if (target === undefined) return `${siteUrl}${routes[current][page]}`
+    if (target === "x-default") {
+      return page === "home" ? `${siteUrl}/` : `${siteUrl}${routes[defaultLocale][page]}`
+    }
+    if (isLocale(target)) return `${siteUrl}${routes[target][page]}`
+    throw new Error(`[routes] Unknown route placeholder ${match} in ${htmlPath}.`)
+  })
+}
+
+// Replaces %SITE_URL%, the route placeholders and the %YEARS_DEV_*% experience phrases (derived from
 // the career start dates) in the HTML entries before Vite processes them, and
 // after Vite has emitted the hashed og:image asset, prefixes its root-relative
 // path with the site URL (link previews require an absolute og:image).
@@ -40,9 +98,9 @@ function siteUrlPlugin(siteUrl: string): Plugin {
     enforce: "post",
     transformIndexHtml: {
       order: "pre",
-      handler: (html) => {
+      handler: (html, ctx) => {
         const years = experienceYears(new Date())
-        return html
+        return fillRoutes(html, ctx.path, siteUrl)
           .replaceAll(SITE_URL_PLACEHOLDER, siteUrl)
           .replaceAll("%YEARS_DEV_EN%", developmentYearsEn(years))
           .replaceAll("%YEARS_DEV_PT%", developmentYearsPt(years))
@@ -63,8 +121,9 @@ function siteUrlPlugin(siteUrl: string): Plugin {
 }
 
 // https://vite.dev/config/
-// Multi-page build (ADR 0002): the root page only redirects by browser
-// language; each locale has its own static HTML with lang and metadata.
+// Multi-page build (ADR 0002, ADR 0005): the root page only redirects by
+// browser language; every page of the route map, in each locale, has its own
+// static HTML with lang and metadata.
 export default defineConfig(({ command, mode }) => {
   const env = loadEnv(mode, ".", "")
   // The dev server has no production origin: without SITE_URL it keeps
@@ -79,8 +138,7 @@ export default defineConfig(({ command, mode }) => {
         input: {
           root: "index.html",
           notFound: "404.html",
-          en: "en/index.html",
-          pt: "pt/index.html",
+          ...pageInputs,
         },
       },
     },

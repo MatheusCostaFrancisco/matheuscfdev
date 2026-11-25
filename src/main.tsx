@@ -2,15 +2,15 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.tsx'
-import { localeFromPathname } from './lib/locale'
 import { LocaleContext } from './lib/locale-context'
+import { resolveRoute } from './lib/routes'
 
-const locale = localeFromPathname(window.location.pathname)
+const { locale, page } = resolveRoute(window.location.pathname)
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <LocaleContext value={locale}>
-      <App />
+      <App page={page} />
     </LocaleContext>
   </StrictMode>,
 )

@@ -954,8 +954,8 @@
       ]
     },
     {
-      "status": "todo",
-      "attempts": 0,
+      "status": "done",
+      "attempts": 1,
       "commit": null,
       "id": "T-044",
       "title": "Move roadmap and books to their own pages per locale with ADR",

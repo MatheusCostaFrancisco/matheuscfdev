@@ -66,18 +66,18 @@ export function Books() {
       aria-labelledby="books-title"
       className="scroll-mt-20 py-10"
     >
-      <h2 id="books-title" className="text-2xl font-semibold text-fg">
+      <h1 id="books-title" className="text-3xl font-bold text-fg sm:text-4xl [overflow-wrap:anywhere]">
         {ui.books.heading}
-      </h2>
+      </h1>
 
-      <h3 className="mt-8 text-xl font-semibold text-fg">{groups.reading}</h3>
+      <h2 className="mt-8 text-xl font-semibold text-fg">{groups.reading}</h2>
       <ul className="mt-4 grid gap-4 sm:grid-cols-2">
         {books.reading.map((book) => (
           <ProgressBook key={book.title} book={book} />
         ))}
       </ul>
 
-      <h3 className="mt-10 text-xl font-semibold text-fg">{groups.read}</h3>
+      <h2 className="mt-10 text-xl font-semibold text-fg">{groups.read}</h2>
       <ul className="mt-4 space-y-4">
         {books.read.map((entry) =>
           entry.kind === "series" ? (
@@ -85,13 +85,13 @@ export function Books() {
               key={entry.name}
               className="min-w-0 rounded-2xl bg-surface-sunken p-5"
             >
-              <h4 className="text-base font-semibold text-fg [overflow-wrap:anywhere]">
+              <h3 className="text-base font-semibold text-fg [overflow-wrap:anywhere]">
                 <span lang={langAttr(entry.nameLang, locale)}>{entry.name}</span>
                 <span className="font-normal text-fg-muted">
                   {" · "}
                   {entry.books.length} {seriesBooks}
                 </span>
-              </h4>
+              </h3>
               <p className="text-sm text-fg-muted">{entry.author}</p>
               <ol className="mt-3 space-y-1 text-sm text-fg">
                 {entry.books.map((book) => (
@@ -121,9 +121,9 @@ export function Books() {
         )}
       </ul>
 
-      <h3 className="mt-10 text-xl font-semibold text-fg">
+      <h2 className="mt-10 text-xl font-semibold text-fg">
         {groups.wantToRead}
-      </h3>
+      </h2>
       <ul className="mt-4 grid gap-4 sm:grid-cols-2">
         {books.wantToRead.map((book) => (
           <li

@@ -1,7 +1,9 @@
 import { useEffect, useRef, useState } from 'react'
 import { cn } from '../lib/cn'
 import { DESKTOP_NAV_QUERY } from '../lib/breakpoints'
-import { locales, localePaths, storeLocale } from '../lib/locale'
+import { locales } from '../lib/locale'
+import { storeLocale } from '../lib/locale-storage'
+import { routes } from '../lib/routes'
 import { useLocale } from '../lib/locale-context'
 import { useContent } from '../lib/use-content'
 
@@ -130,7 +132,7 @@ export function Header() {
                   return (
                     <li key={locale}>
                       <a
-                        href={`${localePaths[locale]}${hash}`}
+                        href={`${routes[locale].home}${hash}`}
                         hrefLang={locale}
                         lang={locale}
                         aria-label={option.name}

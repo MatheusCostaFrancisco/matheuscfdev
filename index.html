@@ -10,9 +10,12 @@
     />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 
-    <!-- The SITE_URL placeholder is filled at build time from .env.production (ADR 0003) -->
-    <link vite-ignore rel="alternate" hreflang="en" href="%SITE_URL%/en/" />
-    <link vite-ignore rel="alternate" hreflang="pt-BR" href="%SITE_URL%/pt/" />
+    <!--
+      SITE_URL is filled at build time from .env.production (ADR 0003) and the
+      ROUTE_PATH placeholders from the route map in src/lib/routes.ts (ADR 0005).
+    -->
+    <link vite-ignore rel="alternate" hreflang="en" href="%SITE_URL%%ROUTE_PATH:en:home%" />
+    <link vite-ignore rel="alternate" hreflang="pt-BR" href="%SITE_URL%%ROUTE_PATH:pt-BR:home%" />
     <link vite-ignore rel="alternate" hreflang="x-default" href="%SITE_URL%/" />
 
     <!--
@@ -36,9 +39,9 @@
     <!--
       Language redirect (ADR 0002): a choice stored by the header switcher
       (localStorage key matheuscfdev.locale, keep in sync with
-      src/lib/locale.ts) wins; otherwise preferred browser language starting with
-      "pt" goes to /pt/, everything else to /en/. Query and hash are kept so
-      links like /#contact land on the same section. Without JS the links in
+      src/lib/locale-storage.ts) wins; otherwise preferred browser language
+      starting with "pt" goes to the pt-BR home, everything else to the en home.
+      Query and hash are kept so links like /#contact land on the same section. Without JS the links in
       <body> are shown instead.
     -->
     <script>
@@ -51,9 +54,9 @@
           stored = window.localStorage.getItem("matheuscfdev.locale");
         } catch (e) {}
         var target =
-          stored === "pt-BR" ? "/pt/" : stored === "en" ? "/en/" : null;
+          stored === "pt-BR" ? "%ROUTE_PATH:pt-BR:home%" : stored === "en" ? "%ROUTE_PATH:en:home%" : null;
         if (!target) {
-          target = preferred.toLowerCase().indexOf("pt") === 0 ? "/pt/" : "/en/";
+          target = preferred.toLowerCase().indexOf("pt") === 0 ? "%ROUTE_PATH:pt-BR:home%" : "%ROUTE_PATH:en:home%";
         }
         window.location.replace(target + window.location.search + window.location.hash);
       })();
@@ -131,8 +134,8 @@
       <h1>Matheus Costa Francisco</h1>
       <p>Choose a language · <span lang="pt-BR">Escolha o idioma</span></p>
       <ul>
-        <li><a href="/en/" hreflang="en" lang="en">English</a></li>
-        <li><a href="/pt/" hreflang="pt-BR" lang="pt-BR">Português (Brasil)</a></li>
+        <li><a href="%ROUTE_PATH:en:home%" hreflang="en" lang="en">English</a></li>
+        <li><a href="%ROUTE_PATH:pt-BR:home%" hreflang="pt-BR" lang="pt-BR">Português (Brasil)</a></li>
       </ul>
     </main>
   </body>
