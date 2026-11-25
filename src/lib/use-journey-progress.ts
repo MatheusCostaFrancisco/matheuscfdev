@@ -28,9 +28,9 @@ export function useJourneyProgress(
     let animating = false
 
     const fitTrack = () => {
-      const items = wrapper.querySelectorAll<HTMLElement>(`li:has(${MARKER_SELECTOR})`)
-      const lastItem = items.item(items.length - 1)
-      const marker = lastItem?.querySelector<HTMLElement>(MARKER_SELECTOR)
+      const markers = wrapper.querySelectorAll<HTMLElement>(MARKER_SELECTOR)
+      const marker = markers.item(markers.length - 1)
+      const lastItem = marker?.closest('li')
       if (!lastItem || !marker) return
       const center =
         lastItem.offsetTop + marker.offsetTop + marker.offsetHeight / 2
