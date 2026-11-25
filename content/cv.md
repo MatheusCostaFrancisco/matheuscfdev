@@ -21,7 +21,7 @@ Fonte única de verdade sobre o Matheus (em inglês). `content/cv.pt-BR.md` tem 
 | GitHub | Sim |
 | LinkedIn | Sim |
 | Cidade (Piracicaba, SP, Brazil · Remote) | Sim |
-| Depoimentos | Sim, quando o stakeholder enviar (ver "Depoimentos") |
+| Depoimentos (recomendações do LinkedIn) | Sim |
 
 ## Identidade
 
@@ -194,9 +194,8 @@ Stack: TypeScript, React 19, NestJS, TypeORM, MySQL, Stripe, OpenAI API
 
 ## Depoimentos
 
-Seção autorizada pelo stakeholder em 2026-11-24. Ainda não há textos: **não criar a seção nem inventar depoimentos** até existir ao menos um aqui, com nome, cargo/empresa, texto e autorização de publicação.
+Fonte: `content/depoimentos.md`, com 6 recomendações públicas do LinkedIn (aba "Recebidas"), copiadas sem edição em 2026-11-24 a pedido do stakeholder, que confirmou a empresa de cada uma. Publicar nome, título, empresa, relação, data e texto, com link para https://www.linkedin.com/in/matheus-costa-francisco/details/recommendations/.
 
 ## Lacunas conhecidas
 
 - Foto de perfil: o stakeholder vai enviar outra; até lá, manter `content/assets/profile.jpg`.
-- Depoimentos: [REVISAR: aguardando o stakeholder enviar os textos]
