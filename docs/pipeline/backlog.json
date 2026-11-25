@@ -804,7 +804,7 @@
     {
       "status": "done",
       "attempts": 1,
-      "commit": null,
+      "commit": "1d44523",
       "id": "T-037",
       "title": "Add robots.txt and sitemap.xml covering home, roadmap and books pages",
       "type": "infra",
@@ -853,7 +853,7 @@
     {
       "status": "done",
       "attempts": 1,
-      "commit": null,
+      "commit": "908d77a",
       "id": "T-039",
       "title": "Polish book progress bars for Safari and track contrast",
       "type": "fix",
@@ -875,7 +875,7 @@
     {
       "status": "done",
       "attempts": 1,
-      "commit": null,
+      "commit": "59e76f9",
       "id": "T-040",
       "title": "Move focus to the section opened by a URL hash",
       "type": "fix",
@@ -981,7 +981,7 @@
     {
       "status": "done",
       "attempts": 1,
-      "commit": null,
+      "commit": "48d0d2a",
       "id": "T-045",
       "title": "Update header navigation and language switcher for multi-page routes",
       "type": "feature",
@@ -1004,7 +1004,7 @@
     {
       "status": "done",
       "attempts": 1,
-      "commit": null,
+      "commit": "375b283",
       "id": "T-046",
       "title": "Add roadmap and books teasers to the home",
       "type": "feature",
@@ -1027,7 +1027,7 @@
     {
       "status": "done",
       "attempts": 1,
-      "commit": null,
+      "commit": "8183a76",
       "id": "T-047",
       "title": "Link the 404 page to the roadmap and books pages",
       "type": "fix",
@@ -1048,7 +1048,7 @@
     {
       "status": "done",
       "attempts": 1,
-      "commit": null,
+      "commit": "579eea5",
       "id": "T-048",
       "title": "Create typed testimonials content from depoimentos.md",
       "type": "content",
@@ -1070,7 +1070,7 @@
     {
       "status": "done",
       "attempts": 1,
-      "commit": null,
+      "commit": "cf173d5",
       "id": "T-049",
       "title": "Build testimonials section",
       "type": "feature",
@@ -1092,7 +1092,7 @@
     {
       "status": "done",
       "attempts": 1,
-      "commit": null,
+      "commit": "2cf9cfb",
       "id": "T-050",
       "title": "Replace load-only entrance with scroll-triggered staggered reveal",
       "type": "feature",
@@ -1116,7 +1116,7 @@
     {
       "status": "done",
       "attempts": 1,
-      "commit": null,
+      "commit": "25ba711",
       "id": "T-051",
       "title": "Animate the roadmap journey connector and current stage marker",
       "type": "feature",
