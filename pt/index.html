@@ -31,11 +31,13 @@
     <meta property="og:image" content="/content/assets/profile.jpg" />
     <meta property="og:image:alt" content="Retrato de Matheus Costa Francisco" />
 
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <!-- Body text weight, self-hosted (ADR 0004). Keep in sync with src/index.css. -->
     <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
+      rel="preload"
+      href="/fonts/poppins-latin-400-normal.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
     />
   </head>
   <body>

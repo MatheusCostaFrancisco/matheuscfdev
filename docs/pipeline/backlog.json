@@ -684,8 +684,8 @@
       ]
     },
     {
-      "status": "todo",
-      "attempts": 0,
+      "status": "done",
+      "attempts": 1,
       "commit": null,
       "id": "T-032",
       "title": "Self-host the Poppins font and drop Google Fonts requests",
