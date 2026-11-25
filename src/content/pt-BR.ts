@@ -197,6 +197,14 @@ export const createPtBR = (years: ExperienceYears): SiteContent => ({
       status: { done: 'Concluída', current: 'Em andamento', upcoming: 'Adiante' },
     },
     books: { heading: 'Livros', groups: { reading: 'Lendo agora', read: 'Lidos', wantToRead: 'Quero ler' }, seriesBooks: 'livros' },
+    testimonials: {
+      heading: 'Recomendações',
+      translatedLabel: 'Traduzido do português',
+      viewOriginal: 'Ver original no LinkedIn',
+      relationshipLabel: 'Relação',
+      relationships: { 'same-team': 'Trabalhou na mesma equipe', 'direct-supervisor': 'Supervisionava Matheus diretamente' },
+      profileTitleLabel: 'Título atual no perfil',
+    },
     teasers: {
       heading: 'Estudando e lendo',
       roadmapLabel: 'Estudando agora',

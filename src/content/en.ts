@@ -197,6 +197,14 @@ export const createEn = (years: ExperienceYears): SiteContent => ({
       status: { done: 'Done', current: 'In progress', upcoming: 'Ahead' },
     },
     books: { heading: 'Books', groups: { reading: 'Reading now', read: 'Read', wantToRead: 'Want to read' }, seriesBooks: 'books' },
+    testimonials: {
+      heading: 'Recommendations',
+      translatedLabel: 'Translated from Portuguese',
+      viewOriginal: 'View original on LinkedIn',
+      relationshipLabel: 'Relationship',
+      relationships: { 'same-team': 'Worked on the same team', 'direct-supervisor': 'Directly supervised Matheus' },
+      profileTitleLabel: 'Current profile title',
+    },
     teasers: {
       heading: 'Studying and reading',
       roadmapLabel: 'Studying now',

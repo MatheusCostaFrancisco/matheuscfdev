@@ -1046,8 +1046,8 @@
       ]
     },
     {
-      "status": "todo",
-      "attempts": 0,
+      "status": "done",
+      "attempts": 1,
       "commit": null,
       "id": "T-048",
       "title": "Create typed testimonials content from depoimentos.md",
