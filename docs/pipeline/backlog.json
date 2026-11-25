@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "cvHash": "05dd649a5e651fe0558b56789dde0420b2c4c4f6d4d7758ae13596c4c5280ed1",
+  "cvHash": "aff938c0bd160a5b9e18a9f8d59e2438cd7e6d8c0d7e7ed117876722f0a1ea18",
   "tasks": [
     {
       "id": "T-001",
@@ -289,12 +289,13 @@
         "T-005",
         "T-028"
       ],
-      "status": "todo",
+      "status": "blocked",
       "attempts": 0,
       "commit": null,
       "notes": [
         "2026-11-24 rodada 5 (PO): depends on T-028 so its diff is not polluted by CRLF/LF churn (REPORT rodada 4: b968c30, 07b1d62, 8840a35).",
-        "2026-11-24 rodada 5 (PO): profile photo not yet confirmed by the stakeholder (pending item in REPORT); the task optimizes whatever content/assets/profile.jpg is, so it stays todo."
+        "2026-11-24 rodada 5 (PO): profile photo not yet confirmed by the stakeholder (pending item in REPORT); the task optimizes whatever content/assets/profile.jpg is, so it stays todo.",
+        "2026-11-24 rodada 6 (PO): stakeholder answered the photo pending item with \"vou enviar outra depois\". Optimizing the current photo now would be redone when the new one arrives, so the task waits. Back to todo when content/assets/profile.jpg is replaced or the stakeholder marks the photo pending item [x]."
       ]
     },
     {
@@ -703,7 +704,231 @@
         "T-028"
       ],
       "notes": [
-        "2026-11-24 rodada 5 (PO): PO decision on the open T-001 review item: self-host. Google Fonts sends the visitor IP to a third party (LGPD exposure) and adds a cross-origin connection on the critical path. If a package such as @fontsource/poppins is used, the reason goes in the task summary."
+        "2026-11-24 rodada 5 (PO): PO decision on the open T-001 review item: self-host. Google Fonts sends the visitor IP to a third party (LGPD exposure) and adds a cross-origin connection on the critical path. If a package such as @fontsource/poppins is used, the reason goes in the task summary.",
+        "2026-11-24 rodada 6 (PO): also covers the REPORT rodada 5 note that Poppins can shift the hash target on first load: same-origin preload plus font-display: swap reduce that shift. No separate task."
+      ]
+    },
+    {
+      "status": "todo",
+      "attempts": 0,
+      "commit": null,
+      "id": "T-033",
+      "title": "Sync summary, location and education with the updated cv.md",
+      "type": "content",
+      "priority": "P1",
+      "touchesUi": true,
+      "acceptance": [
+        "profile.summary is a list of paragraphs in both locales: en has the 2 paragraphs of cv.md > Summary (without the parenthetical note) and pt-BR has the 2 paragraphs of cv.pt-BR.md > Resumo; #about renders each one as its own <p>",
+        "profile.location is \"Piracicaba, SP, Brazil · Remote\" in en and \"Piracicaba, SP · Remoto\" in pt-BR; GAtec and both RKM entries use \"Piracicaba, SP, Brazil\" (en) and \"Piracicaba, SP\" (pt-BR)",
+        "The IGTI entry reads \"MBA in Front-End Development\", May 2021 – Feb 2022 (en) and \"MBA em Desenvolvimento Front-End\", Mai 2021 – Fev 2022 in the period format already used by pt-BR.ts (pt-BR)",
+        "No string \"Postgraduate Specialization\", \"Pós-graduação em Desenvolvimento\" or \"Piracicaba, Brazil\"/\"Piracicaba, Brasil\" (without SP) remains in src/, and yarn typecheck, yarn lint and yarn build pass"
+      ],
+      "dependsOn": [
+        "T-018",
+        "T-028"
+      ],
+      "notes": [
+        "2026-11-24 rodada 6 (PO): reconciliation of cv.md change (hash 05dd649 -> aff938c, commit 38967f2, stakeholder answers to REPORT rodada 5 item \"Alinhar cv.md e cv.pt-BR.md\"). Done tasks T-006, T-008, T-011, T-016, T-017 are not reopened."
+      ]
+    },
+    {
+      "status": "todo",
+      "attempts": 0,
+      "commit": null,
+      "id": "T-034",
+      "title": "Sync skill groups with the updated cv.md",
+      "type": "content",
+      "priority": "P1",
+      "touchesUi": true,
+      "acceptance": [
+        "en skills has the 8 groups of cv.md > Skills in the same order and with the same items (Front-end, Mobile, Back-end and data, Architecture, Cloud and CI/CD, Quality and security, Applied AI, Practices)",
+        "pt-BR skills has the 8 groups of cv.pt-BR.md > Competências in the same order, with the same items as en (only group names and generic terms translated)",
+        "#skills renders 8 groups in both locales with no horizontal scroll at 375px, and yarn typecheck, yarn lint and yarn build pass"
+      ],
+      "dependsOn": [
+        "T-018",
+        "T-028"
+      ],
+      "notes": [
+        "2026-11-24 rodada 6 (PO): reconciliation of cv.md change (skills went from 5 to 8 groups, aligned with the pt-BR CV). Done tasks T-010, T-016 and T-017 are not reopened. The T-031 rule for odd group counts is generic, so it still applies."
+      ]
+    },
+    {
+      "status": "todo",
+      "attempts": 0,
+      "commit": null,
+      "id": "T-035",
+      "title": "Make canonical, og:url, hreflang and og:image absolute from a validated site URL",
+      "type": "infra",
+      "priority": "P1",
+      "touchesUi": false,
+      "acceptance": [
+        ".env.production defines SITE_URL=https://www.matheuscfrancisco.dev.br, and vite.config.ts validates it (absolute https URL, no path, no trailing slash) and fails the build with a clear message if it is missing or invalid",
+        "dist/en/index.html and dist/pt/index.html each have <link rel=\"canonical\">, og:url and hreflang en, pt-BR and x-default pointing to absolute URLs on https://www.matheuscfrancisco.dev.br (/en/, /pt/ and /)",
+        "og:image in dist/index.html, dist/en/index.html and dist/pt/index.html is an absolute https URL on the canonical domain that resolves to a file in dist/",
+        "The domain string appears only in .env.production (not in src/, index.html, en/index.html or pt/index.html), and the \"become absolute once the production domain is defined\" comments are gone",
+        "yarn typecheck, yarn lint and yarn build pass"
+      ],
+      "dependsOn": [
+        "T-015",
+        "T-028"
+      ],
+      "notes": [
+        "2026-11-24 rodada 6 (PO): reconciliation of cv.md > Domínio (stakeholder: www.matheuscfrancisco.dev.br canonical, apex redirects 301 to www). P1 because relative og:image and og:url break the LinkedIn/WhatsApp preview, which is how recruiters receive the link. PO decision: the URL is public configuration, not a secret, so it is committed in .env.production (Vite loads it on build, Railway needs no extra variable); validation is a small check in vite.config.ts with the URL constructor, no Zod dependency for a single build-time value. DNS records and the apex redirect are the stakeholder's (REPORT pending item), not a task."
+      ]
+    },
+    {
+      "status": "todo",
+      "attempts": 0,
+      "commit": null,
+      "id": "T-036",
+      "title": "Derive years of experience from the career start dates",
+      "type": "feature",
+      "priority": "P1",
+      "touchesUi": true,
+      "acceptance": [
+        "A helper in src/lib/ returns complete years between a YYYY-MM start and a given date, and the two start dates (career 2018-07, development 2019-11, from cv.md > Anos de experiência) live once in src/content/, not in components",
+        "The tagline and the summary in both locales get their numbers from the helper (content functions receiving the number); on 2026-11-24 they render \"8 years from support to senior engineering\" / \"8 anos do suporte à engenharia sênior\" and \"7+ years\" / \"mais de 7 anos\"",
+        "The meta and og descriptions in index.html, en/index.html and pt/index.html are filled at build time from the same helper (no literal \"7+\" or \"7 anos\" left in those source files)",
+        "grep finds no hardcoded \"8 years\", \"8 anos\", \"7+ years\" or \"mais de 7 anos\" in src/content/, and yarn typecheck, yarn lint and yarn build pass"
+      ],
+      "dependsOn": [
+        "T-033",
+        "T-035"
+      ],
+      "notes": [
+        "2026-11-24 rodada 6 (PO): reconciliation of cv.md > Anos de experiência (stakeholder: \"faça a conta com meu histórico\"; cv.md asks the site to compute both numbers from the dates). Depends on T-033 because both edit the summary strings, and on T-035 because both edit the HTML build step in vite.config.ts. PO decision: the static HTML descriptions are computed at build time; Railway rebuilds on every publishable push, and \"N+\" stays true between builds."
+      ]
+    },
+    {
+      "status": "todo",
+      "attempts": 0,
+      "commit": null,
+      "id": "T-037",
+      "title": "Add robots.txt and sitemap.xml with the canonical URLs",
+      "type": "infra",
+      "priority": "P2",
+      "touchesUi": false,
+      "acceptance": [
+        "dist/robots.txt allows all crawlers and points to the absolute sitemap URL on the canonical domain",
+        "dist/sitemap.xml lists /en/ and /pt/ with absolute URLs and xhtml:link alternates for en, pt-BR and x-default",
+        "Both files are generated from SITE_URL (T-035), with no domain string hardcoded outside .env.production, and yarn build passes"
+      ],
+      "dependsOn": [
+        "T-035"
+      ],
+      "notes": [
+        "2026-11-24 rodada 6 (PO): PO decision: follows the canonical domain so search engines index /en/ and /pt/ as alternates of each other."
+      ]
+    },
+    {
+      "status": "todo",
+      "attempts": 0,
+      "commit": null,
+      "id": "T-038",
+      "title": "Mark foreign-language passages with lang attributes",
+      "type": "fix",
+      "priority": "P1",
+      "touchesUi": true,
+      "acceptance": [
+        "The content types carry the language of passages that differ from the page locale (e.g. an optional lang field on book titles/authors and roadmap terms); components only render it, they do not decide it",
+        "On /en/, every book title and author written in Portuguese is rendered inside an element with lang=\"pt-BR\"",
+        "On /pt/, the roadmap terms \"Senior Front-End Engineer\", \"Full-stack ownership\", \"Frontend system design\" and \"AI engineering\" are rendered inside an element with lang=\"en\"",
+        "axe-core on /en/ and /pt/ reports no new violations compared with the previous commit, and yarn typecheck, yarn lint and yarn build pass"
+      ],
+      "dependsOn": [
+        "T-025",
+        "T-027",
+        "T-028"
+      ],
+      "notes": [
+        "2026-11-24 rodada 6 (PO): PO decision on the REPORT rodada 5 review items T-025 (English terms in pt-BR) and T-026/T-027 (Portuguese book titles on /en/): keep the original text (the books are the editions read, per T-026; the roadmap terms are the job-market names) and mark the language. P1 because WCAG 3.1.2 (Language of Parts, AA) is the project bar and screen readers mispronounce these passages today."
+      ]
+    },
+    {
+      "status": "todo",
+      "attempts": 0,
+      "commit": null,
+      "id": "T-039",
+      "title": "Polish book progress bars for Safari and track contrast",
+      "type": "fix",
+      "priority": "P2",
+      "touchesUi": true,
+      "acceptance": [
+        "The <progress> element in #books has appearance-none and styled track/value for both -webkit- and -moz- pseudo-elements, so Safari shows the same rounded bar as Chrome",
+        "The track uses a design token with at least 3:1 contrast against the card background, and the computed ratio is written in the task summary",
+        "The percentage text next to each bar stays, and yarn typecheck, yarn lint and yarn build pass"
+      ],
+      "dependsOn": [
+        "T-027",
+        "T-028"
+      ],
+      "notes": [
+        "2026-11-24 rodada 6 (PO): PO decision on the REPORT rodada 5 T-027 polish item. P2 because the percentage is already shown as text. The missing bar on \"A Maneira Rápida e Fácil de Falar com Eficácia\" depends on livros.md having a percentage and stays a review item."
+      ]
+    },
+    {
+      "status": "todo",
+      "attempts": 0,
+      "commit": null,
+      "id": "T-040",
+      "title": "Move focus to the section opened by a URL hash",
+      "type": "fix",
+      "priority": "P2",
+      "touchesUi": true,
+      "acceptance": [
+        "Opening /en/#contact or /pt/#experience scrolls to the section and moves focus to it (tabindex=\"-1\" on the target, focus with preventScroll), so the next Tab lands inside that section",
+        "The programmatically focused section shows no focus ring, and keyboard focus rings elsewhere are unchanged",
+        "Clicking a nav link keeps scrolling to the section and also moves focus to it, and yarn typecheck, yarn lint and yarn build pass"
+      ],
+      "dependsOn": [
+        "T-029"
+      ],
+      "notes": [
+        "2026-11-24 rodada 6 (PO): PO decision on the REPORT rodada 5 \"Sem tarefa: T-029 e T-023\" item (focus part). P2: scroll already works; this fixes keyboard and screen reader continuity."
+      ]
+    },
+    {
+      "status": "todo",
+      "attempts": 0,
+      "commit": null,
+      "id": "T-041",
+      "title": "Close the mobile menu on outside tap, including iOS Safari",
+      "type": "fix",
+      "priority": "P2",
+      "touchesUi": true,
+      "acceptance": [
+        "With the mobile menu open, a pointerdown outside the panel and the toggle button closes it, touch devices included (pointer events on document, not click)",
+        "Closing by outside tap does not steal focus when the tap landed on another focusable element, and Escape still closes and returns focus to the toggle",
+        "The listener is attached only while the menu is open and removed on close/unmount, and yarn typecheck, yarn lint and yarn build pass"
+      ],
+      "dependsOn": [
+        "T-023"
+      ],
+      "notes": [
+        "2026-11-24 rodada 6 (PO): PO decision on the REPORT rodada 5 \"Sem tarefa: T-029 e T-023\" item (iOS part): the T-023 summary cited an outside-tap listener that does not exist in Header.tsx."
+      ]
+    },
+    {
+      "status": "todo",
+      "attempts": 0,
+      "commit": null,
+      "id": "T-042",
+      "title": "Keep the header on one line and tie section scroll offset to its height",
+      "type": "fix",
+      "priority": "P2",
+      "touchesUi": true,
+      "acceptance": [
+        "The brand \"Matheus Costa Francisco\" does not wrap at 1024px and 1280px in either locale, and the pt-BR nav does not overflow the header at 1024px",
+        "Section scroll-margin-top comes from a single CSS variable for the header height (no separate hardcoded scroll-mt-20), and the rendered header height never exceeds it",
+        "No horizontal scroll at 375px, 768px and 1024px in /en/ and /pt/, and yarn typecheck, yarn lint and yarn build pass"
+      ],
+      "dependsOn": [
+        "T-023",
+        "T-025"
+      ],
+      "notes": [
+        "2026-11-24 rodada 6 (PO): PO decision on the REPORT rodada 5 \"Sem tarefa: header\" item: the header reaches ~103px in pt-BR, above the 80px scroll offset, so anchored sections land under the header."
       ]
     }
   ]
