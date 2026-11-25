@@ -91,6 +91,11 @@ export interface UiStrings {
     readonly stagesHeading: string
     readonly status: Record<'done' | 'current' | 'upcoming', string>
   }
+  readonly books: {
+    readonly heading: string
+    readonly groups: Record<'reading' | 'read' | 'wantToRead', string>
+    readonly seriesBooks: string
+  }
   readonly opensInNewTab: string
   readonly footerRights: string
 }

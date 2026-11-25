@@ -186,6 +186,7 @@ export const ptBR = {
       stagesHeading: 'Etapas',
       status: { done: 'Concluída', current: 'Em andamento', upcoming: 'Adiante' },
     },
+    books: { heading: 'Livros', groups: { reading: 'Lendo agora', read: 'Lidos', wantToRead: 'Quero ler' }, seriesBooks: 'livros' },
     opensInNewTab: '(abre em nova aba)',
     footerRights: '©',
   },

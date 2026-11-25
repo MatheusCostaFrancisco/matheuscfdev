@@ -186,6 +186,7 @@ export const en = {
       stagesHeading: 'Stages',
       status: { done: 'Done', current: 'In progress', upcoming: 'Ahead' },
     },
+    books: { heading: 'Books', groups: { reading: 'Reading now', read: 'Read', wantToRead: 'Want to read' }, seriesBooks: 'books' },
     opensInNewTab: '(opens in a new tab)',
     footerRights: '©',
   },
