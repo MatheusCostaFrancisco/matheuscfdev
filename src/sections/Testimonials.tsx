@@ -21,7 +21,7 @@ function TestimonialCard({ testimonial }: TestimonialCardProps) {
   }).format(new Date(testimonial.date));
 
   return (
-    <figure className="min-w-0 rounded-2xl border border-line bg-surface-raised p-5 shadow-sm sm:p-6">
+    <figure data-reveal-item className="min-w-0 rounded-2xl border border-line bg-surface-raised p-5 shadow-sm sm:p-6">
       {translated && (
         <p className="mb-3 inline-block rounded-2xl bg-surface-sunken px-3 py-1 text-sm font-medium text-fg-muted">
           {ui.testimonials.translatedLabel}

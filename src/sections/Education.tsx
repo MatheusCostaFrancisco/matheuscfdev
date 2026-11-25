@@ -17,7 +17,7 @@ export function Education() {
       </h2>
       <ul className="mt-8 space-y-6">
         {education.map((entry) => (
-          <li key={`${entry.institution}-${entry.course}`} className="min-w-0">
+          <li key={`${entry.institution}-${entry.course}`} data-reveal-item className="min-w-0">
             <h3 className="text-xl font-semibold text-fg">{entry.course}</h3>
             <p className="mt-1 text-base font-medium text-accent-700">
               {entry.institution}

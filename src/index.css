@@ -206,23 +206,32 @@
 }
 
 /*
- * Entrance animation for page sections: opacity + transform only, 400ms max.
- * Pure CSS, no observer or JS state: if the animation never runs, the section
- * is already visible. Gated on no-preference so reduce users see no motion.
+ * Scroll-triggered reveal (src/lib/use-reveal.ts): opacity + transform only,
+ * 16px max, 400ms. The hidden state exists only while JS has set
+ * data-reveal="hidden", so without JS, without IntersectionObserver or under
+ * reduced motion the content is simply visible.
  */
-@keyframes section-enter {
-  from {
-    opacity: 0;
-    transform: translateY(0.75rem);
-  }
-  to {
-    opacity: 1;
-    transform: none;
-  }
+[data-reveal] {
+  transition:
+    opacity 400ms ease-out var(--reveal-delay, 0ms),
+    transform 400ms ease-out var(--reveal-delay, 0ms);
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  main > section {
-    animation: section-enter 400ms ease-out backwards;
+[data-reveal="hidden"] {
+  opacity: 0;
+  transform: translateY(1rem);
+}
+
+[data-reveal="hidden"]:focus-within {
+  opacity: 1;
+  transform: none;
+  transition: none;
+}
+
+@media print {
+  [data-reveal] {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
   }
 }

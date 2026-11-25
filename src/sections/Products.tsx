@@ -32,7 +32,7 @@ export function Products() {
       </h2>
       <ul className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {products.map((product) => (
-          <li key={product.name} className="flex">
+          <li key={product.name} data-reveal-item className="flex">
             <article className={cn(cardClass, "w-full min-w-0", product.url && interactiveCardClass)}>
               <h3 className="text-xl font-semibold text-fg">{product.name}</h3>
               {product.role ? (

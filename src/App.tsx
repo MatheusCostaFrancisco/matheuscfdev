@@ -1,6 +1,7 @@
 import { useEffect, type ComponentType } from "react";
 import type { Page } from "./lib/routes";
 import { scrollToHash } from "./lib/scroll-to-hash";
+import { useReveal } from "./lib/use-reveal";
 import { Footer } from "./components/Footer";
 import { Header } from "./components/Header";
 import { SkipLink } from "./components/SkipLink";
@@ -43,6 +44,8 @@ type AppProps = {
 };
 
 function App({ page }: AppProps) {
+  useReveal();
+
   useEffect(() => {
     scrollToHash(window.location.hash);
   }, []);

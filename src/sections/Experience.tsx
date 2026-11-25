@@ -27,6 +27,7 @@ export function Experience() {
         {experience.map((job) => (
           <li
             key={`${job.company}-${job.start}`}
+            data-reveal-item
             className="relative pb-10 pl-6 last:pb-0 sm:pl-8"
           >
             <span

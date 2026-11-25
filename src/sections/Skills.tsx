@@ -25,6 +25,7 @@ export function Skills() {
           return (
             <div
               key={skill.group}
+              data-reveal-item
               className={cn(
                 "min-w-0 rounded-2xl border border-line bg-surface-raised p-6 shadow-sm",
                 hasOddGroups && isLast && "sm:col-span-2",
