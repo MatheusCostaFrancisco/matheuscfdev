@@ -595,8 +595,8 @@
       ]
     },
     {
-      "status": "todo",
-      "attempts": 0,
+      "status": "done",
+      "attempts": 1,
       "commit": null,
       "id": "T-028",
       "title": "Add .gitattributes and normalize line endings to LF",
