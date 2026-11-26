@@ -84,3 +84,31 @@ Decisão do stakeholder depois da primeira entrega: os revisores mostraram que a
 8. **Regressão da T-072.** As seções carregadas sob demanda (jornada e livros) recuperam o fade de entrada: o reveal precisa rodar depois do Suspense.
 
 Critérios de pronto adicionais: em 1280px e 375px o palco mostra pelo menos o planeta atual e o próximo, legíveis, sem nenhum card por cima; o revisor de UI precisa ver a cena com o painel do navegador **visível**, porque com ele oculto o Chrome pausa o render; axe sem violações no palco (rótulos) e na lista.
+
+## Revisão 2 — Cores do espaço e túnel sem piscar (2026-11-26)
+
+Feedback do stakeholder com a jornada publicada: "ficou bom", com duas melhorias.
+
+### 1. O túnel pisca de um jeito estranho
+
+Diagnóstico (sessão principal): o `warp-flash` em `src/index.css` termina com 85% de opacidade numa luz `accent-100` quase branca, e a página da jornada abre escura em seguida, a partir de opacidade 0. O olho vê claro → escuro → aparecendo, ou seja, uma piscada.
+
+- O túnel **não pode clarear a tela**: nada de flash claro no fim. Os raios são finos, azul-branco, e aceleram em direção ao centro; a tela termina escurecendo para a **mesma cor exata** do fundo da jornada.
+- A chegada começa nessa mesma cor, sem opacidade 0 sobre um fundo diferente. A cena "acende": as estrelas aparecem e a câmera aterrissa.
+- Nenhum frame claro entre os dois documentos: a jornada declara `color-scheme: dark`, `<meta name="theme-color">` e a cor de fundo do espaço inline no `<html>` ou `<head>` (antes de qualquer CSS ou JS), para o primeiro paint já ser escuro.
+- Duração total entre ~0,9 e 1,2 s. Com reduced motion, nada roda (como hoje).
+- O revisor de UI precisa gravar ou capturar frames do clique em Jornada a partir da home (com o painel do navegador **visível**) e confirmar que nenhum frame fica mais claro que o fundo da home ou que o fundo final da jornada.
+
+### 2. Paleta "espaço de verdade", no lugar do verde/teal
+
+Referência enviada pelo stakeholder: um globo estelar three.js (CodePen "Space globe"). Usar só como **direção visual**: não copiar o código nem usar as texturas dele, que são hospedadas por terceiros e de licença desconhecida. Tudo procedural, sem imagem externa e sem dependência nova.
+
+- **Fundo:** espaço profundo azul-marinho quase preto (ex.: `#04050d` a `#070a1a`), com uma nebulosa em azul e violeta (índigo `#1b1f5c`, violeta `#3a2470`, azul `#12306b`, toques de magenta `#7a2d7a` bem sutis) numa esfera ao redor da cena (BackSide), girando devagar. Ruído procedural em shader, não foto.
+- **Estrelas:** brancas e branco-azuladas (`#f2f5ff`, `#bcd0ff`) em sprites com brilho aditivo, de tamanhos variados. Uma camada fixa em profundidade e uma camada de estrelas que "caem" lentamente em direção ao mundo atual e reiniciam, como na referência.
+- **Mundo atual:** núcleo estelar vivo, com a superfície ondulando por ruído (deslocamento de vértices em shader), luz quente (branco → âmbar `#ffd9a0` → laranja suave `#ff9a5c`) e halo azul-violeta. Superfície visível, nunca um disco branco chapado (calibrar o bloom).
+- **Concluídos:** planetas com superfície procedural em azuis e violetas, iluminados, com anel ou selo dourado sutil (`#e8c27a`).
+- **Bloqueados:** cinza-azulado escuro (`#2a3045`), dessaturados, com névoa e cadeado.
+- **Trilha:** luz azul-branca com partículas.
+- **Chefão final:** estrela grande e quente, ou buraco negro com disco de acreção laranja e violeta.
+- **HUD e lista da jornada:** os tokens `--journey-*` (ADR 0007) migram para a paleta azul-violeta. O acento teal do resto do site (ADR 0001) fica como está. Todo texto da jornada mantém AA; registrar a mudança em ADR nova (append-only) com "Quando reabrir".
+- **Movimento:** rotação lenta automática da cena e parallax como hoje; a pausa (T-070) para tudo isso.

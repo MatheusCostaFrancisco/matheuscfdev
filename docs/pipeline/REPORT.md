@@ -55,6 +55,13 @@ Resumo: 8 entregues · 24 para revisão · 1 bloqueadas · 0 no backlog
 - [ ] **Gate com navegador** — decidir se a esteira inclui Playwright com `reducedMotion: 'reduce'`. — Sim ou não.
 - [ ] **Limpeza local** — encerrar o `vite preview` na porta 4173; `docker rmi caddy:2-alpine` no WSL, se não for mais usado; reiniciar o Docker Desktop se ainda estiver travado.
 
+## Decisões do stakeholder para a próxima rodada
+
+Tomada em 2026-11-26, depois de ver a jornada publicada ("ficou bom"). O PO cria estas tarefas antes de qualquer P2.
+
+1. **Túnel sem piscar (P1, fix).** Ver "Revisão 2 — 1" em `docs/specs/2026-11-25-jornada-ai-engineer.md`. Causa: o `warp-flash` termina claro (85% de `accent-100`) e a jornada abre escura a partir de opacidade 0. Fix: o túnel escurece até a cor exata do fundo da jornada, que já pinta escura no primeiro frame (`color-scheme`, `theme-color` e fundo inline no HTML). Revisor com o painel visível, conferindo frame a frame.
+2. **Paleta de espaço de verdade (P1, várias tarefas).** Ver "Revisão 2 — 2" na mesma spec. Sai o verde/teal da jornada; entram espaço azul-marinho, nebulosa azul-violeta procedural, estrelas brancas aditivas (fixas e caindo), mundo atual como núcleo estelar quente com superfície ondulando, concluídos em azul/violeta com selo dourado, bloqueados cinza-azulados. Tokens `--journey-*` migram com AA e ADR nova. Referência visual apenas: não copiar código nem usar texturas externas.
+
 ## Bloqueadas
 | Tarefa | Motivo | Tentativas |
 |---|---|---|
