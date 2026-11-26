@@ -123,7 +123,8 @@ function lockTexture(ink: Color): CanvasTexture {
   });
 }
 
-function nodePositions(count: number): Vector3[] {
+/** Position of every stage, in order; the camera rig flies between them. */
+export function nodePositions(count: number): Vector3[] {
   const last = Math.max(count - 1, 1);
   return Array.from({ length: count }, (_, index) => {
     const t = index / last;

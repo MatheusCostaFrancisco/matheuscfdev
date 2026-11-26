@@ -1,7 +1,10 @@
 import { useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import type { JourneyState } from "../lib/journey-state";
-import type { SceneStages } from "../lib/journey-scene/types";
+import type {
+  JourneySceneHandle,
+  SceneStages,
+} from "../lib/journey-scene/types";
 import {
   REDUCED_MOTION_QUERY,
   canRenderJourneyScene,
@@ -20,15 +23,21 @@ import {
  *
  * Rendered into <body> so no transformed ancestor (scroll reveal) turns the
  * fixed layer into a local one.
+ *
+ * The camera follows `activeIndex` (the stage being read or focused).
  */
 type JourneySceneProps = {
   state: JourneyState;
+  activeIndex: number;
 };
 
-export function JourneyScene({ state }: JourneySceneProps) {
+export function JourneyScene({ state, activeIndex }: JourneySceneProps) {
   const hostRef = useRef<HTMLDivElement>(null);
   const stagesRef = useRef<SceneStages>(state);
   stagesRef.current = state;
+  const indexRef = useRef(activeIndex);
+  indexRef.current = activeIndex;
+  const handleRef = useRef<JourneySceneHandle | null>(null);
   // Statuses do not depend on the locale: remount only when they change.
   const stagesKey = [...state.worlds, state.finalBoss]
     .map((stage) => `${stage.id}:${stage.status}`)
@@ -39,18 +48,23 @@ export function JourneyScene({ state }: JourneySceneProps) {
     if (host === null) return;
 
     const motion = window.matchMedia(REDUCED_MOTION_QUERY);
-    let teardown: (() => void) | null = null;
+    let mounted: JourneySceneHandle | null = null;
     // Bumped on every stop, so an import that resolves late is ignored.
     let generation = 0;
 
     const start = () => {
-      if (teardown !== null || !canRenderJourneyScene()) return;
+      if (mounted !== null || !canRenderJourneyScene()) return;
       generation += 1;
       const ticket = generation;
       import("../lib/journey-scene/scene")
         .then(({ mountJourneyScene }) => {
-          if (ticket !== generation || teardown !== null) return;
-          teardown = mountJourneyScene(host, stagesRef.current);
+          if (ticket !== generation || mounted !== null) return;
+          mounted = mountJourneyScene(
+            host,
+            stagesRef.current,
+            indexRef.current,
+          );
+          handleRef.current = mounted;
         })
         .catch(() => {
           // Chunk failed to load or WebGL could not start: keep the HTML map.
@@ -59,8 +73,9 @@ export function JourneyScene({ state }: JourneySceneProps) {
 
     const stop = () => {
       generation += 1;
-      teardown?.();
-      teardown = null;
+      mounted?.dispose();
+      mounted = null;
+      handleRef.current = null;
     };
 
     // Back/forward cache: pagehide tears the scene down, pageshow restores it.
@@ -83,6 +98,10 @@ export function JourneyScene({ state }: JourneySceneProps) {
       stop();
     };
   }, [stagesKey]);
+
+  useEffect(() => {
+    handleRef.current?.focusStage(activeIndex);
+  }, [activeIndex]);
 
   return createPortal(
     <div

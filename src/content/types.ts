@@ -90,6 +90,7 @@ export interface UiStrings {
     readonly totalXp: string
     readonly worldsCompleted: string
     readonly legendHeading: string
+    readonly keyboardHint: string
     readonly worldsHeading: string
     readonly worldLabel: string
     readonly status: Record<'completed' | 'current' | 'locked', string>

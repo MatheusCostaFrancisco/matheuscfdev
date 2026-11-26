@@ -196,6 +196,7 @@ export const createEn = (years: ExperienceYears): SiteContent => ({
       totalXp: 'Total XP',
       worldsCompleted: 'Worlds completed',
       legendHeading: 'Legend',
+      keyboardHint: 'Use the arrow keys to move between worlds.',
       worldsHeading: 'Worlds',
       worldLabel: 'World',
       status: { completed: 'Completed', current: 'Current', locked: 'Locked' },

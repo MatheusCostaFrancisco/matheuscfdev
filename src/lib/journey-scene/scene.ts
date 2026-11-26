@@ -2,9 +2,15 @@
 // import() from src/components/JourneyScene.tsx, so three stays out of the
 // main chunk.
 import { Color, FogExp2, PerspectiveCamera, Scene, WebGLRenderer } from "three";
-import { createPlanets } from "./planets";
+import { createCameraRig } from "./camera";
+import { createPlanets, nodePositions } from "./planets";
 import { createStarfield } from "./starfield";
-import type { SceneLayer, ScenePalette, SceneStages } from "./types";
+import type {
+  JourneySceneHandle,
+  SceneLayer,
+  ScenePalette,
+  SceneStages,
+} from "./types";
 
 export const MAX_PIXEL_RATIO = 2;
 const MAX_FRAME_DELTA = 0.1; // seconds; avoids a jump after a long frame
@@ -30,9 +36,14 @@ function readPalette(host: HTMLElement): ScenePalette | null {
   return { space, star, current, completed, locked, nebula };
 }
 
-function noop(): void {
-  // Nothing was created, so there is nothing to free.
-}
+const inertHandle: JourneySceneHandle = {
+  focusStage() {
+    // Nothing was created, so there is nothing to move.
+  },
+  dispose() {
+    // Nothing was created, so there is nothing to free.
+  },
+};
 
 /**
  * Mounts the scene canvas inside `host` and returns its teardown. The render
@@ -40,14 +51,16 @@ function noop(): void {
  * MAX_PIXEL_RATIO. Teardown (idempotent) stops the loop, disposes every layer
  * (geometries, materials, textures) and the renderer, releases the WebGL
  * context and removes the canvas. A lost WebGL context tears the scene down
- * too, leaving the HTML map as the view.
+ * too, leaving the HTML map as the view. The camera starts on the stage at
+ * `initialIndex` and `focusStage` flies it to another one.
  */
 export function mountJourneyScene(
   host: HTMLElement,
   stages: SceneStages,
-): () => void {
+  initialIndex: number,
+): JourneySceneHandle {
   const palette = readPalette(host);
-  if (palette === null) return noop;
+  if (palette === null) return inertHandle;
 
   const renderer = new WebGLRenderer({ antialias: false, alpha: false });
   renderer.setClearColor(palette.space, 1);
@@ -63,6 +76,11 @@ export function mountJourneyScene(
     createPlanets(palette, stages),
   ];
   for (const layer of layers) scene.add(layer.object);
+  const rig = createCameraRig(
+    camera,
+    nodePositions(stages.worlds.length + 1),
+    initialIndex,
+  );
 
   const resize = () => {
     const width = Math.max(host.clientWidth, 1);
@@ -81,6 +99,7 @@ export function mountJourneyScene(
     const delta = Math.min((now - last) / 1000, MAX_FRAME_DELTA);
     last = now;
     for (const layer of layers) layer.update(delta);
+    rig.update(delta);
     renderer.render(scene, camera);
     if (!shown) {
       shown = true;
@@ -110,6 +129,7 @@ export function mountJourneyScene(
     if (disposed) return;
     disposed = true;
     pause();
+    rig.dispose();
     window.removeEventListener("resize", resize);
     document.removeEventListener("visibilitychange", onVisibilityChange);
     canvas.removeEventListener("webglcontextlost", onContextLost);
@@ -134,5 +154,5 @@ export function mountJourneyScene(
   resize();
   play();
 
-  return dispose;
+  return { focusStage: rig.focusStage, dispose };
 }

@@ -1457,8 +1457,8 @@
       "dependsOn": [
         "T-064"
       ],
-      "status": "todo",
-      "attempts": 0,
+      "status": "done",
+      "attempts": 1,
       "commit": null,
       "notes": [
         "2026-11-25 rodada 9 (PO): Spec docs/specs/2026-11-25-jornada-ai-engineer.md Goals 4 and 7, edge case \"Link com hash vindo de fora\"."

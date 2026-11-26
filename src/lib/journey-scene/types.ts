@@ -24,3 +24,10 @@ export type SceneLayer = {
   update(delta: number): void;
   dispose(): void;
 };
+
+/** What the React shell can do with a mounted scene. */
+export type JourneySceneHandle = {
+  /** Moves the camera to the stage at `index` (clamped to the stage count). */
+  focusStage(index: number): void;
+  dispose(): void;
+};

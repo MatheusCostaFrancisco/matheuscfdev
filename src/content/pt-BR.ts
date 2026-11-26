@@ -196,6 +196,7 @@ export const createPtBR = (years: ExperienceYears): SiteContent => ({
       totalXp: 'XP total',
       worldsCompleted: 'Mundos concluídos',
       legendHeading: 'Legenda',
+      keyboardHint: 'Use as setas do teclado para se mover entre os mundos.',
       worldsHeading: 'Mundos',
       worldLabel: 'Mundo',
       status: { completed: 'Concluído', current: 'Atual', locked: 'Bloqueado' },

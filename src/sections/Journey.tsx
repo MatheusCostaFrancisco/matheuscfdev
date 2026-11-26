@@ -7,6 +7,7 @@ import { journeyState, type JourneyStatus } from "../lib/journey-state";
 import { langAttr } from "../lib/lang-attr";
 import { useLocale } from "../lib/locale-context";
 import { useContent } from "../lib/use-content";
+import { useActiveStage } from "../lib/use-active-stage";
 import { useJourneyProgress } from "../lib/use-journey-progress";
 
 const legendStatuses: readonly JourneyStatus[] = [
@@ -202,6 +203,7 @@ function StageCard({
       id={id}
       aria-labelledby={headingId}
       aria-current={status === "current" ? "step" : undefined}
+      tabIndex={0}
       className={cn(cardClass, cardTone(status))}
     >
       <Marker status={status} />
@@ -235,11 +237,14 @@ export function Journey() {
   const item = navigation.find((nav) => nav.id === "journey");
   const trackRef = useRef<HTMLDivElement>(null);
   const fillRef = useRef<HTMLDivElement>(null);
+  const listRef = useRef<HTMLOListElement>(null);
   useJourneyProgress(trackRef, fillRef);
+  const { destination, worlds, finalBoss } = journey[locale];
+  const stageIds = [...worlds.map((world) => world.id), finalBoss.id];
+  const activeIndex = useActiveStage(stageIds, listRef);
 
   if (!item) return null;
 
-  const { destination, worlds, finalBoss } = journey[locale];
   const text = ui.journey;
   const state = journeyState(worlds, finalBoss);
   const lastWorld = worlds[worlds.length - 1];
@@ -250,7 +255,7 @@ export function Journey() {
       aria-labelledby="journey-title"
       className="section-offset py-10"
     >
-      <JourneyScene state={state} />
+      <JourneyScene state={state} activeIndex={activeIndex} />
       <h1
         id="journey-title"
         className="text-3xl font-bold text-fg sm:text-4xl [overflow-wrap:anywhere]"
@@ -320,7 +325,14 @@ export function Journey() {
             className="journey-fill h-full w-full bg-journey-completed"
           />
         </div>
-        <ol className="space-y-4 pl-8">
+        <p id="journey-keyboard-hint" className="sr-only">
+          {text.keyboardHint}
+        </p>
+        <ol
+          ref={listRef}
+          aria-describedby="journey-keyboard-hint"
+          className="space-y-4 pl-8"
+        >
           {worlds.map((world, index) => {
             const stage = state.worlds[index];
             if (!stage) return null;
