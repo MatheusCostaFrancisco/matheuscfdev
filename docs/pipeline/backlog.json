@@ -299,7 +299,8 @@
         "2026-11-25 rodada 7 retomada (PO): content/assets/profile.jpg unchanged since dc647ca and the photo pending item is still [ ]. Stays blocked.",
         "2026-11-25 rodada 8 (PO): content/assets/profile.jpg still unchanged since dc647ca and the photo pending item is still [ ]. Stays blocked.",
         "2026-11-25 rodada 9 (PO): content/assets/profile.jpg still unchanged since dc647ca and the photo pending item is still [ ]. Stays blocked.",
-        "2026-11-26 rodada 10 (PO): content/assets/profile.jpg still unchanged since dc647ca and the photo pending item is still [ ]. Stays blocked."
+        "2026-11-26 rodada 10 (PO): content/assets/profile.jpg still unchanged since dc647ca and the photo pending item is still [ ]. Stays blocked.",
+        "2026-11-26 rodada 11 (PO): content/assets/profile.jpg still unchanged since dc647ca and the photo pending item is still [ ]. Stays blocked."
       ]
     },
     {
@@ -1532,7 +1533,8 @@
       "commit": null,
       "notes": [
         "2026-11-25 rodada 9 (PO): Spec docs/specs/2026-11-25-jornada-ai-engineer.md step (f), stakeholder \"intensidade máxima\" on this page.",
-        "2026-11-26 rodada 10 (PO): stakeholder marked [x] \"Limite de aviso do chunk\" in REPORT with the decision to raise chunkSizeWarningLimit only as needed, justified in ADR 0009, inside T-068. Added as acceptance 5; bloom adds to the scene chunk, so the limit is set here."
+        "2026-11-26 rodada 10 (PO): stakeholder marked [x] \"Limite de aviso do chunk\" in REPORT with the decision to raise chunkSizeWarningLimit only as needed, justified in ADR 0009, inside T-068. Added as acceptance 5; bloom adds to the scene chunk, so the limit is set here.",
+        "2026-11-26 rodada 11 (PO): T-066 is done (2eafbcf, finished by the main session from the stash with the data-scene-pick allowlist), so all dependencies are done. Current scene chunk: 523.86 kB min / 135.98 kB gzip before bloom."
       ]
     },
     {
@@ -1599,6 +1601,30 @@
       "commit": null,
       "notes": [
         "2026-11-26 rodada 10 (PO): decision: the spec asks for maximum intensity on this page and a visible 3D map, but REPORT T-063/T-064 says the 70% scrim and opaque cards hide almost all of it. The PO picks the direction (scene visible, AA kept); the exact values (scrim around 55%, translucent or narrower cards) are left to the dev as long as the measured contrast passes. Depends on T-068 because bloom changes the brightest pixel."
+      ]
+    },
+    {
+      "id": "T-072",
+      "title": "Lazy-load the journey and books pages to bring the home entry JS back under the ADR 0009 budget",
+      "type": "fix",
+      "priority": "P1",
+      "touchesUi": true,
+      "acceptance": [
+        "src/App.tsx loads the Journey and Books page components with React.lazy/dynamic import, so src/sections/Journey.tsx, src/components/JourneyParts.tsx, src/components/WorldDialog.tsx, src/components/JourneyScene.tsx and src/sections/Books.tsx are not in main-*.js; the home teasers keep showing the current world, XP and book from src/content",
+        "yarn build shows main-*.js + warp-*.js at or below 93.58 kB gzip in total (measured 95.64 kB on 2026-11-26), and ADR 0009 gets a dated addendum with the before/after table",
+        "dist/en/index.html and dist/pt/index.html do not reference or modulepreload the journey or books chunks",
+        "/en/journey/, /pt/jornada/, /en/books/ and /pt/livros/ render with no layout shift from the Suspense fallback (fallback reserves the main area with min-h-[100dvh]), the URL hash focus of T-040 still works on them, and the light tunnel of T-067 still plays",
+        "yarn typecheck, yarn lint, yarn test and yarn build pass"
+      ],
+      "dependsOn": [
+        "T-066",
+        "T-067"
+      ],
+      "status": "todo",
+      "attempts": 0,
+      "commit": null,
+      "notes": [
+        "2026-11-26 rodada 11 (PO): decision on the REPORT pending item \"Orçamento do chunk principal (ADR 0009)\", still [ ]: with T-066 merged the home downloads 94.65 kB (main) + 0.99 kB (warp) = 95.64 kB gzip of entry JS, 2.06 kB over the 93.58 kB budget, so option (a) of raising the limit to 94.5 kB no longer covers it. The PO picks option (b), cutting weight, because the home is the recruiter page and today it ships the whole journey page code it never renders. Rough esbuild estimate of the journey modules alone: ~6.4 kB gzip standalone, plus ~1 kB for Books, enough to clear the 2.06 kB gap. If the stakeholder prefers raising the budget, he can write it next to the pending item and this task gets reviewed."
       ]
     }
   ]
