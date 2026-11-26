@@ -1,79 +1,113 @@
 ---
-source: Artifact "Plano de Desenvolvimento 2027 — Matheus" (https://claude.ai/artifact/QQ7vAP7xYuMMk8gLcUSq1D), versão pública aprovada pelo stakeholder em 2026-11-24
+source: Notion "Jornada para AI Engineer" (antes "Roadmap de Estudos — Carreira Dev 2027"), trilha aprovada pelo stakeholder em 2026-11-25
+notion: https://app.notion.com/p/421fd417a7b281359a5ee538cc81fdad
 ---
 
-# Roadmap de estudos 2027
+# Jornada para AI Engineer
 
-Fonte de verdade para a seção de roadmap do site. Versão **pública**: não citar nome de produto interno do empregador, pedidos ao gestor nem "o que a empresa ganha".
+Fonte de verdade da página **Jornada** do site (antiga Roadmap 2027). Versão **pública**: não citar produto interno do empregador, salário, pedidos ao gestor nem "o que a empresa ganha". Manda Aí e WoodFlow podem ser citados (são produtos próprios, públicos no `cv.md`).
 
-## Apresentação no site
-
-Mostrar como uma **jornada do herói**: um caminho com etapas (aquecimento → 4 trimestres → destino), cada etapa com tema, o que estudo e o entregável que prova a etapa. O estado de cada etapa (concluída / em andamento / à frente) é derivado da data atual; antes de jan/2027, "Aquecimento" é a etapa em andamento.
+**Sem prazos.** Não publicar datas, trimestres, horas por semana nem duração de estudo. O avanço é pelo checklist, não pelo calendário.
 
 ## Destino
 
 - **De:** Senior Front-End Engineer
-- **Para:** Product Engineer full-stack com IA
-- **Frase:** Continuo dono do frontend. Passo a resolver o problema inteiro: dado, infra, qualidade e IA aplicada ao produto.
+- **Para:** AI Engineer
+- **Frase:** Já entendo os conceitos. Agora levo IA para produção: medida, avaliada e observável.
 
-## Por que agora
+## Regras do jogo
 
-O que o mercado pede de um engenheiro sênior:
+- A jornada tem mundos em sequência. Cada mundo tem itens de estudo (checklist) e um **chefão**: um entregável público.
+- XP do mundo = itens marcados `[x]` ÷ total de itens do mundo.
+- O mundo está **concluído** quando o chefão está marcado `[x]` (com link, se houver). Concluir um mundo destrava o próximo.
+- O primeiro mundo não concluído é o **atual**. Os seguintes ficam **bloqueados**.
+- Para atualizar o progresso, basta marcar `[x]` neste arquivo (e no Notion). O site deriva tudo daqui.
 
-| Pilar | Descrição |
-|---|---|
-| Full-stack ownership | Ser dono da feature de ponta a ponta |
-| Frontend system design | Estado em escala, performance e arquitetura de componentes |
-| Julgamento sobre IA | Verificar código gerado, gerir agentes e mitigar defeitos — não só gerar mais rápido |
+## Mundo 0 · Como LLMs pensam
 
-## Método
+- [ ] Tokenização e sampling (temperature, top-p, logprobs)
+- [ ] Atenção, janela de contexto e KV cache
+- [ ] Embeddings e similaridade
+- [ ] Python para IA (Pydantic, async, uv)
+- [ ] **Chefão:** artigo explicando um LLM por dentro, com diagramas próprios
 
-- 2 horas por dia, seg a sex (10h por semana), fora do expediente
-- 12 meses, um tema por trimestre
-- 4 entregáveis públicos no ano
-- Regra: trimestre sem design doc, ADR, POC ou artigo público não fecha
-- Retro na última semana de cada trimestre
+## Mundo 1 · LLM em produção
 
-| Dias | Bloco | O que acontece |
-|---|---|---|
-| Seg · Qua · Sex | Trilha do trimestre (6h) | Estudo profundo do tema principal |
-| Ter | IA aplicada (2h) | Agentes, evals e spec-driven, sempre num projeto real |
-| Qui | Entregável (2h) | Design doc, ADR, POC ou artigo |
+- [ ] Structured outputs
+- [ ] Tool use
+- [ ] Streaming
+- [ ] Prompt caching
+- [ ] Escolha de modelo por custo e latência
+- [ ] Context engineering
+- [ ] **Chefão:** feature de IA no Manda Aí ou no WoodFlow com custo e latência medidos
 
-## Etapas
+## Mundo 2 · RAG e dados
 
-### 0 · Aquecimento — dez/2026
+- [ ] Chunking
+- [ ] pgvector
+- [ ] Busca híbrida (BM25 + vetor)
+- [ ] Reranking
+- [ ] Query rewriting
+- [ ] GraphRAG
+- [ ] Métricas de retrieval (recall@k, MRR)
+- [ ] **Chefão:** RAG sobre documentos reais com as métricas publicadas
 
-Fechar o MBA e mapear as lacunas reais do dia a dia.
+## Mundo 3 · Agentes e MCP
 
-### 1 · Q1 (jan–mar) — Frontend profundo
+- [ ] Loop de agente
+- [ ] Design de ferramentas
+- [ ] Servidor MCP próprio
+- [ ] Orquestração multi-agente
+- [ ] Memória
+- [ ] Human-in-the-loop
+- [ ] Com framework e sem framework
+- [ ] **Chefão:** agente com MCP próprio resolvendo uma tarefa real
 
-- Estudo: system design, Core Web Vitals, TypeScript avançado, Playwright
-- Semanas 1–3: performance (browser internals, Core Web Vitals, code splitting e bundle)
-- Semanas 4–7: arquitetura e TypeScript (estado em escala, cache de dados, módulos, contratos tipados com zod)
-- Semanas 8–10: qualidade e segurança (estratégia de testes, Playwright no CI, XSS, CSP, acessibilidade)
-- Semanas 11–12: consolidação e retro
-- **Entregável:** design doc de um editor de fluxos em produção + artigo publicado
+## Mundo 4 · Evals e segurança
 
-### 2 · Q2 (abr–jun) — Full-stack ownership
+- [ ] Dataset de eval
+- [ ] LLM-as-judge com rubrica
+- [ ] Evals de regressão no CI
+- [ ] Avaliação offline e online
+- [ ] Alucinação
+- [ ] Prompt injection e red teaming
+- [ ] **Chefão:** suíte de evals rodando no CI de um projeto
 
-- Estudo: AWS Solutions Architect, Postgres e modelagem, observabilidade
-- **Entregável:** certificação AWS Solutions Architect + uma feature entregue de ponta a ponta
+## Mundo 5 · LLMOps
 
-### 3 · Q3 (jul–set) — AI engineering
+- [ ] Tracing (OpenTelemetry, Langfuse)
+- [ ] Versionamento de prompt
+- [ ] Fallback entre modelos
+- [ ] Rate limit
+- [ ] Controle de custo
+- [ ] A/B de prompt
+- [ ] **Chefão:** painel de observabilidade de um sistema de IA em produção
 
-- Estudo: evals, orquestração multi-agente, MCP, RAG
-- **Entregável:** agente com evals e métricas de qualidade
+## Mundo 6 · Por dentro dos modelos
 
-### 4 · Q4 (out–dez) — Arquitetura e influência
+- [ ] Fine-tuning com LoRA
+- [ ] Distillation
+- [ ] Modelos open-weight
+- [ ] Inferência local (vLLM, Ollama)
+- [ ] Quantização
+- [ ] Multimodal (visão e voz)
+- [ ] Quando fazer fine-tuning e quando usar RAG
+- [ ] **Chefão:** modelo ajustado comparado com o modelo base nos mesmos evals
 
-- Estudo: ADRs, tech talk, decisões documentadas
-- **Entregável:** portfólio de decisões técnicas
+## Mundo 7 · Produto com IA
 
-### Destino — dez/2027
+- [ ] UX de IA (streaming, incerteza, feedback)
+- [ ] Data flywheel
+- [ ] LGPD e privacidade
+- [ ] System design de sistemas de IA
+- [ ] **Chefão:** case study público de ponta a ponta
 
-Product Engineer full-stack com IA, com quatro entregáveis públicos.
+## ★ Chefão final · AI Engineer
+
+Destrava quando os 8 mundos estão concluídos.
+
+- [ ] **Entregável:** sistema de IA em produção, com evals, observabilidade e write-up público
 
 ## Links de entregáveis
 
-Cada entregável publicado ganha link aqui; até lá a etapa mostra só o entregável previsto (sem `[REVISAR]`, é esperado não ter link ainda).
+Quando um chefão for derrotado, o link do entregável entra aqui (formato: `Mundo N: <url>`) e aparece no site. Sem link, o site mostra só o entregável previsto, sem `[REVISAR]`.

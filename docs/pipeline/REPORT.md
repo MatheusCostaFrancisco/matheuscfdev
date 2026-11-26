@@ -59,6 +59,13 @@ Resumo: 6 entregues · 34 para revisão · 1 bloqueadas · 0 no backlog
 - [ ] **Campo `zoneStatus`** em `docs/pipeline/deploy.json` ainda diz `pending`, embora o domínio já responda. Confirme e peça ao PO para atualizar.
 - [ ] **Limpeza local** — encerrar o `vite preview` que ficou na porta 4173; rodar `docker rmi caddy:2-alpine` no WSL Ubuntu, se não for mais usado; reiniciar o Docker Desktop se ainda estiver travado.
 
+## Decisões do stakeholder para a próxima rodada
+
+Tomadas em 2026-11-25. O PO cria estas tarefas antes de qualquer P2 e quebra a jornada em várias tarefas pequenas, uma por entrega revisável.
+
+1. **Jornada para AI Engineer (P1, várias tarefas).** Spec completa em `docs/specs/2026-11-25-jornada-ai-engineer.md`. Fonte: `content/estudos-2027.md` (reescrito: destino AI Engineer, 8 mundos + chefão final, **sem prazos**). Resumo: rotas `/en/journey/` e `/pt/jornada/` com 301 das antigas, transição de "mudar de dimensão" (túnel de luz) ao clicar em Jornada, mapa 3D com os mundos como planetas (concluído, atual e bloqueado), painel de cada mundo com XP e checklist, fallback 2D e reduced motion obrigatórios, three.js só nesta página. Intensidade de efeitos **máxima** nesta página; o resto do site segue sutil. Ordem sugerida: (a) modelo de dados + função de estado/XP com testes; (b) rotas, redirects, nav, sitemap e teaser; (c) página com HTML semântico e fallback 2D; (d) cena 3D; (e) transição de dimensão; (f) polimento de efeitos.
+2. **ElevaTech: sistemas da ESALQ/USP (P1, conteúdo).** Novo bullet em `content/cv.md` e `content/cv.pt-BR.md`: manutenção e desenvolvimento de novas funcionalidades para sistemas da ESALQ/USP. Levar para o site nos dois idiomas.
+
 ## Bloqueadas
 | Tarefa | Motivo | Tentativas |
 |---|---|---|

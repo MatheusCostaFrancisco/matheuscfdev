@@ -24,7 +24,7 @@ Este repo é desenvolvido por uma esteira autônoma. Spec: `docs/specs/2026-11-2
 
 ## Regras de conteúdo
 
-- Fontes: `content/cv.md` (en, canônico), `content/cv.pt-BR.md` (mesmos fatos em pt-BR), `content/estudos-2027.md` (roadmap 2027, versão pública), `content/livros.md`, `content/depoimentos.md` (recomendações do LinkedIn). O site é bilíngue (pt-BR + en) com os mesmos fatos nos dois idiomas.
+- Fontes: `content/cv.md` (en, canônico), `content/cv.pt-BR.md` (mesmos fatos em pt-BR), `content/estudos-2027.md` (Jornada para AI Engineer, versão pública, sem prazos; spec em `docs/specs/2026-11-25-jornada-ai-engineer.md`), `content/livros.md`, `content/depoimentos.md` (recomendações do LinkedIn). O site é bilíngue (pt-BR + en) com os mesmos fatos nos dois idiomas.
 
 - **Fonte única:** `content/cv.md` e `content/assets/`. Nunca inventar empresa, cargo, data, métrica, cliente, depoimento ou link.
 - Dado ausente → `[REVISAR: <o que falta>]` visível no site e item de revisão no relatório.
