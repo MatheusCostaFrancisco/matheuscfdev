@@ -250,7 +250,7 @@ export function Journey() {
       aria-labelledby="journey-title"
       className="section-offset py-10"
     >
-      <JourneyScene />
+      <JourneyScene state={state} />
       <h1
         id="journey-title"
         className="text-3xl font-bold text-fg sm:text-4xl [overflow-wrap:anywhere]"

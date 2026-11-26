@@ -2,8 +2,9 @@
 // import() from src/components/JourneyScene.tsx, so three stays out of the
 // main chunk.
 import { Color, FogExp2, PerspectiveCamera, Scene, WebGLRenderer } from "three";
+import { createPlanets } from "./planets";
 import { createStarfield } from "./starfield";
-import type { SceneLayer, ScenePalette } from "./types";
+import type { SceneLayer, ScenePalette, SceneStages } from "./types";
 
 export const MAX_PIXEL_RATIO = 2;
 const MAX_FRAME_DELTA = 0.1; // seconds; avoids a jump after a long frame
@@ -22,9 +23,11 @@ function readPalette(host: HTMLElement): ScenePalette | null {
   const star = readColor(style, "--color-fg");
   const current = readColor(style, "--journey-current");
   const completed = readColor(style, "--journey-completed");
+  const locked = readColor(style, "--journey-locked");
   const nebula = readColor(style, "--color-accent-500");
-  if (!space || !star || !current || !completed || !nebula) return null;
-  return { space, star, current, completed, nebula };
+  if (!space || !star || !current || !completed || !locked || !nebula)
+    return null;
+  return { space, star, current, completed, locked, nebula };
 }
 
 function noop(): void {
@@ -39,7 +42,10 @@ function noop(): void {
  * context and removes the canvas. A lost WebGL context tears the scene down
  * too, leaving the HTML map as the view.
  */
-export function mountJourneyScene(host: HTMLElement): () => void {
+export function mountJourneyScene(
+  host: HTMLElement,
+  stages: SceneStages,
+): () => void {
   const palette = readPalette(host);
   if (palette === null) return noop;
 
@@ -52,7 +58,10 @@ export function mountJourneyScene(host: HTMLElement): () => void {
   scene.fog = new FogExp2(palette.space, FOG_DENSITY);
   const camera = new PerspectiveCamera(60, 1, 0.1, 2000);
 
-  const layers: SceneLayer[] = [createStarfield(palette)];
+  const layers: SceneLayer[] = [
+    createStarfield(palette),
+    createPlanets(palette, stages),
+  ];
   for (const layer of layers) scene.add(layer.object);
 
   const resize = () => {

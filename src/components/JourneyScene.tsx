@@ -1,5 +1,7 @@
 import { useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
+import type { JourneyState } from "../lib/journey-state";
+import type { SceneStages } from "../lib/journey-scene/types";
 import {
   REDUCED_MOTION_QUERY,
   canRenderJourneyScene,
@@ -12,11 +14,25 @@ import {
  * main chunk carries only this shell. If the gate fails, the chunk does not
  * load or WebGL breaks, nothing is shown and the HTML map stays as the view.
  *
+ * An ::after scrim in the space color sits over the canvas so text on the
+ * bare page background keeps 4.5:1 even over the brightest lit planet or glow
+ * (axe cannot measure contrast over a canvas).
+ *
  * Rendered into <body> so no transformed ancestor (scroll reveal) turns the
  * fixed layer into a local one.
  */
-export function JourneyScene() {
+type JourneySceneProps = {
+  state: JourneyState;
+};
+
+export function JourneyScene({ state }: JourneySceneProps) {
   const hostRef = useRef<HTMLDivElement>(null);
+  const stagesRef = useRef<SceneStages>(state);
+  stagesRef.current = state;
+  // Statuses do not depend on the locale: remount only when they change.
+  const stagesKey = [...state.worlds, state.finalBoss]
+    .map((stage) => `${stage.id}:${stage.status}`)
+    .join("|");
 
   useEffect(() => {
     const host = hostRef.current;
@@ -34,7 +50,7 @@ export function JourneyScene() {
       import("../lib/journey-scene/scene")
         .then(({ mountJourneyScene }) => {
           if (ticket !== generation || teardown !== null) return;
-          teardown = mountJourneyScene(host);
+          teardown = mountJourneyScene(host, stagesRef.current);
         })
         .catch(() => {
           // Chunk failed to load or WebGL could not start: keep the HTML map.
@@ -66,13 +82,13 @@ export function JourneyScene() {
       motion.removeEventListener("change", onMotionChange);
       stop();
     };
-  }, []);
+  }, [stagesKey]);
 
   return createPortal(
     <div
       ref={hostRef}
       aria-hidden="true"
-      className="pointer-events-none fixed inset-0 -z-10 print:hidden"
+      className="pointer-events-none fixed inset-0 -z-10 print:hidden after:absolute after:inset-0 after:bg-(--journey-space) after:opacity-70 after:content-['']"
     />,
     document.body,
   );
