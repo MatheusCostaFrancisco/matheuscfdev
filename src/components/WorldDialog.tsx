@@ -97,6 +97,7 @@ export function WorldDialog({ panel, onClosed }: WorldDialogProps) {
               value={panel.xp}
               label={text.xpLabel(panel.title)}
               status={panel.status}
+              animate={false}
             />
             {panel.checklist}
             <BossBlock boss={panel.boss} />

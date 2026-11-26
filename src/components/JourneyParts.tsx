@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { cn } from "../lib/cn";
 import type { JourneyBoss, JourneyStudyItem } from "../content/journey";
 import type { JourneyStatus } from "../lib/journey-state";
@@ -64,19 +65,44 @@ type XpBarProps = {
   value: number;
   label: string;
   status: JourneyStatus;
+  animate?: boolean;
 };
 
-export function XpBar({ value, label, status }: XpBarProps) {
+// First entry: the bar mounts empty and fills to its value on the next frames.
+// Under prefers-reduced-motion it renders at the final value from the start.
+function useFillOnEntry(value: number, animate: boolean): number {
+  const [shown, setShown] = useState(() =>
+    !animate || window.matchMedia("(prefers-reduced-motion: reduce)").matches
+      ? value
+      : 0,
+  );
+  useEffect(() => {
+    let second = 0;
+    const first = requestAnimationFrame(() => {
+      second = requestAnimationFrame(() => setShown(value));
+    });
+    return () => {
+      cancelAnimationFrame(first);
+      cancelAnimationFrame(second);
+    };
+  }, [value]);
+  return shown;
+}
+
+export function XpBar({ value, label, status, animate = true }: XpBarProps) {
+  const shown = useFillOnEntry(value, animate);
   return (
     <div className="mt-4 flex items-center gap-3">
       <progress
-        value={value}
+        value={shown}
         max={100}
         aria-label={label}
         className={cn(
           "h-2 min-w-0 flex-1 appearance-none overflow-hidden rounded-full border border-line-strong bg-surface-sunken",
           "[&::-webkit-progress-bar]:bg-surface-sunken",
           "[&::-webkit-progress-value]:rounded-full [&::-moz-progress-bar]:rounded-full",
+          "motion-safe:[&::-webkit-progress-value]:transition-[width] motion-safe:[&::-webkit-progress-value]:duration-700 motion-safe:[&::-webkit-progress-value]:ease-out",
+          "motion-safe:[&::-moz-progress-bar]:transition-[width] motion-safe:[&::-moz-progress-bar]:duration-700 motion-safe:[&::-moz-progress-bar]:ease-out",
           status === "locked"
             ? "[&::-webkit-progress-value]:bg-journey-locked [&::-moz-progress-bar]:bg-journey-locked"
             : "[&::-webkit-progress-value]:bg-journey-completed [&::-moz-progress-bar]:bg-journey-completed",

@@ -10,6 +10,7 @@ import {
   Vector2,
   WebGLRenderer,
 } from "three";
+import { createBloom } from "./bloom";
 import { createCameraRig } from "./camera";
 import { createPlanets, nodePositions } from "./planets";
 import { createStarfield } from "./starfield";
@@ -51,6 +52,12 @@ const inertHandle: JourneySceneHandle = {
   pickStage() {
     return null;
   },
+  hoverStage() {
+    // Nothing was created, so there is nothing to highlight.
+  },
+  highlightFocused() {
+    // Nothing was created, so there is nothing to highlight.
+  },
   dispose() {
     // Nothing was created, so there is nothing to free.
   },
@@ -91,11 +98,15 @@ export function mountJourneyScene(
     initialIndex,
   );
 
+  const bloom = createBloom(renderer, scene, camera, palette.space);
+
   const resize = () => {
     const width = Math.max(host.clientWidth, 1);
     const height = Math.max(host.clientHeight, 1);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, MAX_PIXEL_RATIO));
+    const pixelRatio = Math.min(window.devicePixelRatio, MAX_PIXEL_RATIO);
+    renderer.setPixelRatio(pixelRatio);
     renderer.setSize(width, height, false);
+    bloom.setSize(width, height, pixelRatio);
     camera.aspect = width / height;
     camera.updateProjectionMatrix();
   };
@@ -125,7 +136,7 @@ export function mountJourneyScene(
     last = now;
     for (const layer of layers) layer.update(delta);
     rig.update(delta);
-    renderer.render(scene, camera);
+    bloom.render();
     if (!shown) {
       shown = true;
       canvas.dataset.ready = "true";
@@ -162,6 +173,7 @@ export function mountJourneyScene(
       scene.remove(layer.object);
       layer.dispose();
     }
+    bloom.dispose();
     renderer.dispose();
     renderer.forceContextLoss();
     canvas.remove();
@@ -179,5 +191,11 @@ export function mountJourneyScene(
   resize();
   play();
 
-  return { focusStage: rig.focusStage, pickStage, dispose };
+  return {
+    focusStage: rig.focusStage,
+    pickStage,
+    hoverStage: planets.setHover,
+    highlightFocused: planets.setFocus,
+    dispose,
+  };
 }

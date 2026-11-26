@@ -130,17 +130,44 @@ export function JourneyScene({
       const index = pickAt(event);
       if (index !== null) pickRef.current(index);
     };
-    const onMove = (event: PointerEvent) => {
-      document.body.style.cursor = pickAt(event) !== null ? "pointer" : "";
+    const setHover = (index: number | null) => {
+      document.body.style.cursor = index !== null ? "pointer" : "";
+      handleRef.current?.hoverStage(index);
     };
+    const onMove = (event: PointerEvent) => setHover(pickAt(event));
+    const onLeave = () => setHover(null);
     window.addEventListener("click", onClick);
     window.addEventListener("pointermove", onMove);
+    document.documentElement.addEventListener("pointerleave", onLeave);
     return () => {
       window.removeEventListener("click", onClick);
       window.removeEventListener("pointermove", onMove);
+      document.documentElement.removeEventListener("pointerleave", onLeave);
       document.body.style.cursor = "";
     };
   }, []);
+
+  // Keyboard focus inside a stage card lights its planet like a hover. The
+  // cards are the list items whose id is a stage id, in stage order.
+  useEffect(() => {
+    const ids = stagesKey.split("|").map((entry) => entry.split(":")[0]);
+    const stageOf = (target: EventTarget | null): number | null => {
+      if (!(target instanceof Element) || !target.matches(":focus-visible"))
+        return null;
+      const card = target.closest("li[id]");
+      const index = card === null ? -1 : ids.indexOf(card.id);
+      return index < 0 ? null : index;
+    };
+    const onFocusIn = (event: FocusEvent) =>
+      handleRef.current?.highlightFocused(stageOf(event.target));
+    const onFocusOut = () => handleRef.current?.highlightFocused(null);
+    document.addEventListener("focusin", onFocusIn);
+    document.addEventListener("focusout", onFocusOut);
+    return () => {
+      document.removeEventListener("focusin", onFocusIn);
+      document.removeEventListener("focusout", onFocusOut);
+    };
+  }, [stagesKey]);
 
   useEffect(() => {
     handleRef.current?.focusStage(activeIndex);

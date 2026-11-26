@@ -24,6 +24,7 @@ import {
   Vector3,
 } from "three";
 import type { JourneyStatus } from "../journey-state";
+import { BLOOM_LAYER } from "./bloom";
 import type { SceneLayer, ScenePalette, SceneStages } from "./types";
 
 // Layout: nodes follow a gentle S-curve down the view, at a fixed depth. The
@@ -39,6 +40,19 @@ const TRAIL_RADIUS = 0.18;
 const PULSE_SPEED = 2.2; // rad per second
 const ORBIT_SPEED = 0.9; // rad per second
 const ORBIT_PARTICLES = 14;
+// Hover and focus feedback: a lit planet grows and glows brighter, a locked
+// one gets a smaller, dimmer lift so it still reads as unavailable.
+const LIT_HIGHLIGHT = { scale: 0.2, emissive: 0.45 };
+const LOCKED_HIGHLIGHT = { scale: 0.07, emissive: 0.18 };
+const HIGHLIGHT_RATE = 10; // 1/s; exponential approach to the target
+
+type Highlight = {
+  node: Group;
+  material: MeshStandardMaterial;
+  base: number;
+  lift: { scale: number; emissive: number };
+  amount: number;
+};
 
 type Stage = { status: JourneyStatus; isBoss: boolean };
 type AnyMaterial =
@@ -124,7 +138,13 @@ function lockTexture(ink: Color): CanvasTexture {
 }
 
 /** The planets layer also exposes each planet body, in stage order, for picking. */
-export type PlanetsLayer = SceneLayer & { bodies: readonly Mesh[] };
+export type PlanetsLayer = SceneLayer & {
+  bodies: readonly Mesh[];
+  /** Planet under the pointer, or null. Lit planets grow and glow; locked ones get a dimmer lift. */
+  setHover(index: number | null): void;
+  /** Planet whose card has keyboard focus, or null. Same look as hover. */
+  setFocus(index: number | null): void;
+};
 
 /** Position of every stage, in order; the camera rig flies between them. */
 export function nodePositions(count: number): Vector3[] {
@@ -186,6 +206,9 @@ export function createPlanets(
   const bodies: Mesh[] = [];
   const pulses: { sprite: Sprite; base: number }[] = [];
   const orbits: Group[] = [];
+  const highlights: Highlight[] = [];
+  let hovered: number | null = null;
+  let focused: number | null = null;
 
   stageList.forEach((stage, index) => {
     const position = positions[index];
@@ -195,6 +218,7 @@ export function createPlanets(
     node.position.copy(position);
 
     const lit = stage.status !== "locked";
+    const emissiveBase = stage.isBoss ? 0.9 : 0.18;
     const tone =
       stage.status === "completed" ? palette.completed : palette.current;
     const body = trackMaterial(
@@ -203,7 +227,7 @@ export function createPlanets(
           ? {
               color: tone,
               emissive: tone,
-              emissiveIntensity: stage.isBoss ? 0.9 : 0.18,
+              emissiveIntensity: emissiveBase,
               roughness: 0.7,
               metalness: 0,
             }
@@ -211,7 +235,16 @@ export function createPlanets(
       ),
     );
     const planet = new Mesh(track(new SphereGeometry(size, 32, 24)), body);
+    if (lit) planet.layers.enable(BLOOM_LAYER);
     node.add(planet);
+    if (!lit) body.emissive.copy(lockedTone);
+    highlights.push({
+      node,
+      material: body,
+      base: lit ? emissiveBase : 0,
+      lift: lit ? LIT_HIGHLIGHT : LOCKED_HIGHLIGHT,
+      amount: 0,
+    });
     bodies.push(planet);
 
     if (stage.status === "completed") {
@@ -228,6 +261,7 @@ export function createPlanets(
         ringMaterial,
       );
       ring.rotation.set(Math.PI / 2.4, 0.3, 0);
+      ring.layers.enable(BLOOM_LAYER);
       node.add(ring);
       const sealSprite = new Sprite(
         trackMaterial(new SpriteMaterial({ map: seal, fog: false })),
@@ -252,6 +286,7 @@ export function createPlanets(
         ),
       );
       halo.scale.setScalar(size * 4.2);
+      halo.layers.enable(BLOOM_LAYER);
       node.add(halo);
       if (stage.status === "current")
         pulses.push({ sprite: halo, base: size * 4.2 });
@@ -282,7 +317,9 @@ export function createPlanets(
           blending: AdditiveBlending,
         }),
       );
-      orbit.add(new Points(orbitGeometry, orbitMaterial));
+      const particles = new Points(orbitGeometry, orbitMaterial);
+      particles.layers.enable(BLOOM_LAYER);
+      orbit.add(particles);
       orbit.rotation.z = 0.35;
       node.add(orbit);
       orbits.push(orbit);
@@ -356,6 +393,7 @@ export function createPlanets(
       material,
     );
     tube.renderOrder = -1;
+    if (reached) tube.layers.enable(BLOOM_LAYER);
     group.add(tube);
   }
 
@@ -363,8 +401,23 @@ export function createPlanets(
   return {
     object: group,
     bodies,
+    setHover(index) {
+      hovered = index;
+    },
+    setFocus(index) {
+      focused = index;
+    },
     update(delta) {
       elapsed += delta;
+      const active = hovered ?? focused;
+      const ease = 1 - Math.exp(-HIGHLIGHT_RATE * delta);
+      highlights.forEach((highlight, index) => {
+        const target = index === active ? 1 : 0;
+        highlight.amount += (target - highlight.amount) * ease;
+        highlight.node.scale.setScalar(1 + highlight.lift.scale * highlight.amount);
+        highlight.material.emissiveIntensity =
+          highlight.base + highlight.lift.emissive * highlight.amount;
+      });
       const wave = (Math.sin(elapsed * PULSE_SPEED) + 1) / 2;
       for (const pulse of pulses) {
         pulse.sprite.scale.setScalar(pulse.base * (0.85 + wave * 0.3));

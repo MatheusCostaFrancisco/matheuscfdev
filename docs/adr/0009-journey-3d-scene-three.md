@@ -87,6 +87,12 @@ O critério 1 previa View Transitions entre documentos. O opt-in `@view-transiti
 
 Ativação por teclado (Enter no link) pula o túnel de propósito, para não haver atraso silencioso. O túnel cancela seus timers em `pagehide` e deixa o `body` `inert` enquanto toca.
 
+### Adendo 2026-11-26 (T-068, bloom e limite do chunk)
+
+O pós-processamento de bloom (`bloom.ts`: `EffectComposer`, `RenderPass`, `UnrealBloomPass`, `OutputPass`, todos de `three/examples/jsm`, sem dependência nova) entrou no chunk da cena, que foi a 544.73 kB · 140.92 kB gzip. O bloom é seletivo: só planetas acesos, o planeta atual, anéis, partículas orbitais e a trilha acesa ficam na camada de bloom. Pior caso de contraste: um pixel do canvas saturado em branco sob o scrim de 70% (ADR 0007) deixa o `text-fg` da página em cerca de 6.5:1, e todo `text-fg-muted` fica sobre cards opacos `bg-surface-raised`, então o bloom não leva o texto do HUD abaixo de 4.5:1. Na passada do bloom, malhas sem brilho são desenhadas em preto (não ocultas), para continuarem ocluindo o brilho que está atrás delas.
+
+`build.chunkSizeWarningLimit` passou a 550 (kB, o menor valor redondo acima do chunk, com 5.27 kB de folga) em `vite.config.ts`. O aviso do Vite cobre só o chunk `scene-*.js`, que carrega apenas na página da jornada, depois do gate de capacidade; a home e as demais páginas não o baixam, então subir o limite não esconde peso dessas páginas. O chunk principal continua com o orçamento próprio acima.
+
 ## Alternativas consideradas
 
 - **Canvas 2D próprio, sem lib:** zero dependência e chunk mínimo, mas planetas iluminados, anéis, partículas e câmera em perspectiva viram um motor 3D escrito à mão.

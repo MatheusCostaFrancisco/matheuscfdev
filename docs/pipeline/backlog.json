@@ -1528,8 +1528,8 @@
         "T-066",
         "T-067"
       ],
-      "status": "todo",
-      "attempts": 0,
+      "status": "done",
+      "attempts": 1,
       "commit": null,
       "notes": [
         "2026-11-25 rodada 9 (PO): Spec docs/specs/2026-11-25-jornada-ai-engineer.md step (f), stakeholder \"intensidade máxima\" on this page.",

@@ -191,6 +191,9 @@ export default defineConfig(({ command, mode }) => {
       __JOURNEY_PATHS__: JSON.stringify(locales.map((locale) => routes[locale].journey)),
     },
     build: {
+      // The scene chunk (three and its bloom pass, ADR 0009) is 544.73 kB and
+      // loads only on the journey page; 550 is the next round value above it.
+      chunkSizeWarningLimit: 550,
       rollupOptions: {
         input: {
           root: "index.html",

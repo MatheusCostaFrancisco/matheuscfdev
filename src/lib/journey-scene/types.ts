@@ -31,5 +31,9 @@ export type JourneySceneHandle = {
   focusStage(index: number): void;
   /** Index of the stage whose planet is under the viewport point, or null. */
   pickStage(clientX: number, clientY: number): number | null;
+  /** Highlights the planet under the pointer; null clears it. */
+  hoverStage(index: number | null): void;
+  /** Highlights the planet whose card has keyboard focus; null clears it. */
+  highlightFocused(index: number | null): void;
   dispose(): void;
 };
