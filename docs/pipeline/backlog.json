@@ -1620,8 +1620,8 @@
         "T-066",
         "T-067"
       ],
-      "status": "todo",
-      "attempts": 0,
+      "status": "done",
+      "attempts": 1,
       "commit": null,
       "notes": [
         "2026-11-26 rodada 11 (PO): decision on the REPORT pending item \"Orçamento do chunk principal (ADR 0009)\", still [ ]: with T-066 merged the home downloads 94.65 kB (main) + 0.99 kB (warp) = 95.64 kB gzip of entry JS, 2.06 kB over the 93.58 kB budget, so option (a) of raising the limit to 94.5 kB no longer covers it. The PO picks option (b), cutting weight, because the home is the recruiter page and today it ships the whole journey page code it never renders. Rough esbuild estimate of the journey modules alone: ~6.4 kB gzip standalone, plus ~1 kB for Books, enough to clear the 2.06 kB gap. If the stakeholder prefers raising the budget, he can write it next to the pending item and this task gets reviewed."

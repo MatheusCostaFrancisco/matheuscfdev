@@ -93,6 +93,18 @@ O pós-processamento de bloom (`bloom.ts`: `EffectComposer`, `RenderPass`, `Unre
 
 `build.chunkSizeWarningLimit` passou a 550 (kB, o menor valor redondo acima do chunk, com 5.27 kB de folga) em `vite.config.ts`. O aviso do Vite cobre só o chunk `scene-*.js`, que carrega apenas na página da jornada, depois do gate de capacidade; a home e as demais páginas não o baixam, então subir o limite não esconde peso dessas páginas. O chunk principal continua com o orçamento próprio acima.
 
+### Adendo 2026-11-26 (T-072, páginas da jornada e dos livros em lazy)
+
+`src/App.tsx` carrega `Journey` e `Books` com `React.lazy`, então `Journey.tsx`, `JourneyParts.tsx`, `WorldDialog.tsx`, `JourneyScene.tsx` e `Books.tsx` saem do `main-*.js`. Os teasers da home continuam no chunk principal, lendo `src/content`. O fallback do `Suspense` reserva a área com `min-h-[100dvh]`, e um componente irmão do conteúdo repete `scrollToHash` quando a página lazy monta, mantendo o foco por hash da T-040. `dist/en/index.html` e `dist/pt/index.html` não referenciam nem fazem modulepreload dos chunks `Journey-*` e `Books-*`.
+
+| Medida (gzip) | Antes | Depois | Limite |
+|---|---|---|---|
+| `main-*.js` | 94.65 kB | 89.60 kB | |
+| `warp-*.js` | 0.99 kB | 0.99 kB | |
+| Total | 95.64 kB | 90.59 kB | 93.58 kB |
+| `Journey-*.js` (novo) | | 6.18 kB | |
+| `Books-*.js` (novo) | | 1.00 kB | |
+
 ## Alternativas consideradas
 
 - **Canvas 2D próprio, sem lib:** zero dependência e chunk mínimo, mas planetas iluminados, anéis, partículas e câmera em perspectiva viram um motor 3D escrito à mão.
