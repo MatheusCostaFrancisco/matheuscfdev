@@ -17,6 +17,7 @@ import {
   Points,
   PointsMaterial,
   RingGeometry,
+  ShaderMaterial,
   SphereGeometry,
   SRGBColorSpace,
   Sprite,
@@ -52,17 +53,64 @@ const HIGHLIGHT_RATE = 10; // 1/s; exponential approach to the target
 
 type Highlight = {
   node: Group;
-  material: MeshStandardMaterial;
+  /** Writes the emissive level (or the core's brightness) for this planet. */
+  setEmissive(value: number): void;
   base: number;
   lift: { scale: number; emissive: number };
   amount: number;
 };
+
+const CORE_RIPPLE = { amplitude: 0.045, frequency: 2.6, speed: 0.55 };
+// base + LIT_HIGHLIGHT.emissive stays under 1.0 so hover never saturates the core.
+const CORE_BASE_LEVEL = 0.5;
+
+const CORE_VERTEX = /* glsl */ `
+  uniform float uTime;
+  uniform float uAmplitude;
+  uniform float uFrequency;
+  varying float vNoise;
+  varying float vRim;
+
+  float field(vec3 p, float t) {
+    float a = sin(p.x * uFrequency + t) * sin(p.y * uFrequency * 1.3 - t * 0.8);
+    float b = sin(p.z * uFrequency * 1.7 + t * 1.2 + p.x * 1.1);
+    float c = sin((p.x + p.y + p.z) * uFrequency * 2.3 - t * 0.6);
+    return a * 0.5 + b * 0.3 + c * 0.2;
+  }
+
+  void main() {
+    float n = field(position, uTime);
+    vNoise = n * 0.5 + 0.5;
+    vec3 displaced = position + normal * n * uAmplitude * length(position);
+    vec4 viewPosition = modelViewMatrix * vec4(displaced, 1.0);
+    vec3 viewNormal = normalize(normalMatrix * normal);
+    vRim = 1.0 - abs(dot(viewNormal, normalize(-viewPosition.xyz)));
+    gl_Position = projectionMatrix * viewPosition;
+  }
+`;
+
+const CORE_FRAGMENT = /* glsl */ `
+  uniform vec3 uWhite;
+  uniform vec3 uAmber;
+  uniform vec3 uEmber;
+  uniform float uLevel;
+  varying float vNoise;
+  varying float vRim;
+
+  void main() {
+    float heat = clamp(vNoise * 1.15 - vRim * 0.35, 0.0, 1.0);
+    vec3 color = mix(uEmber, uAmber, smoothstep(0.1, 0.55, heat));
+    color = mix(color, uWhite, smoothstep(0.75, 1.0, heat) * 0.4);
+    gl_FragColor = vec4(color * uLevel, 1.0);
+  }
+`;
 
 type Stage = { status: JourneyStatus; isBoss: boolean };
 type AnyMaterial =
   | MeshBasicMaterial
   | MeshStandardMaterial
   | PointsMaterial
+  | ShaderMaterial
   | SpriteMaterial;
 
 function drawTexture(
@@ -223,6 +271,7 @@ export function createPlanets(
   const flares: SpriteMaterial[] = [];
   const fogs: { sprite: Sprite; base: number; phase: number }[] = [];
   const orbits: Group[] = [];
+  const coreMaterials: ShaderMaterial[] = [];
   const highlights: Highlight[] = [];
   let hovered: number | null = null;
   let focused: number | null = null;
@@ -238,35 +287,77 @@ export function createPlanets(
     const emissiveBase = stage.isBoss ? 0.9 : 0.18;
     const tone =
       stage.status === "completed" ? palette.completed : palette.current;
-    const body = trackMaterial(
-      new MeshStandardMaterial(
-        lit
-          ? {
-              color: tone,
-              emissive: tone,
-              emissiveIntensity: emissiveBase,
-              roughness: 0.7,
-              metalness: 0,
-            }
-          : { color: lockedTone, roughness: 1, metalness: 0 },
-      ),
+    const isCore = stage.status === "current" && !stage.isBoss;
+    const coreMaterial = isCore
+      ? trackMaterial(
+          new ShaderMaterial({
+            uniforms: {
+              uTime: { value: 0 },
+              uAmplitude: { value: CORE_RIPPLE.amplitude },
+              uFrequency: { value: CORE_RIPPLE.frequency },
+              uWhite: { value: palette.core.clone() },
+              uAmber: { value: palette.coreAmber.clone() },
+              uEmber: { value: palette.coreEmber.clone() },
+              uLevel: { value: CORE_BASE_LEVEL },
+            },
+            vertexShader: CORE_VERTEX,
+            fragmentShader: CORE_FRAGMENT,
+          }),
+        )
+      : null;
+    const body = isCore
+      ? null
+      : trackMaterial(
+          new MeshStandardMaterial(
+            lit
+              ? {
+                  color: tone,
+                  emissive: tone,
+                  emissiveIntensity: emissiveBase,
+                  roughness: 0.7,
+                  metalness: 0,
+                }
+              : { color: lockedTone, roughness: 1, metalness: 0 },
+          ),
+        );
+    const surface = coreMaterial ?? body;
+    if (surface === null) return;
+    const planet = new Mesh(
+      track(new SphereGeometry(size, isCore ? 64 : 32, isCore ? 48 : 24)),
+      surface,
     );
-    const planet = new Mesh(track(new SphereGeometry(size, 32, 24)), body);
-    if (lit) planet.layers.enable(BLOOM_LAYER);
+    // The core stays out of the bloom pass: its glow comes from the halo, so
+    // the bloom does not wash the surface variation out to white.
+    if (lit && !isCore) planet.layers.enable(BLOOM_LAYER);
     node.add(planet);
-    if (!lit) body.emissive.copy(lockedTone);
-    highlights.push({
-      node,
-      material: body,
-      base: lit ? emissiveBase : 0,
-      lift: lit ? LIT_HIGHLIGHT : LOCKED_HIGHLIGHT,
-      amount: 0,
-    });
+    if (body !== null && !lit) body.emissive.copy(lockedTone);
+    if (coreMaterial !== null) {
+      coreMaterials.push(coreMaterial);
+      highlights.push({
+        node,
+        setEmissive(value) {
+          coreMaterial.uniforms.uLevel.value = value;
+        },
+        base: CORE_BASE_LEVEL,
+        lift: LIT_HIGHLIGHT,
+        amount: 0,
+      });
+    } else if (body !== null) {
+      highlights.push({
+        node,
+        setEmissive(value) {
+          body.emissiveIntensity = value;
+        },
+        base: lit ? emissiveBase : 0,
+        lift: lit ? LIT_HIGHLIGHT : LOCKED_HIGHLIGHT,
+        amount: 0,
+      });
+    }
 
     if (stage.status === "current") {
       const shell = trackMaterial(
         new MeshBasicMaterial({
-          color: tone,
+          color: palette.halo,
           transparent: true,
           opacity: SHELL_OPACITY.base,
           side: BackSide,
@@ -337,7 +428,7 @@ export function createPlanets(
         trackMaterial(
           new SpriteMaterial({
             map: glow,
-            color: tone,
+            color: stage.status === "current" ? palette.halo : tone,
             transparent: true,
             opacity: HALO_OPACITY.base,
             depthWrite: false,
@@ -545,9 +636,12 @@ export function createPlanets(
         const target = index === active ? 1 : 0;
         highlight.amount += (target - highlight.amount) * ease;
         highlight.node.scale.setScalar(1 + highlight.lift.scale * highlight.amount);
-        highlight.material.emissiveIntensity =
-          highlight.base + highlight.lift.emissive * highlight.amount;
+        highlight.setEmissive(
+          highlight.base + highlight.lift.emissive * highlight.amount,
+        );
       });
+      for (const material of coreMaterials)
+        material.uniforms.uTime.value = elapsed * CORE_RIPPLE.speed * Math.PI * 2;
       const wave = (Math.sin(elapsed * PULSE_SPEED) + 1) / 2;
       for (const pulse of pulses) {
         pulse.sprite.scale.setScalar(pulse.base * (0.85 + wave * 0.3));

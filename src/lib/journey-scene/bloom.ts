@@ -20,9 +20,9 @@ import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPa
 /** Layer of everything that glows; the full list is in the ADR 0009 T-077 addendum. */
 export const BLOOM_LAYER = 1;
 
-const BLOOM_STRENGTH = 0.9;
+const BLOOM_STRENGTH = 0.7;
 const BLOOM_RADIUS = 0.6;
-const BLOOM_THRESHOLD = 0.2;
+const BLOOM_THRESHOLD = 0.35;
 
 const bloomLayers = new Layers();
 bloomLayers.set(BLOOM_LAYER);

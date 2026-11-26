@@ -123,6 +123,15 @@ Medida com `yarn build`: `scene-*.js` em **545.75 kB · 141.17 kB gzip** (antes 
 
 Adendo T-084 (esfera de nebulosa): a camada `nebula.ts` adiciona uma esfera `BackSide` com `ShaderMaterial` e ruído procedural, sem textura de imagem. `scene-*.js` foi de 548.79 kB (142.37 kB gzip) para 550.46 kB (142.85 kB gzip), acima do limite de 550, então `chunkSizeWarningLimit` subiu para 560. A linha de contraste da tabela (sprites `accent-500` com pico 0.22) foi substituída: a nebulosa da cena agora é a esfera de shader, limitada por `INTENSITY` 0.85. A nebulosa CSS (`--journey-nebula`) só aparece no fallback 2D; com o canvas pronto, o `::before` da seção faz crossfade para opacidade 0 via `:has([data-ready])`, evitando nebulosa dupla. No fallback ela cobre a largura da viewport, e o contraste do texto segue AA (cálculo da ADR 0007).
 
+Adendo T-085 (núcleo estelar do mundo atual): o mundo atual deixou de ser um `MeshStandardMaterial` e virou um `ShaderMaterial` com ruído no vértice (ondulação animada por `update()`, parada com a cena pausada) e gradiente quente ember, âmbar e branco, a partir dos tokens do `ScenePalette`. O halo usa o token azul-violeta. Para a superfície não virar disco branco, o núcleo saiu da camada de bloom (o brilho vem do halo e da casca), o nível base do shader caiu para 0.5 (base mais o realce de hover/foco fica em 0.95, abaixo de 1.0) e o branco só aparece nos picos de calor. O bloom foi recuado:
+
+| Parâmetro | Antes (T-077) | Depois |
+|---|---|---|
+| `BLOOM_STRENGTH` | 0.9 | 0.7 |
+| `BLOOM_THRESHOLD` | 0.2 | 0.35 |
+
+`BLOOM_RADIUS` segue 0.6. Medida com `yarn build`: `scene-*.js` em **552.39 kB · 143.51 kB gzip**, abaixo do limite de 560. A checagem visual em 1280x800 depende de nova medição do revisor de UI.
+
 ## Alternativas consideradas
 
 - **Canvas 2D próprio, sem lib:** zero dependência e chunk mínimo, mas planetas iluminados, anéis, partículas e câmera em perspectiva viram um motor 3D escrito à mão.
