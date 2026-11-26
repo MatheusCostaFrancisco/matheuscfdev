@@ -1737,8 +1737,8 @@
       "dependsOn": [
         "T-073"
       ],
-      "status": "todo",
-      "attempts": 0,
+      "status": "done",
+      "attempts": 1,
       "commit": null,
       "notes": [
         "2026-11-26 rodada 12 (PO): spec docs/specs/2026-11-25-jornada-ai-engineer.md, \"Revisão 1 — 3D protagonista\", item 6: step (c), first half. Several of these visuals exist since T-064; the task raises them to the \"mais efeito, não menos\" bar now that nothing covers the scene. The ADR 0009 number fix answers the T-068/T-071 review item that asked for a small docs task."

@@ -1,6 +1,7 @@
 import {
   AdditiveBlending,
   AmbientLight,
+  BackSide,
   BufferAttribute,
   BufferGeometry,
   CanvasTexture,
@@ -40,6 +41,14 @@ const TRAIL_RADIUS = 0.18;
 const PULSE_SPEED = 2.2; // rad per second
 const ORBIT_SPEED = 0.9; // rad per second
 const ORBIT_PARTICLES = 14;
+const ATMOSPHERE_SCALE = 1.14; // shell radius over planet radius
+const FLOW_SPEED = 0.35; // trail lengths per second
+const FLOW_PER_SEGMENT = 3;
+const FLARE_SPIN = 0.08; // rad per second
+const SHELL_OPACITY = { base: 0.06, swing: 0.08 }; // atmosphere pulse range
+const HALO_OPACITY = { base: 0.22, swing: 0.2 }; // current planet halo pulse range
+const FOG_DRIFT_SPEED = 0.6; // rad per second
+const FOG_DRIFT_AMOUNT = 0.08; // fraction of the fog size
 // Hover and focus feedback: a lit planet grows and glows brighter, a locked
 // one gets a smaller, dimmer lift so it still reads as unavailable.
 const LIT_HIGHLIGHT = { scale: 0.2, emissive: 0.45 };
@@ -90,6 +99,26 @@ function glowTexture(): CanvasTexture {
     gradient.addColorStop(1, "rgba(255,255,255,0)");
     context.fillStyle = gradient;
     context.fillRect(0, 0, size, size);
+  });
+}
+
+function flareTexture(): CanvasTexture {
+  return drawTexture((context, size) => {
+    const center = size / 2;
+    context.translate(center, center);
+    for (let ray = 0; ray < 4; ray += 1) {
+      const gradient = context.createLinearGradient(0, 0, center, 0);
+      gradient.addColorStop(0, "rgba(255,255,255,0.9)");
+      gradient.addColorStop(1, "rgba(255,255,255,0)");
+      context.fillStyle = gradient;
+      context.beginPath();
+      context.moveTo(0, -size * 0.025);
+      context.lineTo(center, 0);
+      context.lineTo(0, size * 0.025);
+      context.closePath();
+      context.fill();
+      context.rotate(Math.PI / 2);
+    }
   });
 }
 
@@ -162,8 +191,10 @@ export function nodePositions(count: number): Vector3[] {
  * One planet per world plus the final boss as a star at the end, linked by a
  * light trail. Count and order come from `stages`, whose statuses were
  * computed by journeyState (T-058); nothing here assigns a status. completed:
- * lit planet, ring and seal. current: pulsing glow, orbiting particles and
- * trail lit up to it. locked: dark, desaturated, lock marker, trail off.
+ * lit planet, ring and seal. current: atmosphere shell, ring, pulsing glow,
+ * orbiting particles and the trail lit (with a light flow) up to it. locked:
+ * dark, desaturated, lock marker and fog sprite, trail off. The final boss is
+ * a star with rays and a flat corona, dim and grey while locked.
  * Owns every geometry, material and texture it creates.
  */
 export function createPlanets(
@@ -184,6 +215,7 @@ export function createPlanets(
 
   const lockedTone = palette.locked.clone().multiplyScalar(0.55);
   const glow = glowTexture();
+  const flare = flareTexture();
   const seal = sealTexture(palette.completed, palette.space);
   const lock = lockTexture(palette.locked);
   const geometries: BufferGeometry[] = [];
@@ -203,6 +235,9 @@ export function createPlanets(
   group.add(sun);
 
   const pulses: { sprite: Sprite; base: number }[] = [];
+  const shells: MeshBasicMaterial[] = [];
+  const flares: SpriteMaterial[] = [];
+  const fogs: { sprite: Sprite; base: number; phase: number }[] = [];
   const orbits: Group[] = [];
   const highlights: Highlight[] = [];
   let hovered: number | null = null;
@@ -244,7 +279,28 @@ export function createPlanets(
       amount: 0,
     });
 
-    if (stage.status === "completed") {
+    if (stage.status === "current") {
+      const shell = trackMaterial(
+        new MeshBasicMaterial({
+          color: tone,
+          transparent: true,
+          opacity: SHELL_OPACITY.base,
+          side: BackSide,
+          blending: AdditiveBlending,
+          depthWrite: false,
+          fog: false,
+        }),
+      );
+      const atmosphere = new Mesh(
+        track(new SphereGeometry(size * ATMOSPHERE_SCALE, 32, 24)),
+        shell,
+      );
+      atmosphere.layers.enable(BLOOM_LAYER);
+      node.add(atmosphere);
+      shells.push(shell);
+    }
+
+    if (stage.status !== "locked" && !stage.isBoss) {
       const ringMaterial = trackMaterial(
         new MeshBasicMaterial({
           color: palette.completed,
@@ -260,12 +316,36 @@ export function createPlanets(
       ring.rotation.set(Math.PI / 2.4, 0.3, 0);
       ring.layers.enable(BLOOM_LAYER);
       node.add(ring);
+    }
+
+    if (stage.status === "completed") {
       const sealSprite = new Sprite(
         trackMaterial(new SpriteMaterial({ map: seal, fog: false })),
       );
       sealSprite.scale.setScalar(size * 0.85);
       sealSprite.position.set(size * 0.9, size * 0.9, size * 0.5);
       node.add(sealSprite);
+    }
+
+    if (stage.isBoss) {
+      // A star, not a planet: a self-lit core with diffraction rays. Locked,
+      // the rays stay grey but large enough to read as a star.
+      const flareMaterial = trackMaterial(
+        new SpriteMaterial({
+          map: flare,
+          color: lit ? palette.star : palette.locked,
+          transparent: true,
+          opacity: lit ? 0.9 : 0.6,
+          depthWrite: false,
+          blending: AdditiveBlending,
+          fog: false,
+        }),
+      );
+      const rays = new Sprite(flareMaterial);
+      rays.scale.setScalar(size * (lit ? 6 : 9));
+      if (lit) rays.layers.enable(BLOOM_LAYER);
+      node.add(rays);
+      flares.push(flareMaterial);
     }
 
     if (stage.status === "current" || (stage.isBoss && lit)) {
@@ -275,7 +355,7 @@ export function createPlanets(
             map: glow,
             color: tone,
             transparent: true,
-            opacity: 0.6,
+            opacity: HALO_OPACITY.base,
             depthWrite: false,
             blending: AdditiveBlending,
             fog: false,
@@ -323,19 +403,23 @@ export function createPlanets(
     }
 
     if (stage.isBoss && !lit) {
-      const corona = new Mesh(
-        track(new RingGeometry(size * 1.35, size * 1.9, 64)),
+      // Flat corona facing the camera, so it reads as a star and not as the
+      // tilted ring of a planet.
+      const corona = new Sprite(
         trackMaterial(
-          new MeshBasicMaterial({
+          new SpriteMaterial({
+            map: glow,
             color: palette.locked,
             transparent: true,
-            opacity: 0.35,
-            side: DoubleSide,
+            opacity: 0.45,
             depthWrite: false,
+            blending: AdditiveBlending,
+            fog: false,
           }),
         ),
       );
-      corona.rotation.set(Math.PI / 2.8, 0.2, 0);
+      corona.scale.setScalar(size * 2.8);
+      corona.position.set(0, 0, -size * 0.2);
       node.add(corona);
       const dimHalo = new Sprite(
         trackMaterial(
@@ -355,16 +439,36 @@ export function createPlanets(
     }
 
     if (stage.status === "locked") {
+      const fogSprite = new Sprite(
+        trackMaterial(
+          new SpriteMaterial({
+            map: glow,
+            color: lockedTone,
+            transparent: true,
+            opacity: 0.35,
+            depthWrite: false,
+            fog: false,
+          }),
+        ),
+      );
+      fogSprite.scale.setScalar(size * 3.6);
+      fogSprite.position.set(0, 0, -size * 0.2);
+      fogSprite.renderOrder = 1;
+      node.add(fogSprite);
+      fogs.push({ sprite: fogSprite, base: size * 3.6, phase: index * 1.7 });
       const lockSprite = new Sprite(
         trackMaterial(new SpriteMaterial({ map: lock, fog: false })),
       );
       lockSprite.scale.setScalar(size * 1.1);
       lockSprite.position.set(0, 0, size * 1.05);
+      lockSprite.renderOrder = 2;
       node.add(lockSprite);
     }
 
     group.add(node);
   });
+
+  const flowSegments: { from: Vector3; to: Vector3 }[] = [];
 
   // Trail: segment i joins node i to node i+1 and is lit when the next node
   // is reachable (completed or current), so the light ends at the current one.
@@ -390,9 +494,55 @@ export function createPlanets(
       material,
     );
     tube.renderOrder = -1;
-    if (reached) tube.layers.enable(BLOOM_LAYER);
+    if (reached) {
+      tube.layers.enable(BLOOM_LAYER);
+      flowSegments.push({ from, to });
+    }
     group.add(tube);
   }
+
+  // Light flow: small glows travelling along the lit trail, from the first
+  // stage to the current one. They advance in update(), so a paused scene
+  // holds them still.
+  const flowPositions = new Float32Array(
+    flowSegments.length * FLOW_PER_SEGMENT * 3,
+  );
+  const flowGeometry = track(new BufferGeometry());
+  const flowAttribute = new BufferAttribute(flowPositions, 3);
+  flowGeometry.setAttribute("position", flowAttribute);
+  const flow = new Points(
+    flowGeometry,
+    trackMaterial(
+      new PointsMaterial({
+        size: radius * 0.55,
+        map: glow,
+        color: palette.star,
+        transparent: true,
+        depthWrite: false,
+        blending: AdditiveBlending,
+      }),
+    ),
+  );
+  flow.frustumCulled = false;
+  flow.layers.enable(BLOOM_LAYER);
+  group.add(flow);
+  const flowPoint = new Vector3();
+  const writeFlow = (time: number) => {
+    flowSegments.forEach((segment, segmentIndex) => {
+      for (let spark = 0; spark < FLOW_PER_SEGMENT; spark += 1) {
+        const t = (time * FLOW_SPEED + spark / FLOW_PER_SEGMENT) % 1;
+        flowPoint.lerpVectors(segment.from, segment.to, t);
+        flowAttribute.setXYZ(
+          segmentIndex * FLOW_PER_SEGMENT + spark,
+          flowPoint.x,
+          flowPoint.y,
+          flowPoint.z,
+        );
+      }
+    });
+    flowAttribute.needsUpdate = true;
+  };
+  writeFlow(0);
 
   let elapsed = 0;
   return {
@@ -417,14 +567,23 @@ export function createPlanets(
       const wave = (Math.sin(elapsed * PULSE_SPEED) + 1) / 2;
       for (const pulse of pulses) {
         pulse.sprite.scale.setScalar(pulse.base * (0.85 + wave * 0.3));
-        pulse.sprite.material.opacity = 0.4 + wave * 0.35;
+        pulse.sprite.material.opacity =
+          HALO_OPACITY.base + wave * HALO_OPACITY.swing;
       }
       for (const orbit of orbits) orbit.rotation.y += ORBIT_SPEED * delta;
+      for (const shell of shells) shell.opacity = SHELL_OPACITY.base + wave * SHELL_OPACITY.swing;
+      for (const material of flares) material.rotation += FLARE_SPIN * delta;
+      for (const fog of fogs) {
+        const drift = Math.sin(elapsed * FOG_DRIFT_SPEED + fog.phase);
+        fog.sprite.scale.setScalar(fog.base * (1 + drift * FOG_DRIFT_AMOUNT));
+      }
+      writeFlow(elapsed);
     },
     dispose() {
       for (const geometry of geometries) geometry.dispose();
       for (const material of materials) material.dispose();
       glow.dispose();
+      flare.dispose();
       seal.dispose();
       lock.dispose();
     },

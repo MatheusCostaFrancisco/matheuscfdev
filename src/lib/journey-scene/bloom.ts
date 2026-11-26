@@ -17,12 +17,12 @@ import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
 import { ShaderPass } from "three/examples/jsm/postprocessing/ShaderPass.js";
 import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPass.js";
 
-/** Layer of everything that glows: lit planets, the current one and the lit trail. */
+/** Layer of everything that glows; the full list is in the ADR 0009 T-077 addendum. */
 export const BLOOM_LAYER = 1;
 
-const BLOOM_STRENGTH = 0.85;
-const BLOOM_RADIUS = 0.55;
-const BLOOM_THRESHOLD = 0.12;
+const BLOOM_STRENGTH = 0.9;
+const BLOOM_RADIUS = 0.6;
+const BLOOM_THRESHOLD = 0.2;
 
 const bloomLayers = new Layers();
 bloomLayers.set(BLOOM_LAYER);
@@ -61,9 +61,10 @@ type Hidden = Object3D[];
  * scene is rendered once with only the objects on BLOOM_LAYER visible and
  * blurred by UnrealBloomPass, then rendered normally and the glow is added on
  * top. Lights stay untouched so no shader is recompiled between the passes.
- * Contrast worst case: a canvas pixel saturated to white under the 35% scrim.
- * Text sits on 80% panels sized for that case (ADR 0007, addendum
- * 2026-11-26), so the bloom cannot push the HUD text below 4.5:1.
+ * Text over the canvas (HUD cards, planet labels) sits on bg-surface-raised/90
+ * panels; with a white canvas pixel behind, the worst case is 6.31:1 for
+ * text-fg-muted. Do not lower the panel opacity below 90% without
+ * re-measuring. The values are recorded in ADR 0009.
  * Non-glowing meshes are drawn black in the bloom pass (not hidden) so they
  * still occlude the glow behind them.
  */

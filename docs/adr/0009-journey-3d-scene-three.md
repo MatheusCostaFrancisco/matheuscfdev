@@ -89,7 +89,7 @@ Ativação por teclado (Enter no link) pula o túnel de propósito, para não ha
 
 ### Adendo 2026-11-26 (T-068, bloom e limite do chunk)
 
-O pós-processamento de bloom (`bloom.ts`: `EffectComposer`, `RenderPass`, `UnrealBloomPass`, `OutputPass`, todos de `three/examples/jsm`, sem dependência nova) entrou no chunk da cena, que foi a 544.73 kB · 140.92 kB gzip. O bloom é seletivo: só planetas acesos, o planeta atual, anéis, partículas orbitais e a trilha acesa ficam na camada de bloom. Pior caso de contraste: um pixel do canvas saturado em branco sob o scrim de 70% (ADR 0007) deixa o `text-fg` da página em cerca de 6.5:1, e todo `text-fg-muted` fica sobre cards opacos `bg-surface-raised`, então o bloom não leva o texto do HUD abaixo de 4.5:1. Na passada do bloom, malhas sem brilho são desenhadas em preto (não ocultas), para continuarem ocluindo o brilho que está atrás delas.
+O pós-processamento de bloom (`bloom.ts`: `EffectComposer`, `RenderPass`, `UnrealBloomPass`, `OutputPass`, todos de `three/examples/jsm`, sem dependência nova) entrou no chunk da cena, que foi a 544.73 kB · 140.92 kB gzip. O bloom é seletivo: só planetas acesos, o planeta atual, anéis, partículas orbitais e a trilha acesa ficam na camada de bloom. Pior caso de contraste: um pixel do canvas saturado em branco sob o scrim de 70% (ADR 0007) deixava o `text-fg` da página em cerca de 6.5:1 (superado: ver adendo da T-077, sem scrim e sem texto sobre o canvas), e todo `text-fg-muted` fica sobre cards opacos `bg-surface-raised`, então o bloom não leva o texto do HUD abaixo de 4.5:1. Na passada do bloom, malhas sem brilho são desenhadas em preto (não ocultas), para continuarem ocluindo o brilho que está atrás delas.
 
 `build.chunkSizeWarningLimit` passou a 550 (kB, o menor valor redondo acima do chunk, com 5.27 kB de folga) em `vite.config.ts`. O aviso do Vite cobre só o chunk `scene-*.js`, que carrega apenas na página da jornada, depois do gate de capacidade; a home e as demais páginas não o baixam, então subir o limite não esconde peso dessas páginas. O chunk principal continua com o orçamento próprio acima.
 
@@ -105,6 +105,22 @@ O pós-processamento de bloom (`bloom.ts`: `EffectComposer`, `RenderPass`, `Unre
 | `Journey-*.js` (novo) | | 6.18 kB | |
 | `Books-*.js` (novo) | | 1.00 kB | |
 
+### Adendo 2026-11-26 (T-077, efeitos do palco e recalibração do bloom)
+
+Com o palco sem scrim (ADR 0007, último adendo), o bloom foi recalibrado, mas o texto do HUD e os rótulos dos planetas ainda ficam sobre o canvas, em painéis `bg-surface-raised/90`. Pior caso (pixel branco do canvas atrás do painel): 6.31:1 para `text-fg-muted` (14px) e 12.02:1 para `text-fg`. A garantia real é o painel a 90%: não baixar essa opacidade sem medir de novo. Valores de `bloom.ts`:
+
+| Parâmetro | Antes | Depois |
+|---|---|---|
+| `BLOOM_STRENGTH` | 0.85 | 0.9 |
+| `BLOOM_RADIUS` | 0.55 | 0.6 |
+| `BLOOM_THRESHOLD` | 0.12 | 0.2 |
+
+Uma primeira tentativa (1.2 / 0.75 / 0.08) estourou o mundo atual em um disco branco e lavou os bloqueados, então foi recuada. Para isso também baixaram a casca de atmosfera (opacidade 0.06 a 0.14, pulsando) e o halo do mundo atual (0.22 a 0.42). Os valores ainda não têm aprovação visual do stakeholder em aparelho real.
+
+Na camada de bloom: planetas acesos, casca de atmosfera, anéis, partículas orbitais, halo do mundo atual, raios da estrela acesa, trilha acesa e o fluxo de luz. Efeitos em `planets.ts`: casca, anel e partículas no mundo atual; anel e selo nos concluídos; névoa (atrás do corpo) e cadeado nos bloqueados; fluxo de luz (3 pontos por trecho aceso) da primeira etapa até a atual, que só avança em `update()` e para com a cena pausada; chefe final como estrela com raios e corona plana voltada à câmera, cinza e apagada enquanto bloqueado. Fluxo de luz e mundos concluídos ainda não foram vistos no navegador (os dados reais têm 0 mundos concluídos).
+
+Medida com `yarn build`: `scene-*.js` em **545.75 kB · 141.17 kB gzip** (antes 544.73 kB · 140.92 kB). Fica abaixo de `chunkSizeWarningLimit` (550), então o limite não muda. A medida de 495.11 kB na tabela de orçamento inicial é histórica (antes do bloom).
+
 ## Alternativas consideradas
 
 - **Canvas 2D próprio, sem lib:** zero dependência e chunk mínimo, mas planetas iluminados, anéis, partículas e câmera em perspectiva viram um motor 3D escrito à mão.
@@ -115,8 +131,8 @@ O pós-processamento de bloom (`bloom.ts`: `EffectComposer`, `RenderPass`, `Unre
 
 ## Consequências
 
-- Primeira dependência de runtime pesada do site. Ela não chega à home nem à página de livros; na jornada, custa cerca de 127 kB gzip depois da primeira pintura do HTML.
-- `scene-*.js` está a 5 kB do aviso de 500 kB do Vite. Com T-064 o aviso deve aparecer; ele não quebra o build. Tratar subindo `build.chunkSizeWarningLimit` com justificativa, não dividindo o chunk sem motivo.
+- Primeira dependência de runtime pesada do site. Ela não chega à home nem à página de livros; na jornada, custa cerca de 141 kB gzip (medida da T-077) depois da primeira pintura do HTML.
+- `scene-*.js` passou do aviso padrão de 500 kB do Vite desde o bloom (T-068); `build.chunkSizeWarningLimit` está em 550 com justificativa no adendo da T-077. Tratar novos avisos subindo o limite com justificativa, não dividindo o chunk sem motivo.
 - Revisão de código deve recusar import estático de `three` (ou de `src/lib/journey-scene/` além de `gate.ts` e `types.ts`) fora da própria pasta. O `grep -o 'WebGLRenderer' dist/assets/main-*.js` precisa ficar vazio.
 - Usuários com reduced motion, Save-Data, pouca memória ou sem WebGL2 veem a página da T-060 sem diferença nenhuma.
 - Navegadores headless com WebGL por software (SwiftShader) passam no gate. Isso é intencional para o axe e o revisor de UI conseguirem ver o modo 3D; aparelho fraco é filtrado por `deviceMemory`.
