@@ -7,22 +7,55 @@ import {
   Group,
   NormalBlending,
   Points,
-  PointsMaterial,
   SRGBColorSpace,
+  ShaderMaterial,
   Sprite,
   SpriteMaterial,
+  Vector2,
 } from "three";
 import type { SceneLayer, ScenePalette } from "./types";
 
-const STAR_COUNT = 1600;
+const FIXED_COUNT = 1100;
+const FALLING_COUNT = 500;
 const FAR_Z = 1600;
-const NEAR_Z = 80; // respawn before a star grows past ~8 css px
+// Behind the planet plane (z -120), so no star crosses in front of a planet.
+const NEAR_Z = 160;
+const FADE_IN = 140; // units of travel over which a respawned star fades in
 // Star field spread relative to depth, so the screen density stays even
 // from near to far for a 60deg vertical FOV on wide and narrow viewports.
 const SPREAD_X = 1.3;
 const SPREAD_Y = 0.75;
-const DRIFT_SPEED = 6; // units per second towards the camera
-const ROLL_SPEED = 0.004; // rad per second around the view axis
+const FALL_SPEED = 7; // units per second, away from the camera into the scene
+const BLUE_SHARE = 0.3; // share of stars tinted with the blue-white token
+const MIN_SIZE = 1.2;
+const MAX_SIZE = 3.4;
+
+const STAR_VERTEX = `
+attribute float aSize;
+attribute vec3 aColor;
+uniform float uScale;
+uniform float uFadeIn;
+varying vec3 vColor;
+void main() {
+  vec4 mv = modelViewMatrix * vec4(position, 1.0);
+  float depth = -mv.z;
+  float fadeIn = uFadeIn > 0.0
+    ? smoothstep(0.0, uFadeIn, -position.z - ${NEAR_Z.toFixed(1)})
+    : 1.0;
+  vColor = aColor * fadeIn * clamp(1.15 - depth / ${FAR_Z.toFixed(1)}, 0.0, 1.0);
+  gl_PointSize = clamp(aSize * uScale / depth, 1.0, 12.0);
+  gl_Position = projectionMatrix * mv;
+}
+`;
+
+const STAR_FRAGMENT = `
+uniform sampler2D uMap;
+varying vec3 vColor;
+void main() {
+  float alpha = texture2D(uMap, gl_PointCoord).a;
+  gl_FragColor = vec4(vColor * alpha, 1.0);
+}
+`;
 
 // Nebula clouds: peak opacity at or below the 0.22 alpha of the CSS nebula
 // (ADR 0007), so HUD text over the scene keeps the AA contrast computed there.
@@ -39,6 +72,8 @@ const NEBULAE: readonly NebulaCloud[] = [
   { x: 700, y: -380, z: -1100, size: 1300, opacity: 0.14 },
   { x: 60, y: -40, z: -1500, size: 1900, opacity: 0.08 },
 ];
+
+const drawingSize = new Vector2();
 
 function radialTexture(stops: readonly [number, string][]): CanvasTexture {
   const size = 128;
@@ -64,57 +99,98 @@ function radialTexture(stops: readonly [number, string][]): CanvasTexture {
   return texture;
 }
 
-function placeStar(positions: Float32Array, index: number, z: number): void {
-  const depth = -z;
+function placeStar(
+  positions: Float32Array,
+  index: number,
+  z: number,
+  spreadDepth: number = -z,
+): void {
+  const depth = spreadDepth;
   positions[index * 3] = (Math.random() * 2 - 1) * depth * SPREAD_X;
   positions[index * 3 + 1] = (Math.random() * 2 - 1) * depth * SPREAD_Y;
   positions[index * 3 + 2] = z;
 }
 
-function pickStarColor(palette: ScenePalette): Color {
-  const roll = Math.random();
-  if (roll < 0.1) return palette.completed;
-  if (roll < 0.3) return palette.current;
-  return palette.star;
+type StarLayer = {
+  points: Points;
+  positions: Float32Array;
+  positionAttribute: BufferAttribute;
+  count: number;
+  dispose(): void;
+};
+
+function createStarLayer(
+  palette: ScenePalette,
+  count: number,
+  texture: CanvasTexture,
+  fadeIn: number,
+): StarLayer {
+  const positions = new Float32Array(count * 3);
+  const colors = new Float32Array(count * 3);
+  const sizes = new Float32Array(count);
+  const tint = new Color();
+  for (let index = 0; index < count; index += 1) {
+    placeStar(positions, index, -(NEAR_Z + Math.random() * (FAR_Z - NEAR_Z)));
+    const base = Math.random() < BLUE_SHARE ? palette.starBlue : palette.star;
+    tint.copy(base).multiplyScalar(0.55 + Math.random() * 0.45);
+    tint.toArray(colors, index * 3);
+    // Most stars small, a few large.
+    sizes[index] = MIN_SIZE + Math.random() ** 3 * (MAX_SIZE - MIN_SIZE);
+  }
+  const positionAttribute = new BufferAttribute(positions, 3);
+  const geometry = new BufferGeometry();
+  geometry.setAttribute("position", positionAttribute);
+  geometry.setAttribute("aColor", new BufferAttribute(colors, 3));
+  geometry.setAttribute("aSize", new BufferAttribute(sizes, 1));
+
+  const scale = { value: 400 };
+  const material = new ShaderMaterial({
+    uniforms: {
+      uMap: { value: texture },
+      uScale: scale,
+      uFadeIn: { value: fadeIn },
+    },
+    vertexShader: STAR_VERTEX,
+    fragmentShader: STAR_FRAGMENT,
+    transparent: true,
+    depthWrite: false,
+    blending: AdditiveBlending,
+  });
+  const points = new Points(geometry, material);
+  // The fall moves vertices, not the object: keep it from being culled.
+  points.frustumCulled = false;
+  points.onBeforeRender = (renderer) => {
+    scale.value = renderer.getDrawingBufferSize(drawingSize).y / 2;
+  };
+  return {
+    points,
+    positions,
+    positionAttribute,
+    count,
+    dispose() {
+      geometry.dispose();
+      material.dispose();
+    },
+  };
 }
 
 /**
- * Starfield with depth plus teal nebula clouds. Stars drift slowly towards the
- * camera and respawn at the far plane; exponential fog (set by the scene)
- * dims the far ones. Owns its geometry, materials and textures.
+ * Starfield with depth plus nebula clouds: a fixed layer of additive white and
+ * blue-white star sprites, and a falling layer that drifts slowly into the
+ * scene and respawns near the camera once a star passes the far plane. Sprites
+ * are drawn procedurally; depth fades the far ones. Owns its geometry, materials and textures.
  */
 export function createStarfield(palette: ScenePalette): SceneLayer {
   const group = new Group();
 
-  const positions = new Float32Array(STAR_COUNT * 3);
-  const colors = new Float32Array(STAR_COUNT * 3);
-  for (let index = 0; index < STAR_COUNT; index += 1) {
-    placeStar(positions, index, -(NEAR_Z + Math.random() * (FAR_Z - NEAR_Z)));
-    pickStarColor(palette).toArray(colors, index * 3);
-  }
-  const positionAttribute = new BufferAttribute(positions, 3);
-  const starGeometry = new BufferGeometry();
-  starGeometry.setAttribute("position", positionAttribute);
-  starGeometry.setAttribute("color", new BufferAttribute(colors, 3));
-
   const starTexture = radialTexture([
     [0, "rgba(255,255,255,1)"],
-    [0.35, "rgba(255,255,255,0.55)"],
+    [0.3, "rgba(255,255,255,0.6)"],
     [1, "rgba(255,255,255,0)"],
   ]);
-  const starMaterial = new PointsMaterial({
-    size: 1.6,
-    map: starTexture,
-    vertexColors: true,
-    transparent: true,
-    depthWrite: false,
-    blending: AdditiveBlending,
-    sizeAttenuation: true,
-  });
-  const stars = new Points(starGeometry, starMaterial);
-  // The drift moves vertices, not the object: keep it from being culled.
-  stars.frustumCulled = false;
-  group.add(stars);
+  const fixed = createStarLayer(palette, FIXED_COUNT, starTexture, 0);
+  const falling = createStarLayer(palette, FALLING_COUNT, starTexture, FADE_IN);
+  group.add(fixed.points, falling.points);
 
   const nebulaTexture = radialTexture([
     [0, "rgba(255,255,255,1)"],
@@ -146,18 +222,26 @@ export function createStarfield(palette: ScenePalette): SceneLayer {
   return {
     object: group,
     update(delta) {
-      for (let index = 0; index < STAR_COUNT; index += 1) {
+      const { positions, positionAttribute, count } = falling;
+      for (let index = 0; index < count; index += 1) {
         const zIndex = index * 3 + 2;
-        const z = (positions[zIndex] ?? -FAR_Z) + DRIFT_SPEED * delta;
-        if (z > -NEAR_Z) placeStar(positions, index, -FAR_Z);
+        const z = (positions[zIndex] ?? -NEAR_Z) - FALL_SPEED * delta;
+        if (z < -FAR_Z) {
+          // Same x/y spread as the initial placement, only z restarts.
+          placeStar(
+            positions,
+            index,
+            -NEAR_Z,
+            NEAR_Z + Math.random() * (FAR_Z - NEAR_Z),
+          );
+        }
         else positions[zIndex] = z;
       }
       positionAttribute.needsUpdate = true;
-      stars.rotation.z += ROLL_SPEED * delta;
     },
     dispose() {
-      starGeometry.dispose();
-      starMaterial.dispose();
+      fixed.dispose();
+      falling.dispose();
       starTexture.dispose();
       for (const material of nebulaMaterials) material.dispose();
       nebulaTexture.dispose();

@@ -1875,8 +1875,8 @@
       "notes": [
         "2026-11-26 rodada 13 (PO): Source: REPORT \"Decisões do stakeholder para a próxima rodada\" and spec docs/specs/2026-11-25-jornada-ai-engineer.md \"Revisão 2\". The stakeholder reference (zip with a three.js space globe) is visual direction only: no code copied, no third-party textures."
       ],
-      "status": "todo",
-      "attempts": 0,
+      "status": "done",
+      "attempts": 1,
       "commit": null
     },
     {
