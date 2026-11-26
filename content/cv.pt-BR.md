@@ -91,6 +91,7 @@ Junho de 2017 – julho de 2018
 Consultoria própria de desenvolvimento de software.
 
 - Plataforma de saúde para cliente sob contrato: duas marcas sobre a mesma base, quatro repositórios, back-end em Express e MySQL com deploy em Railway e cobrança por PIX via API bancária do SICOOB.
+- Manutenção e desenvolvimento de novas funcionalidades para sistemas da ESALQ/USP.
 - Pipeline de geração de leads com Apify e dados do Google Maps: 34 leads qualificados, cada um com uma página de preview personalizada em Next.js.
 - Levantamento de requisitos, proposta comercial e contrato conduzidos diretamente com os clientes.
 
