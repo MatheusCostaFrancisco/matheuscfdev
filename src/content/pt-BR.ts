@@ -209,6 +209,7 @@ export const createPtBR = (years: ExperienceYears): SiteContent => ({
       deliverableLink: 'Ver entregável',
       openPanel: (stageName) => `Abrir painel: ${stageName}`,
       openPanelAction: 'Abrir painel',
+      pauseAnimation: 'Pausar animação',
       closePanel: 'Fechar',
     },
     books: { heading: 'Livros', groups: { reading: 'Lendo agora', read: 'Lidos', wantToRead: 'Quero ler' }, seriesBooks: 'livros' },

@@ -58,6 +58,9 @@ const inertHandle: JourneySceneHandle = {
   highlightFocused() {
     // Nothing was created, so there is nothing to highlight.
   },
+  setPaused() {
+    // Nothing was created, so there is nothing to pause.
+  },
   dispose() {
     // Nothing was created, so there is nothing to free.
   },
@@ -109,6 +112,8 @@ export function mountJourneyScene(
     bloom.setSize(width, height, pixelRatio);
     camera.aspect = width / height;
     camera.updateProjectionMatrix();
+    // Resizing clears the canvas; while paused, redraw the held frame once.
+    if (userPaused && shown) bloom.render();
   };
 
   const raycaster = new Raycaster();
@@ -130,6 +135,7 @@ export function mountJourneyScene(
   let frame = 0;
   let last = 0;
   let shown = false;
+  let userPaused = false;
 
   const tick = (now: number) => {
     const delta = Math.min((now - last) / 1000, MAX_FRAME_DELTA);
@@ -145,7 +151,7 @@ export function mountJourneyScene(
   };
 
   const play = () => {
-    if (frame !== 0 || document.hidden) return;
+    if (frame !== 0 || document.hidden || userPaused) return;
     last = performance.now();
     frame = requestAnimationFrame(tick);
   };
@@ -153,6 +159,12 @@ export function mountJourneyScene(
   const pause = () => {
     cancelAnimationFrame(frame);
     frame = 0;
+  };
+
+  const setPaused = (paused: boolean) => {
+    userPaused = paused;
+    if (paused) pause();
+    else play();
   };
 
   const onVisibilityChange = () => {
@@ -196,6 +208,7 @@ export function mountJourneyScene(
     pickStage,
     hoverStage: planets.setHover,
     highlightFocused: planets.setFocus,
+    setPaused,
     dispose,
   };
 }

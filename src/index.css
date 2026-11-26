@@ -359,6 +359,10 @@
   }
 }
 
+[data-journey-paused] .journey-pulse {
+  animation-play-state: paused;
+}
+
 @media print {
   .journey-fill {
     transform: none !important;

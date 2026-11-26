@@ -141,6 +141,8 @@ export function Journey() {
   const { destination, worlds, finalBoss } = journey[locale];
   const stageIds = [...worlds.map((world) => world.id), finalBoss.id];
   const activeIndex = useActiveStage(stageIds, listRef);
+  const [sceneActive, setSceneActive] = useState(false);
+  const [animationPaused, setAnimationPaused] = useState(false);
   const [openId, setOpenId] = useState<string | null>(null);
   const openerRef = useRef<HTMLElement | null>(null);
 
@@ -194,6 +196,7 @@ export function Journey() {
   return (
     <section
       data-scene-pick
+      data-journey-paused={sceneActive && animationPaused ? "" : undefined}
       id={item.id}
       aria-labelledby="journey-title"
       className="section-offset py-10"
@@ -202,6 +205,8 @@ export function Journey() {
         state={state}
         activeIndex={activeIndex}
         onPickStage={openFromScene}
+        onActiveChange={setSceneActive}
+        paused={animationPaused}
       />
       <WorldDialog panel={openPanelData} onClosed={handleClosed} />
       <h1
@@ -210,6 +215,16 @@ export function Journey() {
       >
         {text.title}
       </h1>
+      {sceneActive && (
+        <button
+          type="button"
+          aria-pressed={animationPaused}
+          onClick={() => setAnimationPaused((value) => !value)}
+          className="mt-4 cursor-pointer rounded-2xl border border-line-strong bg-surface-raised min-h-11 min-w-11 px-4 py-2 text-sm font-medium text-fg transition-colors hover:bg-surface-sunken focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-600 active:bg-surface-sunken aria-pressed:border-journey-current disabled:cursor-not-allowed disabled:opacity-50"
+        >
+          {text.pauseAnimation}
+        </button>
+      )}
 
       <div className="mt-8 rounded-2xl border border-line bg-surface-raised p-6">
         <dl className="grid gap-4 sm:grid-cols-2">

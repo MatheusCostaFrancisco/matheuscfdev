@@ -209,6 +209,7 @@ export const createEn = (years: ExperienceYears): SiteContent => ({
       deliverableLink: 'View deliverable',
       openPanel: (stageName) => `Open panel: ${stageName}`,
       openPanelAction: 'Open panel',
+      pauseAnimation: 'Pause animation',
       closePanel: 'Close',
     },
     books: { heading: 'Books', groups: { reading: 'Reading now', read: 'Read', wantToRead: 'Want to read' }, seriesBooks: 'books' },

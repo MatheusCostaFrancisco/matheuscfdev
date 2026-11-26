@@ -35,5 +35,7 @@ export type JourneySceneHandle = {
   hoverStage(index: number | null): void;
   /** Highlights the planet whose card has keyboard focus; null clears it. */
   highlightFocused(index: number | null): void;
+  /** Stops (true) or resumes (false) the render loop; scene state is kept. */
+  setPaused(paused: boolean): void;
   dispose(): void;
 };

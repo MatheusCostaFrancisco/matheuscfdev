@@ -31,6 +31,10 @@ type JourneySceneProps = {
   activeIndex: number;
   /** Called with the stage index when a planet is clicked. */
   onPickStage: (index: number) => void;
+  /** True while the canvas is mounted and animating (or held paused). */
+  onActiveChange: (active: boolean) => void;
+  /** User choice to hold the render loop. */
+  paused: boolean;
 };
 
 // Pick only when the click lands on the bare page: html, body or a layout
@@ -43,6 +47,8 @@ export function JourneyScene({
   state,
   activeIndex,
   onPickStage,
+  onActiveChange,
+  paused,
 }: JourneySceneProps) {
   const hostRef = useRef<HTMLDivElement>(null);
   const stagesRef = useRef<SceneStages>(state);
@@ -51,6 +57,10 @@ export function JourneyScene({
   indexRef.current = activeIndex;
   const pickRef = useRef(onPickStage);
   pickRef.current = onPickStage;
+  const activeRef = useRef(onActiveChange);
+  activeRef.current = onActiveChange;
+  const pausedRef = useRef(paused);
+  pausedRef.current = paused;
   const handleRef = useRef<JourneySceneHandle | null>(null);
   // Statuses do not depend on the locale: remount only when they change.
   const stagesKey = [...state.worlds, state.finalBoss]
@@ -79,6 +89,8 @@ export function JourneyScene({
             indexRef.current,
           );
           handleRef.current = mounted;
+          mounted.setPaused(pausedRef.current);
+          activeRef.current(true);
         })
         .catch(() => {
           // Chunk failed to load or WebGL could not start: keep the HTML map.
@@ -90,6 +102,7 @@ export function JourneyScene({
       mounted?.dispose();
       mounted = null;
       handleRef.current = null;
+      activeRef.current(false);
     };
 
     // Back/forward cache: pagehide tears the scene down, pageshow restores it.
@@ -168,6 +181,10 @@ export function JourneyScene({
       document.removeEventListener("focusout", onFocusOut);
     };
   }, [stagesKey]);
+
+  useEffect(() => {
+    handleRef.current?.setPaused(paused);
+  }, [paused]);
 
   useEffect(() => {
     handleRef.current?.focusStage(activeIndex);

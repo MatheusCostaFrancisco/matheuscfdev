@@ -1574,8 +1574,8 @@
       "dependsOn": [
         "T-068"
       ],
-      "status": "todo",
-      "attempts": 0,
+      "status": "done",
+      "attempts": 1,
       "commit": null,
       "notes": [
         "2026-11-26 rodada 10 (PO): decision: WCAG 2.2.2 (Pause, Stop, Hide, level A, part of the 2.1 AA target in CLAUDE.md) requires a pause for decorative motion that starts on load and lasts over 5s. Today only prefers-reduced-motion stops it (REPORT T-063 item). Depends on T-068 so the pause also covers bloom and hover effects."
