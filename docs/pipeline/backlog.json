@@ -1553,8 +1553,8 @@
       "dependsOn": [
         "T-065"
       ],
-      "status": "todo",
-      "attempts": 0,
+      "status": "done",
+      "attempts": 1,
       "commit": null,
       "notes": [
         "2026-11-26 rodada 10 (PO): opened from the T-065 reviewer minors in docs/pipeline/runs/2026-11-25-3.md: (a) onFocusIn without lock(), (b) aria-describedby on the <ol>, (f) first ArrowDown skips World 0. REPORT T-065 item says the PO may open a task. A visible hint and role on the <li> stay as review questions."

@@ -138,6 +138,8 @@ function BossBlock({ boss }: BossBlockProps) {
   );
 }
 
+const keyboardHintId = "journey-keyboard-hint";
+
 const cardClass =
   "relative min-w-0 section-offset rounded-2xl border bg-surface-raised p-6";
 
@@ -203,6 +205,7 @@ function StageCard({
       id={id}
       aria-labelledby={headingId}
       aria-current={status === "current" ? "step" : undefined}
+      aria-describedby={keyboardHintId}
       tabIndex={0}
       className={cn(cardClass, cardTone(status))}
     >
@@ -325,12 +328,11 @@ export function Journey() {
             className="journey-fill h-full w-full bg-journey-completed"
           />
         </div>
-        <p id="journey-keyboard-hint" className="sr-only">
+        <p id={keyboardHintId} className="sr-only">
           {text.keyboardHint}
         </p>
         <ol
           ref={listRef}
-          aria-describedby="journey-keyboard-hint"
           className="space-y-4 pl-8"
         >
           {worlds.map((world, index) => {

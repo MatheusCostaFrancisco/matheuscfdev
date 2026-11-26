@@ -37,7 +37,7 @@ function isEditable(target: EventTarget | null): boolean {
 /**
  * Which stage of the journey list is active, for the 3D camera. It starts
  * from the URL hash (#world-3 / #mundo-3), then follows scroll (the card
- * closest to the middle of the viewport), focus inside a card, and the arrow
+ * closest to the middle of the viewport), focus inside a card (which also locks the index), and the arrow
  * keys while focus is in the list, which scroll to and focus the previous/next
  * card. Elsewhere, and past the first/last card, arrows scroll the page as
  * usual. A hash or arrow-key scroll locks the index until the scroll settles.
@@ -128,7 +128,9 @@ export function useActiveStage(
       const target = event.target;
       if (!(target instanceof Node)) return;
       const position = cards().findIndex((card) => card.contains(target));
-      if (position >= 0 && position !== indexRef.current) choose(position);
+      if (position < 0) return;
+      lock(LOCK_START_MS);
+      if (position !== indexRef.current) choose(position);
     };
 
     const onHashChange = () => {
