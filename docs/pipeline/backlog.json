@@ -1714,8 +1714,8 @@
       "dependsOn": [
         "T-075"
       ],
-      "status": "todo",
-      "attempts": 0,
+      "status": "done",
+      "attempts": 1,
       "commit": null,
       "notes": [
         "2026-11-26 rodada 12 (PO): spec docs/specs/2026-11-25-jornada-ai-engineer.md, \"Revisão 1 — 3D protagonista\", item 4: step (b), second half. Decision: the spec says \"roda do mouse ou arrasto\"; the PO picks drag and keeps the wheel for page scrolling, because a 100dvh stage that captures the wheel traps the visitor before the list and the footer (up to 9 stops from world 0). The same reasoning makes the touch gesture horizontal. Registered as a review item. This supersedes the T-069 review items (camera lock on card click, arrows only with focus in the list)."

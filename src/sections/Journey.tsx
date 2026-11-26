@@ -9,7 +9,7 @@ import { journeyState, type JourneyStatus } from "../lib/journey-state";
 import { langAttr } from "../lib/lang-attr";
 import { useLocale } from "../lib/locale-context";
 import { useContent } from "../lib/use-content";
-import { useActiveStage } from "../lib/use-active-stage";
+import { useStageIndex } from "../lib/use-stage-index";
 import { useJourneyProgress } from "../lib/use-journey-progress";
 
 const legendStatuses: readonly JourneyStatus[] = [
@@ -162,7 +162,6 @@ export function Journey() {
   const item = navigation.find((nav) => nav.id === "journey");
   const trackRef = useRef<HTMLDivElement>(null);
   const fillRef = useRef<HTMLDivElement>(null);
-  const listRef = useRef<HTMLOListElement>(null);
   useJourneyProgress(trackRef, fillRef);
   const { destination, worlds, finalBoss } = journey[locale];
   const stageIds = [...worlds.map((world) => world.id), finalBoss.id];
@@ -170,9 +169,8 @@ export function Journey() {
   const currentIndex = [...state.worlds, state.finalBoss].findIndex(
     (stage) => stage.status === "current",
   );
-  const activeIndex = useActiveStage(
+  const { index: activeIndex, goTo } = useStageIndex(
     stageIds,
-    listRef,
     Math.max(currentIndex, 0),
   );
   const [sceneActive, setSceneActive] = useState(false);
@@ -286,6 +284,7 @@ export function Journey() {
       <JourneyScene
         state={state}
         activeIndex={activeIndex}
+        onNavigate={goTo}
         labels={labels}
         onOpenStage={openPanel}
         onActiveChange={setSceneActive}
@@ -367,7 +366,6 @@ export function Journey() {
           {text.keyboardHint}
         </p>
         <ol
-          ref={listRef}
           className="space-y-4 pl-8"
         >
           {worlds.map((world, index) => {

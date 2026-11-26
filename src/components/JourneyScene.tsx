@@ -1,5 +1,13 @@
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import {
+  useEffect,
+  useRef,
+  useState,
+  type KeyboardEvent,
+  type PointerEvent,
+  type ReactNode,
+} from "react";
 import { cn } from "../lib/cn";
+import { useContent } from "../lib/use-content";
 import type { JourneyState, JourneyStatus } from "../lib/journey-state";
 import type {
   JourneySceneHandle,
@@ -22,8 +30,49 @@ import {
  * HUD (ADR 0007 addendum T-074) sits in a sibling layer in the stage corners,
  * on translucent panels with measured contrast, and never covers the center.
  *
- * The camera follows `activeIndex` (the stage being read or focused).
+ * The camera follows `activeIndex`, which only changes through `onNavigate`:
+ * focus or arrow keys on a label, a drag or horizontal swipe on the stage, or
+ * the previous/next buttons. The stage is touch-action: pan-y so vertical
+ * swipes and the wheel keep scrolling the page.
  */
+const SWIPE_THRESHOLD = 60;
+
+type NavButtonProps = {
+  direction: "previous" | "next";
+  label: string;
+  disabled: boolean;
+  onClick: () => void;
+};
+
+function NavButton({ direction, label, disabled, onClick }: NavButtonProps) {
+  return (
+    <button
+      type="button"
+      data-hud-panel
+      aria-label={label}
+      disabled={disabled}
+      onClick={onClick}
+      className={cn(
+        "pointer-events-auto absolute top-1/2 flex size-11 -translate-y-1/2 cursor-pointer items-center justify-center rounded-2xl border border-line bg-surface-raised/90 text-fg transition-colors hover:bg-surface-sunken focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-600 active:bg-surface-sunken disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-surface-raised/90",
+        direction === "previous" ? "left-2 sm:left-4" : "right-2 sm:right-4",
+      )}
+    >
+      <svg
+        aria-hidden="true"
+        viewBox="0 0 24 24"
+        width="20"
+        height="20"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <path d={direction === "previous" ? "M15 5l-7 7 7 7" : "M9 5l7 7-7 7"} />
+      </svg>
+    </button>
+  );
+}
 const LABEL_EDGE = 8;
 /** Matches the mt-7 (1.75rem) that drops the label below its planet. */
 const LABEL_OFFSET = 28;
@@ -39,6 +88,8 @@ export type StageLabel = {
 type JourneySceneProps = {
   state: JourneyState;
   activeIndex: number;
+  /** Moves the camera to a stage index. */
+  onNavigate: (index: number) => void;
   /** One label per stage, in stage order, attached to its planet. */
   labels: readonly StageLabel[];
   /** Called with the stage id and the label button when a label is activated. */
@@ -54,12 +105,15 @@ type JourneySceneProps = {
 export function JourneyScene({
   state,
   activeIndex,
+  onNavigate,
   labels,
   onOpenStage,
   onActiveChange,
   paused,
   hud,
 }: JourneySceneProps) {
+  const { ui } = useContent();
+  const text = ui.journey;
   const hostRef = useRef<HTMLDivElement>(null);
   const [active, setActive] = useState(false);
   const stagesRef = useRef<SceneStages>(state);
@@ -142,6 +196,11 @@ export function JourneyScene({
 
   const labelRefs = useRef<(HTMLButtonElement | null)[]>([]);
   const layerRef = useRef<HTMLDivElement>(null);
+  // A label hidden by the tracker cannot take focus: arrow navigation parks
+  // the target index here and the tracker focuses it once it is visible.
+  const pendingFocusRef = useRef<number | null>(null);
+  const dragRef = useRef<{ id: number; x: number; y: number } | null>(null);
+  const lastIndex = labels.length - 1;
 
   // Label buttons follow their planets: the scene loop hands over the
   // projected positions and they go straight to style.transform, with no
@@ -180,7 +239,12 @@ export function JourneyScene({
             top < panel.bottom &&
             top + button.offsetHeight > panel.top,
         );
-        button.style.visibility = point.visible && !covered ? "visible" : "hidden";
+        const shown = point.visible && !covered;
+        button.style.visibility = shown ? "visible" : "hidden";
+        if (shown && pendingFocusRef.current === index) {
+          pendingFocusRef.current = null;
+          button.focus({ preventScroll: true });
+        }
       });
     });
     return () => handleRef.current?.setLabelTracker(null);
@@ -211,6 +275,51 @@ export function JourneyScene({
     };
   }, [stagesKey]);
 
+  const step = (from: number, delta: number) => {
+    const next = from + delta;
+    if (next < 0 || next > lastIndex) return;
+    onNavigate(next);
+  };
+
+  const onLabelKeyDown = (event: KeyboardEvent<HTMLButtonElement>, index: number) => {
+    if (event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) return;
+    const delta =
+      event.key === "ArrowLeft" || event.key === "ArrowUp"
+        ? -1
+        : event.key === "ArrowRight" || event.key === "ArrowDown"
+          ? 1
+          : 0;
+    if (delta === 0) return;
+    event.preventDefault();
+    const next = index + delta;
+    if (next < 0 || next > lastIndex) return;
+    const target = labelRefs.current[next];
+    if (target !== null && target !== undefined && target.style.visibility === "visible") {
+      target.focus({ preventScroll: true });
+    } else {
+      pendingFocusRef.current = next;
+      onNavigate(next);
+    }
+  };
+
+  const onStagePointerDown = (event: PointerEvent<HTMLDivElement>) => {
+    if (event.target instanceof Element && event.target.closest("button")) return;
+    if (event.pointerType === "mouse" && event.button !== 0) return;
+    dragRef.current = { id: event.pointerId, x: event.clientX, y: event.clientY };
+  };
+  const onStagePointerUp = (event: PointerEvent<HTMLDivElement>) => {
+    const start = dragRef.current;
+    if (start === null || start.id !== event.pointerId) return;
+    dragRef.current = null;
+    const dx = event.clientX - start.x;
+    const dy = event.clientY - start.y;
+    if (Math.abs(dx) < SWIPE_THRESHOLD || Math.abs(dx) < Math.abs(dy) * 1.5) return;
+    step(activeIndex, dx < 0 ? 1 : -1);
+  };
+  const onStagePointerCancel = () => {
+    dragRef.current = null;
+  };
+
   useEffect(() => {
     handleRef.current?.setPaused(paused);
   }, [paused]);
@@ -221,9 +330,12 @@ export function JourneyScene({
 
   return (
     <div
+      onPointerDown={onStagePointerDown}
+      onPointerUp={onStagePointerUp}
+      onPointerCancel={onStagePointerCancel}
       className={cn(
         active &&
-          "relative -mt-20 ml-[calc(50%-50vw)] h-[calc(100dvh-var(--spacing-header))] w-screen overflow-hidden bg-journey-space print:hidden",
+          "relative touch-pan-y -mt-20 ml-[calc(50%-50vw)] h-[calc(100dvh-var(--spacing-header))] w-screen overflow-hidden bg-journey-space print:hidden",
         !active && "hidden",
       )}
     >
@@ -234,6 +346,18 @@ export function JourneyScene({
           className="pointer-events-none absolute inset-0 overflow-hidden"
         >
           {hud}
+          <NavButton
+            direction="previous"
+            label={text.previousWorld(labels[activeIndex - 1]?.title ?? "")}
+            disabled={activeIndex <= 0}
+            onClick={() => step(activeIndex, -1)}
+          />
+          <NavButton
+            direction="next"
+            label={text.nextWorld(labels[activeIndex + 1]?.title ?? "")}
+            disabled={activeIndex >= lastIndex}
+            onClick={() => step(activeIndex, 1)}
+          />
           {labels.map((label, index) => (
             <button
               key={label.id}
@@ -242,6 +366,8 @@ export function JourneyScene({
               }}
               type="button"
               data-stage-label={index}
+              onFocus={() => onNavigate(index)}
+              onKeyDown={(event) => onLabelKeyDown(event, index)}
               onClick={(event) => onOpenStage(label.id, event.currentTarget)}
               onPointerEnter={() => handleRef.current?.hoverStage(index)}
               onPointerLeave={() => handleRef.current?.hoverStage(null)}
