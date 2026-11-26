@@ -137,9 +137,8 @@ function lockTexture(ink: Color): CanvasTexture {
   });
 }
 
-/** The planets layer also exposes each planet body, in stage order, for picking. */
+/** The planets layer also exposes highlight controls for hover and focus. */
 export type PlanetsLayer = SceneLayer & {
-  bodies: readonly Mesh[];
   /** Planet under the pointer, or null. Lit planets grow and glow; locked ones get a dimmer lift. */
   setHover(index: number | null): void;
   /** Planet whose card has keyboard focus, or null. Same look as hover. */
@@ -203,7 +202,6 @@ export function createPlanets(
   sun.position.set(-40, 50, 30);
   group.add(sun);
 
-  const bodies: Mesh[] = [];
   const pulses: { sprite: Sprite; base: number }[] = [];
   const orbits: Group[] = [];
   const highlights: Highlight[] = [];
@@ -245,7 +243,6 @@ export function createPlanets(
       lift: lit ? LIT_HIGHLIGHT : LOCKED_HIGHLIGHT,
       amount: 0,
     });
-    bodies.push(planet);
 
     if (stage.status === "completed") {
       const ringMaterial = trackMaterial(
@@ -400,7 +397,6 @@ export function createPlanets(
   let elapsed = 0;
   return {
     object: group,
-    bodies,
     setHover(index) {
       hovered = index;
     },

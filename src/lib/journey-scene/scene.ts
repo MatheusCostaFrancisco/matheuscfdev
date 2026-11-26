@@ -5,9 +5,8 @@ import {
   Color,
   FogExp2,
   PerspectiveCamera,
-  Raycaster,
   Scene,
-  Vector2,
+  Vector3,
   WebGLRenderer,
 } from "three";
 import { createBloom } from "./bloom";
@@ -16,6 +15,7 @@ import { createPlanets, nodePositions } from "./planets";
 import { createStarfield } from "./starfield";
 import type {
   JourneySceneHandle,
+  LabelPoint,
   SceneLayer,
   ScenePalette,
   SceneStages,
@@ -45,29 +45,9 @@ function readPalette(host: HTMLElement): ScenePalette | null {
   return { space, star, current, completed, locked, nebula };
 }
 
-const inertHandle: JourneySceneHandle = {
-  focusStage() {
-    // Nothing was created, so there is nothing to move.
-  },
-  pickStage() {
-    return null;
-  },
-  hoverStage() {
-    // Nothing was created, so there is nothing to highlight.
-  },
-  highlightFocused() {
-    // Nothing was created, so there is nothing to highlight.
-  },
-  setPaused() {
-    // Nothing was created, so there is nothing to pause.
-  },
-  dispose() {
-    // Nothing was created, so there is nothing to free.
-  },
-};
-
 /**
- * Mounts the scene canvas inside `host` and returns its teardown. The render
+ * Mounts the scene canvas inside `host` and returns its handle (null when the
+ * theme palette is missing, so the shell keeps the HTML map). The render
  * loop runs only while the document is visible and the host is in the
  * viewport; the pixel ratio is capped at
  * MAX_PIXEL_RATIO. Teardown (idempotent) stops the loop, disposes every layer
@@ -81,9 +61,9 @@ export function mountJourneyScene(
   stages: SceneStages,
   initialIndex: number,
   onLost?: () => void,
-): JourneySceneHandle {
+): JourneySceneHandle | null {
   const palette = readPalette(host);
-  if (palette === null) return inertHandle;
+  if (palette === null) return null;
 
   const renderer = new WebGLRenderer({ antialias: false, alpha: false });
   renderer.setClearColor(palette.space, 1);
@@ -115,23 +95,38 @@ export function mountJourneyScene(
     camera.aspect = width / height;
     camera.updateProjectionMatrix();
     // Resizing clears the canvas; while paused, redraw the held frame once.
-    if (userPaused && shown) bloom.render();
+    if (userPaused && shown) {
+      bloom.render();
+      projectLabels();
+    }
   };
 
-  const raycaster = new Raycaster();
-  const ndc = new Vector2();
-  const pickStage = (clientX: number, clientY: number): number | null => {
-    const rect = canvas.getBoundingClientRect();
-    if (rect.width === 0 || rect.height === 0) return null;
-    ndc.set(
-      ((clientX - rect.left) / rect.width) * 2 - 1,
-      -(((clientY - rect.top) / rect.height) * 2 - 1),
-    );
-    raycaster.setFromCamera(ndc, camera);
-    const hit = raycaster.intersectObjects([...planets.bodies], false)[0];
-    if (hit === undefined) return null;
-    const index = planets.bodies.findIndex((body) => body === hit.object);
-    return index < 0 ? null : index;
+  const positions = nodePositions(stages.worlds.length + 1);
+  const projected = new Vector3();
+  const points: LabelPoint[] = positions.map(() => ({
+    x: 0,
+    y: 0,
+    visible: false,
+  }));
+  let tracker: ((points: readonly LabelPoint[]) => void) | null = null;
+  // Projects every planet to host pixels; the shell writes them to the DOM.
+  const projectLabels = () => {
+    if (tracker === null) return;
+    const width = host.clientWidth;
+    const height = host.clientHeight;
+    camera.updateMatrixWorld();
+    positions.forEach((position, index) => {
+      const point = points[index];
+      if (point === undefined) return;
+      projected.copy(position).project(camera);
+      point.x = ((projected.x + 1) / 2) * width;
+      point.y = ((1 - projected.y) / 2) * height;
+      point.visible =
+        projected.z < 1 &&
+        Math.abs(projected.x) <= 1 &&
+        Math.abs(projected.y) <= 1;
+    });
+    tracker(points);
   };
 
   let frame = 0;
@@ -145,6 +140,7 @@ export function mountJourneyScene(
     last = now;
     for (const layer of layers) layer.update(delta);
     rig.update(delta);
+    projectLabels();
     bloom.render();
     if (!shown) {
       shown = true;
@@ -225,7 +221,10 @@ export function mountJourneyScene(
 
   return {
     focusStage: rig.focusStage,
-    pickStage,
+    setLabelTracker(track) {
+      tracker = track;
+      projectLabels();
+    },
     hoverStage: planets.setHover,
     highlightFocused: planets.setFocus,
     setPaused,

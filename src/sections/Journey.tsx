@@ -1,6 +1,6 @@
 import { useCallback, useRef, useState, type KeyboardEvent, type ReactNode } from "react";
 import { StatusBadge, StudyList, BossBlock, XpBar } from "../components/JourneyParts";
-import { JourneyScene } from "../components/JourneyScene";
+import { JourneyScene, type StageLabel } from "../components/JourneyScene";
 import { WorldDialog, type WorldPanel } from "../components/WorldDialog";
 import { journey } from "../content/journey";
 import type { JourneyBoss } from "../content/journey";
@@ -190,10 +190,6 @@ export function Journey() {
     openerRef.current = opener;
     setOpenId(id);
   }, []);
-  const openFromScene = (index: number) => {
-    const id = stageIds[index];
-    if (id !== undefined) openPanel(id, document.getElementById(id));
-  };
   const handleClosed = useCallback(() => {
     setOpenId(null);
     const opener = openerRef.current;
@@ -224,6 +220,13 @@ export function Journey() {
       checklist: null,
     },
   ];
+  const labels: StageLabel[] = panels.map((panel) => ({
+    id: panel.id,
+    title: panel.title,
+    status: panel.status,
+    statusLabel: text.status[panel.status],
+    xp: panel.xp,
+  }));
   const openPanelData = panels.find((panel) => panel.id === openId) ?? null;
 
   const title = (
@@ -283,17 +286,19 @@ export function Journey() {
       <JourneyScene
         state={state}
         activeIndex={activeIndex}
-        onPickStage={openFromScene}
+        labels={labels}
+        onOpenStage={openPanel}
         onActiveChange={setSceneActive}
         paused={animationPaused}
         hud={
           <div className="mx-auto h-full max-w-[90rem] px-4 sm:px-6">
             <div className="relative h-full">
-              <div className={cn(hudPanel, "absolute left-0 top-[4.5rem] max-w-[calc(50%-0.5rem)]")}>
+              <div data-hud-panel className={cn(hudPanel, "absolute left-0 top-[4.5rem] max-w-[calc(50%-0.5rem)]")}>
                 {title}
               </div>
               <button
                 type="button"
+                data-hud-panel
                 aria-pressed={animationPaused}
                 onClick={() => setAnimationPaused((value) => !value)}
                 className={cn(
@@ -304,10 +309,10 @@ export function Journey() {
                 <PlayPauseIcon playing={!animationPaused} />
                 {text.pauseAnimation}
               </button>
-              <div className={cn(hudPanel, "absolute bottom-6 left-0 max-w-[calc(50%-0.5rem)]")}>
+              <div data-hud-panel className={cn(hudPanel, "absolute bottom-6 left-0 max-w-[calc(50%-0.5rem)]")}>
                 {fromTo}
               </div>
-              <div className={cn(hudPanel, "absolute bottom-6 right-0 max-w-[calc(50%-0.5rem)]")}>
+              <div data-hud-panel className={cn(hudPanel, "absolute bottom-6 right-0 max-w-[calc(50%-0.5rem)]")}>
                 {totals}
               </div>
             </div>

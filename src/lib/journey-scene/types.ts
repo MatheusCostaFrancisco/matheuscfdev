@@ -25,12 +25,21 @@ export type SceneLayer = {
   dispose(): void;
 };
 
+/** A planet projected to the host: pixels from its top-left corner. */
+export type LabelPoint = { x: number; y: number; visible: boolean };
+
 /** What the React shell can do with a mounted scene. */
 export type JourneySceneHandle = {
   /** Moves the camera to the stage at `index` (clamped to the stage count). */
   focusStage(index: number): void;
-  /** Index of the stage whose planet is under the viewport point, or null. */
-  pickStage(clientX: number, clientY: number): number | null;
+  /**
+   * Receives every planet's host-pixel position after each rendered frame
+   * (and once on set), in stage order. The array is reused between calls.
+   * null stops tracking.
+   */
+  setLabelTracker(
+    track: ((points: readonly LabelPoint[]) => void) | null,
+  ): void;
   /** Highlights the planet under the pointer; null clears it. */
   hoverStage(index: number | null): void;
   /** Highlights the planet whose card has keyboard focus; null clears it. */

@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { cn } from "../lib/cn";
-import type { JourneyState } from "../lib/journey-state";
+import type { JourneyState, JourneyStatus } from "../lib/journey-state";
 import type {
   JourneySceneHandle,
   SceneStages,
@@ -24,11 +24,25 @@ import {
  *
  * The camera follows `activeIndex` (the stage being read or focused).
  */
+const LABEL_EDGE = 8;
+/** Matches the mt-7 (1.75rem) that drops the label below its planet. */
+const LABEL_OFFSET = 28;
+
+export type StageLabel = {
+  id: string;
+  title: string;
+  status: JourneyStatus;
+  statusLabel: string;
+  xp: number;
+};
+
 type JourneySceneProps = {
   state: JourneyState;
   activeIndex: number;
-  /** Called with the stage index when a planet is clicked. */
-  onPickStage: (index: number) => void;
+  /** One label per stage, in stage order, attached to its planet. */
+  labels: readonly StageLabel[];
+  /** Called with the stage id and the label button when a label is activated. */
+  onOpenStage: (id: string, opener: HTMLElement) => void;
   /** True while the canvas is mounted and animating (or held paused). */
   onActiveChange: (active: boolean) => void;
   /** User choice to hold the render loop. */
@@ -40,7 +54,8 @@ type JourneySceneProps = {
 export function JourneyScene({
   state,
   activeIndex,
-  onPickStage,
+  labels,
+  onOpenStage,
   onActiveChange,
   paused,
   hud,
@@ -51,8 +66,6 @@ export function JourneyScene({
   stagesRef.current = state;
   const indexRef = useRef(activeIndex);
   indexRef.current = activeIndex;
-  const pickRef = useRef(onPickStage);
-  pickRef.current = onPickStage;
   const activeRef = useRef(onActiveChange);
   activeRef.current = onActiveChange;
   const pausedRef = useRef(paused);
@@ -79,12 +92,14 @@ export function JourneyScene({
       import("../lib/journey-scene/scene")
         .then(({ mountJourneyScene }) => {
           if (ticket !== generation || mounted !== null) return;
-          mounted = mountJourneyScene(
+          const handle = mountJourneyScene(
             host,
             stagesRef.current,
             indexRef.current,
             stop,
           );
+          if (handle === null) return;
+          mounted = handle;
           handleRef.current = mounted;
           mounted.setPaused(pausedRef.current);
           setActive(true);
@@ -125,43 +140,62 @@ export function JourneyScene({
     };
   }, [stagesKey]);
 
-  // Pointer events on the stage are tested against the planets. Keyboard
-  // users open the same panel from the cards.
-  useEffect(() => {
-    const host = hostRef.current;
-    if (host === null) return;
-    const pickAt = (event: MouseEvent): number | null => {
-      if (window.getSelection()?.isCollapsed === false) return null;
-      return handleRef.current?.pickStage(event.clientX, event.clientY) ?? null;
-    };
-    const onClick = (event: MouseEvent) => {
-      if (event.button !== 0) return;
-      const index = pickAt(event);
-      if (index !== null) pickRef.current(index);
-    };
-    const setHover = (index: number | null) => {
-      host.style.cursor = index !== null ? "pointer" : "";
-      handleRef.current?.hoverStage(index);
-    };
-    const onMove = (event: PointerEvent) => setHover(pickAt(event));
-    const onLeave = () => setHover(null);
-    host.addEventListener("click", onClick);
-    host.addEventListener("pointermove", onMove);
-    host.addEventListener("pointerleave", onLeave);
-    return () => {
-      host.removeEventListener("click", onClick);
-      host.removeEventListener("pointermove", onMove);
-      host.removeEventListener("pointerleave", onLeave);
-    };
-  }, []);
+  const labelRefs = useRef<(HTMLButtonElement | null)[]>([]);
+  const layerRef = useRef<HTMLDivElement>(null);
 
-  // Keyboard focus inside a stage card lights its planet like a hover. The
-  // cards are the list items whose id is a stage id, in stage order.
+  // Label buttons follow their planets: the scene loop hands over the
+  // projected positions and they go straight to style.transform, with no
+  // React state per frame. A label is clamped to the stage and hidden while
+  // it would sit under a HUD panel; the stage cards stay the keyboard route
+  // for planets that are off camera or covered.
+  useEffect(() => {
+    if (!active) return;
+    handleRef.current?.setLabelTracker((points) => {
+      const layer = layerRef.current;
+      if (layer === null) return;
+      const bounds = layer.getBoundingClientRect();
+      const panels = Array.from(
+        layer.querySelectorAll("[data-hud-panel]"),
+        (panel) => panel.getBoundingClientRect(),
+      );
+      points.forEach((point, index) => {
+        const button = labelRefs.current[index];
+        if (button === null || button === undefined) return;
+        const halfWidth = button.offsetWidth / 2;
+        const x = Math.min(
+          Math.max(point.x, halfWidth + LABEL_EDGE),
+          bounds.width - halfWidth - LABEL_EDGE,
+        );
+        const y = Math.min(
+          Math.max(point.y, LABEL_EDGE),
+          bounds.height - LABEL_OFFSET - button.offsetHeight - LABEL_EDGE,
+        );
+        button.style.transform = `translate3d(${x.toFixed(1)}px, ${y.toFixed(1)}px, 0)`;
+        const left = bounds.left + x - halfWidth;
+        const top = bounds.top + y + LABEL_OFFSET;
+        const covered = panels.some(
+          (panel) =>
+            left < panel.right &&
+            left + button.offsetWidth > panel.left &&
+            top < panel.bottom &&
+            top + button.offsetHeight > panel.top,
+        );
+        button.style.visibility = point.visible && !covered ? "visible" : "hidden";
+      });
+    });
+    return () => handleRef.current?.setLabelTracker(null);
+  }, [active, stagesKey]);
+
+  // Keyboard focus on a stage label or inside a stage card lights its planet
+  // like a hover. The cards are the list items whose id is a stage id.
   useEffect(() => {
     const ids = stagesKey.split("|").map((entry) => entry.split(":")[0]);
     const stageOf = (target: EventTarget | null): number | null => {
       if (!(target instanceof Element) || !target.matches(":focus-visible"))
         return null;
+      const label = target.closest("[data-stage-label]");
+      if (label instanceof HTMLElement)
+        return Number(label.dataset.stageLabel);
       const card = target.closest("li[id]");
       const index = card === null ? -1 : ids.indexOf(card.id);
       return index < 0 ? null : index;
@@ -195,7 +229,42 @@ export function JourneyScene({
     >
       <div ref={hostRef} aria-hidden="true" className="absolute inset-0" />
       {active && (
-        <div className="pointer-events-none absolute inset-0">{hud}</div>
+        <div
+          ref={layerRef}
+          className="pointer-events-none absolute inset-0 overflow-hidden"
+        >
+          {hud}
+          {labels.map((label, index) => (
+            <button
+              key={label.id}
+              ref={(node) => {
+                labelRefs.current[index] = node;
+              }}
+              type="button"
+              data-stage-label={index}
+              onClick={(event) => onOpenStage(label.id, event.currentTarget)}
+              onPointerEnter={() => handleRef.current?.hoverStage(index)}
+              onPointerLeave={() => handleRef.current?.hoverStage(null)}
+              style={{ visibility: "hidden" }}
+              className={cn(
+                "pointer-events-auto absolute left-0 top-0 mt-7 min-h-11 w-max max-w-40 -translate-x-1/2 cursor-pointer rounded-2xl border bg-surface-raised/90 px-3 py-1.5 text-left text-xs leading-tight text-fg transition-colors hover:bg-surface-sunken focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-600 active:bg-surface-sunken sm:max-w-52 sm:text-sm",
+                label.status === "current"
+                  ? "border-journey-current"
+                  : label.status === "locked"
+                    ? "border-dashed border-line"
+                    : "border-line",
+              )}
+            >
+              <span className="block font-semibold [overflow-wrap:anywhere]">
+                {label.title}
+              </span>
+              <span className="sr-only">, </span>
+              <span className="block text-fg-muted">
+                {label.statusLabel} {"·"} {label.xp}%
+              </span>
+            </button>
+          ))}
+        </div>
       )}
     </div>
   );

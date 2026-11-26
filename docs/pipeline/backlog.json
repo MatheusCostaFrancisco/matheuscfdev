@@ -1691,8 +1691,8 @@
       "dependsOn": [
         "T-073"
       ],
-      "status": "todo",
-      "attempts": 0,
+      "status": "done",
+      "attempts": 1,
       "commit": null,
       "notes": [
         "2026-11-26 rodada 12 (PO): spec docs/specs/2026-11-25-jornada-ai-engineer.md, \"Revisão 1 — 3D protagonista\", item 3: step (b), first half. The labels become the click, keyboard and screen reader target of each planet, which retires the page-background raycast of T-066 and the T-068/T-071 review items about planet hover and focus that \"quase não se notam\". The canvas stays aria-hidden; the label layer does not."
