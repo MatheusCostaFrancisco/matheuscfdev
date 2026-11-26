@@ -185,6 +185,11 @@ export default defineConfig(({ command, mode }) => {
 
   return {
     plugins: [react(), tailwindcss(), siteUrlPlugin(siteUrl)],
+    // Journey paths for src/lib/warp.ts, which stays import-free so it adds
+    // nothing to the main chunk.
+    define: {
+      __JOURNEY_PATHS__: JSON.stringify(locales.map((locale) => routes[locale].journey)),
+    },
     build: {
       rollupOptions: {
         input: {

@@ -69,6 +69,24 @@ O mapa HTML não é um fallback que aparece no lugar do 3D: ele é sempre o cont
 
 Cada parte da cena é uma `SceneLayer` (`object`, `update`, `dispose`). Planetas e trilha (T-064) entram como novas camadas em `scene.ts`, cada uma dona do que cria.
 
+### Revisão do orçamento (T-067, túnel de luz)
+
+O chunk principal já estava em 93.58 kB gzip antes da T-067, ou seja, no limite. O túnel (`src/lib/warp.ts`, entrada própria sem imports) soma o que cada página baixa além do `main-*.js`:
+
+| Arquivo | Antes | Depois | Diferença |
+|---|---|---|---|
+| `main-*.js` | 93.58 kB gzip | 93.30 kB gzip | -0.28 kB (o polyfill de modulepreload passou para o chunk do túnel) |
+| `warp-*.js` | — | 1.04 kB gzip | chunk novo, carregado por toda página |
+| Total de JS de entrada | 93.58 kB | 94.34 kB | **+0.76 kB, 0.76 kB acima do limite** |
+
+A tentativa anterior importava `./routes` e deslocava código compartilhado para o chunk do túnel; o total real era 94.25 kB. Agora `warp.ts` não importa nada (os caminhos da jornada entram por `define` no `vite.config.ts`), mas o limite continua estourado. Decisão pendente do stakeholder: aceitar o limite em 94.5 kB gzip ou cortar o mesmo peso do chunk principal em outra tarefa.
+
+### Túnel de luz: sem View Transition (T-067)
+
+O critério 1 previa View Transitions entre documentos. O opt-in `@view-transition` foi removido: toda navegação do túnel registrava `Uncaught (in promise) InvalidStateError: Transition was aborted because of invalid state. Page already revealed`, mesmo capturando `ready`, `finished` e `updateCallbackDone`, então a transição nunca tocava. O túnel já termina em `--color-space` e a entrada (`warp-arrive`) é só CSS, então a continuidade visual se mantém. Reabrir se o Chrome corrigir o aborto ou se a transição entre documentos for necessária por outro motivo.
+
+Ativação por teclado (Enter no link) pula o túnel de propósito, para não haver atraso silencioso. O túnel cancela seus timers em `pagehide` e deixa o `body` `inert` enquanto toca.
+
 ## Alternativas consideradas
 
 - **Canvas 2D próprio, sem lib:** zero dependência e chunk mínimo, mas planetas iluminados, anéis, partículas e câmera em perspectiva viram um motor 3D escrito à mão.
