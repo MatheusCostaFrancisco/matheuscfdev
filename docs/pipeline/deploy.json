@@ -9,7 +9,7 @@
   "cloudflare": {
     "zoneId": "dd090d1a1ddffe53bbc2e4b1e703efaa",
     "dnsConfigured": true,
-    "zoneStatus": "pending",
+    "zoneStatus": "active",
     "nameservers": [
       "cartman.ns.cloudflare.com",
       "maxine.ns.cloudflare.com"
