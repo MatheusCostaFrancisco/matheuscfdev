@@ -1853,8 +1853,8 @@
       "notes": [
         "2026-11-26 rodada 13 (PO): Source: REPORT \"Decisões do stakeholder para a próxima rodada\" and spec docs/specs/2026-11-25-jornada-ai-engineer.md \"Revisão 2\". Stakeholder feedback: \"quando clico em jornada, ele faz um efeito e pisca a tela de um jeito bem estranho\". Depends on T-081 so the inline hex is written once, with the final space color."
       ],
-      "status": "todo",
-      "attempts": 0,
+      "status": "done",
+      "attempts": 1,
       "commit": null
     },
     {

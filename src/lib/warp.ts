@@ -1,11 +1,12 @@
-// Light tunnel played when a link goes to the journey page (T-067). It is a
+// Tunnel played when a link goes to the journey page (T-067). It is a
 // standalone entry loaded by its own <script> in every page HTML (including
 // 404.html, which has no React). It imports nothing: importing ./routes would
 // make Rollup share that code through this chunk and the main chunk would
 // load it statically. The journey paths come from vite.config.ts (define).
-// Visuals live in src/index.css (.warp-tunnel); the arrival is a CSS-only
-// entrance on the journey page (no cross-document view transition, see ADR 0009).
-const TUNNEL_MS = 1400
+// Visuals live in src/index.css (.warp-tunnel). The tunnel only darkens and ends
+// on --color-space; the journey page opens on that same color (inline in its
+// HTML head), so there is no arrival fade (no view transition, see ADR 0009).
+const TUNNEL_MS = 1000
 const OVERLAY_TTL_MS = TUNNEL_MS + 3000
 
 let timers: number[] = []

@@ -131,6 +131,7 @@
   --color-line: #d5dfdc;
   --color-line-strong: #7c8f8b;
   --color-space: #05060f;
+  --color-space-ray: #bcd0ff;
 
   --color-accent-50: #effcf9;
   --color-accent-100: #cbf5ec;
@@ -249,7 +250,7 @@
 
     /* Scene colors (3D only, not for text) */
     --journey-star: #f2f5ff;
-    --journey-star-blue: #bcd0ff;
+    --journey-star-blue: var(--color-space-ray);
     --journey-nebula-indigo: #1b1f5c;
     --journey-nebula-violet: #3a2470;
     --journey-nebula-blue: #12306b;
@@ -416,11 +417,13 @@
 }
 
 /*
- * Change of dimension (T-067, src/lib/warp.ts). Leaving for the journey plays
- * a light tunnel that ends on --color-space; the journey arrives with a fade-in
- * already in space. Nothing runs under prefers-reduced-motion: the script does
- * not start the tunnel and the entrance is not declared. The entrance animates opacity only: transform or
- * filter on #root would trap the fixed backdrop and header.
+ * Change of dimension (T-067, T-082, src/lib/warp.ts). Leaving for the journey
+ * plays a tunnel that only ever darkens: thin blue-white rays rush to the
+ * center over a background that fades from transparent to the opaque
+ * --color-space. Nothing brightens the screen. The journey page opens already
+ * on --color-space (inline in its HTML head) and only the scene lights up. Under
+ * prefers-reduced-motion nothing is declared and the script does not start the
+ * tunnel.
  */
 @media (prefers-reduced-motion: no-preference) {
   .warp-tunnel {
@@ -429,39 +432,20 @@
     z-index: 100;
     overflow: hidden;
     background: var(--color-space);
-    animation: warp-fade 1400ms ease-in forwards;
-  }
-
-  .warp-tunnel::before,
-  .warp-tunnel::after {
-    content: "";
-    position: absolute;
-    inset: -50%;
+    animation: warp-fade 900ms ease-in forwards;
   }
 
   .warp-tunnel::before {
+    content: "";
+    position: absolute;
+    inset: -50%;
     background: repeating-conic-gradient(
       from 0deg at 50% 50%,
-      color-mix(in oklab, var(--color-accent-100) 85%, transparent) 0deg 0.6deg,
-      transparent 0.6deg 7deg
+      var(--color-space-ray) 0deg 0.35deg,
+      transparent 0.35deg 7deg
     );
     mask-image: radial-gradient(circle, transparent 4%, #000 60%);
-    animation: warp-rush 1400ms cubic-bezier(0.5, 0, 0.9, 0.5) forwards;
-  }
-
-  .warp-tunnel::after {
-    background: radial-gradient(
-      circle at 50% 50%,
-      var(--color-accent-100) 0%,
-      color-mix(in oklab, var(--color-accent-300) 60%, transparent) 18%,
-      transparent 55%
-    );
-    opacity: 0;
-    animation: warp-flash 1400ms ease-in forwards;
-  }
-
-  [data-theme="journey"] #root {
-    animation: warp-arrive 700ms ease-out both;
+    animation: warp-rush 900ms cubic-bezier(0.5, 0, 0.9, 0.5) forwards;
   }
 }
 
@@ -476,30 +460,11 @@
 
 @keyframes warp-rush {
   from {
-    transform: scale(0.4);
-  }
-  to {
     transform: scale(3.5);
-  }
-}
-
-@keyframes warp-flash {
-  0%,
-  55% {
-    opacity: 0;
-    transform: scale(0.4);
-  }
-  100% {
-    opacity: 0.85;
-    transform: scale(1.6);
-  }
-}
-
-@keyframes warp-arrive {
-  from {
-    opacity: 0;
+    opacity: 0.7;
   }
   to {
-    opacity: 1;
+    transform: scale(0.4);
+    opacity: 0;
   }
 }
