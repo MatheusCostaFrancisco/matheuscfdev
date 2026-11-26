@@ -218,8 +218,8 @@ export const createPtBR = (years: ExperienceYears): SiteContent => ({
     },
     teasers: {
       heading: 'Estudando e lendo',
-      roadmapLabel: 'Estudando agora',
-      roadmapFallback: 'Roadmap de estudos 2027',
+      journeyLabel: 'Mundo atual',
+      journeyFallback: 'Jornada concluída:',
       booksLabel: 'Lendo',
       booksFallback: 'Livros',
     },

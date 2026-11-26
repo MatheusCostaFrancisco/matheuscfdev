@@ -218,8 +218,8 @@ export const createEn = (years: ExperienceYears): SiteContent => ({
     },
     teasers: {
       heading: 'Studying and reading',
-      roadmapLabel: 'Studying now',
-      roadmapFallback: 'Study roadmap 2027',
+      journeyLabel: 'Current world',
+      journeyFallback: 'Journey complete:',
       booksLabel: 'Reading',
       booksFallback: 'Books',
     },

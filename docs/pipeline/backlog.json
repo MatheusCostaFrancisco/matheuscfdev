@@ -1365,8 +1365,8 @@
         "T-058",
         "T-060"
       ],
-      "status": "todo",
-      "attempts": 0,
+      "status": "done",
+      "attempts": 1,
       "commit": null,
       "notes": [
         "2026-11-25 rodada 9 (PO): Spec docs/specs/2026-11-25-jornada-ai-engineer.md Goal 9. Supersedes the open T-046 review item (teaser showing the stage theme), since stages no longer exist."

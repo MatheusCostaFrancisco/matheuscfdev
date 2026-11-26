@@ -1,9 +1,9 @@
 import { books } from "../content/books";
-import { roadmap } from "../content/roadmap";
+import { journey } from "../content/journey";
+import { journeyState } from "../lib/journey-state";
 import { langAttr } from "../lib/lang-attr";
 import { useLocale } from "../lib/locale-context";
 import { pickReadingBook } from "../lib/reading-book";
-import { getStageStatuses } from "../lib/roadmap-stage";
 import { routes } from "../lib/routes";
 import { useContent } from "../lib/use-content";
 
@@ -13,9 +13,15 @@ const linkClass =
 export function Teasers() {
   const { ui } = useContent();
   const locale = useLocale();
-  const { stages } = roadmap[locale];
-  const statuses = getStageStatuses(stages, new Date());
-  const stage = stages[statuses.indexOf("current")];
+  const { worlds, finalBoss, destination } = journey[locale];
+  const state = journeyState(worlds, finalBoss);
+  const currentIndex = state.worlds.findIndex(
+    (world) => world.status === "current",
+  );
+  const stageTitle =
+    currentIndex >= 0 ? worlds[currentIndex]?.title : finalBoss.title;
+  const stageXp =
+    currentIndex >= 0 ? state.worlds[currentIndex]?.xp : state.finalBoss.xp;
   const book = pickReadingBook(books.reading);
 
   return (
@@ -27,15 +33,19 @@ export function Teasers() {
         <li className="min-w-0">
           <a href={routes[locale].roadmap} className={linkClass}>
             <span>
-              {stage ? (
+              {state.destinationReached ? (
                 <>
-                  {ui.teasers.roadmapLabel}:{" "}
-                  <span lang={langAttr(stage.themeLang, locale)}>
-                    {stage.theme}
+                  {ui.teasers.journeyFallback}{" "}
+                  <span lang={langAttr(destination.toLang, locale)}>
+                    {destination.to}
                   </span>
                 </>
               ) : (
-                ui.teasers.roadmapFallback
+                <>
+                  {ui.teasers.journeyLabel}: {stageTitle}
+                  {" "}·{" "}
+                  <span className="whitespace-nowrap">XP {stageXp}%</span>
+                </>
               )}
             </span>
           </a>

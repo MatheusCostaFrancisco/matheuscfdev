@@ -116,8 +116,8 @@ export interface UiStrings {
   }
   readonly teasers: {
     readonly heading: string
-    readonly roadmapLabel: string
-    readonly roadmapFallback: string
+    readonly journeyLabel: string
+    readonly journeyFallback: string
     readonly booksLabel: string
     readonly booksFallback: string
   }
