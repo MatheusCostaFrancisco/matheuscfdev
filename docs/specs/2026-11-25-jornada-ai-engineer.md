@@ -69,3 +69,18 @@ A página de roadmap vira a **Jornada para AI Engineer**: um jogo em que os mund
 - `/en/roadmap/` e `/pt/roadmap/` respondem 301 em produção.
 - Revisor de UI conferiu em 375, 768 e 1280px, nos dois idiomas, com e sem reduced motion, e com o fallback 2D forçado.
 - ADR registrando a dependência 3D e a troca de rotas, cada uma com "Quando reabrir".
+
+## Revisão 1 — 3D protagonista (2026-11-26)
+
+Decisão do stakeholder depois da primeira entrega: os revisores mostraram que a cena 3D ficou quase invisível atrás dos cards (T-071), o oposto de "não economizar". A cena passa a ser a protagonista da página. Os goals 4 a 8 continuam valendo, com estas mudanças:
+
+1. **Palco em tela cheia.** A página abre com a cena ocupando a viewport inteira (`100dvh`, abaixo do header), sem cards por cima. É a primeira coisa que o visitante vê ao sair do túnel.
+2. **HUD mínimo sobre o palco.** Só o título, De → Para, XP total, "N/8 mundos" e o botão de pausa, em cantos, com fundo translúcido que garanta AA. Nada além disso cobre a cena.
+3. **Planetas grandes e nomeados.** Cada planeta tem um rótulo ("Mundo N · Nome", estado e XP) preso a ele na tela e acompanha a câmera. O rótulo é um `<button>` HTML real posicionado pela projeção 3D: é o alvo de clique, de teclado e de leitor de tela, e abre o painel do mundo (T-066). O raycast no fundo da página deixa de ser necessário.
+4. **Navegação no palco.** Setas, Tab entre rótulos, roda do mouse ou arrasto e swipe no celular levam a câmera de mundo em mundo. Há indicadores de anterior/próximo. A câmera começa no mundo atual.
+5. **Lista abaixo do palco.** A lista semântica de mundos (cards com checklist) fica depois do palco, como "Ver em lista", em fundo sólido, sem a cena atrás. É também o conteúdo do fallback 2D e do reduced motion.
+6. **Mais efeito, não menos.** Planeta atual com atmosfera, anel e partículas; concluídos com selo; bloqueados escuros com cadeado e névoa; trilha de luz animada até o mundo atual; chefão final como estrela ou buraco negro; bloom calibrado para o palco escuro. O túnel termina "aterrissando" no mundo atual.
+7. **Celular (375px).** O palco ocupa a tela, os planetas seguem um caminho vertical, o swipe troca de mundo e os rótulos não se sobrepõem.
+8. **Regressão da T-072.** As seções carregadas sob demanda (jornada e livros) recuperam o fade de entrada: o reveal precisa rodar depois do Suspense.
+
+Critérios de pronto adicionais: em 1280px e 375px o palco mostra pelo menos o planeta atual e o próximo, legíveis, sem nenhum card por cima; o revisor de UI precisa ver a cena com o painel do navegador **visível**, porque com ele oculto o Chrome pausa o render; axe sem violações no palco (rótulos) e na lista.

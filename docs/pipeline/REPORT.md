@@ -84,6 +84,12 @@ Fora desta rodada: T-066 foi concluída pela sessão principal em `2eafbcf` (op�
 - [ ] **Gate com navegador** — decidir se a esteira deve incluir Playwright com `reducedMotion: 'reduce'` (não há runner de navegador no repo). — Sim ou não.
 - [ ] **Limpeza local** — encerrar o `vite preview` na porta 4173; `docker rmi caddy:2-alpine` no WSL Ubuntu, se não for mais usado; reiniciar o Docker Desktop se ainda estiver travado.
 
+## Decisões do stakeholder para a próxima rodada
+
+Tomada em 2026-11-26. O PO cria estas tarefas antes de qualquer P2 e quebra o trabalho em tarefas pequenas, uma por entrega revisável.
+
+1. **Jornada com 3D protagonista (P1, várias tarefas).** Ver "Revisão 1 — 3D protagonista" em `docs/specs/2026-11-25-jornada-ai-engineer.md`. Resumo: palco 3D em tela cheia sem cards por cima, HUD mínimo, rótulos HTML presos aos planetas (clique, teclado e leitor de tela), navegação por setas, roda e swipe, lista de mundos abaixo do palco, mais efeitos e reveal de volta nas seções lazy (regressão da T-072). Isso substitui as decisões da T-071 (scrim e cena atrás dos cards). Ordem sugerida: (a) layout palco + lista e HUD; (b) rótulos projetados e navegação; (c) efeitos e aterrissagem do túnel; (d) celular; (e) reveal nas seções lazy.
+
 ## Bloqueadas
 | Tarefa | Motivo | Tentativas |
 |---|---|---|
