@@ -301,7 +301,8 @@
         "2026-11-25 rodada 9 (PO): content/assets/profile.jpg still unchanged since dc647ca and the photo pending item is still [ ]. Stays blocked.",
         "2026-11-26 rodada 10 (PO): content/assets/profile.jpg still unchanged since dc647ca and the photo pending item is still [ ]. Stays blocked.",
         "2026-11-26 rodada 11 (PO): content/assets/profile.jpg still unchanged since dc647ca and the photo pending item is still [ ]. Stays blocked.",
-        "2026-11-26 rodada 12 (PO): content/assets/profile.jpg still unchanged since dc647ca and the photo pending item is still [ ]. Stays blocked."
+        "2026-11-26 rodada 12 (PO): content/assets/profile.jpg still unchanged since dc647ca and the photo pending item is still [ ]. Stays blocked.",
+        "2026-11-26 rodada 13 (PO): content/assets/profile.jpg still unchanged since dc647ca and the photo pending item is still [ ]. Stays blocked."
       ]
     },
     {
@@ -1811,6 +1812,141 @@
       "notes": [
         "2026-11-26 rodada 12 (PO): spec docs/specs/2026-11-25-jornada-ai-engineer.md, \"Revisão 1 — 3D protagonista\", item 8: step (e), regression of T-072 (useReveal runs in App before the Suspense content exists). Depends on T-073 so the stage that must stay visible already exists."
       ]
+    },
+    {
+      "id": "T-081",
+      "title": "Migrate the journey theme tokens from teal to the deep-space blue-violet palette with ADR 0010",
+      "type": "design-system",
+      "priority": "P1",
+      "touchesUi": true,
+      "acceptance": [
+        "In src/index.css, --color-space and every value inside [data-theme=\"journey\"] (journey-*, glow, nebula, semantic remap and the mirrored accent scale) come from the navy/indigo/violet/blue/warm palette of spec Revisão 2 — 2; none of the current teal values remain there (#060e12, #5dd5c3, #cbf5ec, #6f8582, #2db9a8, rgb(93 213 195 ...), rgb(21 154 140 ...)), and --journey-space is between #04050d and #070a1a",
+        "New --journey-* tokens exist for the scene colors (star white and star blue, nebula stops, current warm core, halo, gold seal #e8c27a, locked #2a3045, trail); ScenePalette in src/lib/journey-scene/types.ts and the reader in scene.ts expose them, and src/lib/journey-scene has no hardcoded palette hex",
+        "The root @theme accent scale (ADR 0001) is unchanged in the diff: only journey-scoped values and --color-space change",
+        "docs/adr/0010-journey-space-palette.md (Status Accepted) lists old and new values and the contrast of fg, fg-muted and accent text on surface, surface-raised and surface-sunken (>= 4.5:1) and of line-strong and the focus ring (>= 3:1), and has \"Quando reabrir\"; ADR 0007 only gains a status line pointing to 0010",
+        "yarn build passes and axe on /pt/jornada/ and /en/journey/ reports 0 contrast violations"
+      ],
+      "dependsOn": [],
+      "notes": [
+        "2026-11-26 rodada 13 (PO): Source: REPORT \"Decisões do stakeholder para a próxima rodada\" and spec docs/specs/2026-11-25-jornada-ai-engineer.md \"Revisão 2\". First of the palette tasks because the tunnel fix (T-082) must end on the final space color and the 3D tasks read these tokens. The teal accent outside the journey stays (ADR 0001); inside the journey the mirrored teal accent also leaves, because the stakeholder said the green does not look like space."
+      ],
+      "status": "todo",
+      "attempts": 0,
+      "commit": null
+    },
+    {
+      "id": "T-082",
+      "title": "Make the journey tunnel darken to the exact space color with no light frame and a dark first paint",
+      "type": "fix",
+      "priority": "P1",
+      "touchesUi": true,
+      "acceptance": [
+        "src/index.css: no warp keyframe brightens the screen (warp-flash with accent-100 at 85% is gone); the rays are thin blue-white lines rushing to the center and the last tunnel frame is the opaque --color-space",
+        "pt/jornada/index.html and en/journey/index.html declare, before any stylesheet or script, <meta name=\"color-scheme\" content=\"dark\">, <meta name=\"theme-color\"> and an inline background on <html>, all with the same hex as --color-space in src/index.css",
+        "The arrival no longer fades #root in from opacity 0 over a different background: the page opens on the space color and only the scene lights up (stars and camera landing); TUNNEL_MS in src/lib/warp.ts is between 900 and 1200",
+        "With prefers-reduced-motion: reduce no .warp-tunnel is created and no arrival animation is declared; keyboard activation still navigates at once",
+        "UI reviewer, with the browser panel visible, captures frames of clicking Jornada/Journey from the home in pt and en and confirms no frame is lighter than the home background or than the final journey background"
+      ],
+      "dependsOn": [
+        "T-081"
+      ],
+      "notes": [
+        "2026-11-26 rodada 13 (PO): Source: REPORT \"Decisões do stakeholder para a próxima rodada\" and spec docs/specs/2026-11-25-jornada-ai-engineer.md \"Revisão 2\". Stakeholder feedback: \"quando clico em jornada, ele faz um efeito e pisca a tela de um jeito bem estranho\". Depends on T-081 so the inline hex is written once, with the final space color."
+      ],
+      "status": "todo",
+      "attempts": 0,
+      "commit": null
+    },
+    {
+      "id": "T-083",
+      "title": "Replace the journey starfield with additive white star sprites in a fixed layer and a falling layer",
+      "type": "feature",
+      "priority": "P1",
+      "touchesUi": true,
+      "acceptance": [
+        "src/lib/journey-scene/starfield.ts renders two Points layers with AdditiveBlending, colors from the star white and star blue tokens and per-star size variation",
+        "The falling layer moves slowly toward the current world and resets each star after it passes; with the scene paused (T-070) nothing moves",
+        "Star sprites are generated procedurally (canvas or shader): no image URL, no file in public/ and no new dependency in package.json",
+        "yarn build passes and the scene chunk stays within the ADR 0009 budget"
+      ],
+      "dependsOn": [
+        "T-081"
+      ],
+      "notes": [
+        "2026-11-26 rodada 13 (PO): Source: REPORT \"Decisões do stakeholder para a próxima rodada\" and spec docs/specs/2026-11-25-jornada-ai-engineer.md \"Revisão 2\". The stakeholder reference (zip with a three.js space globe) is visual direction only: no code copied, no third-party textures."
+      ],
+      "status": "todo",
+      "attempts": 0,
+      "commit": null
+    },
+    {
+      "id": "T-084",
+      "title": "Add the procedural blue-violet nebula sphere around the journey scene",
+      "type": "feature",
+      "priority": "P1",
+      "touchesUi": true,
+      "acceptance": [
+        "A new layer (e.g. src/lib/journey-scene/nebula.ts) adds a BackSide sphere with a ShaderMaterial whose noise mixes the nebula tokens (indigo, violet, blue, subtle magenta) over the space color, with no image texture",
+        "The sphere rotates slowly in update(delta) and stops when the scene is paused; dispose frees its geometry and material",
+        "When the WebGL canvas is ready (data-ready) the CSS --journey-nebula is not painted behind it (no double nebula); in the 2D fallback (no WebGL2, Save-Data, low memory or reduced motion) the CSS nebula still shows and HUD/list text stays AA",
+        "yarn build passes and the scene chunk stays within the ADR 0009 budget"
+      ],
+      "dependsOn": [
+        "T-081",
+        "T-083"
+      ],
+      "notes": [
+        "2026-11-26 rodada 13 (PO): Source: REPORT \"Decisões do stakeholder para a próxima rodada\" and spec docs/specs/2026-11-25-jornada-ai-engineer.md \"Revisão 2\". PO decision on the open review item \"a nebulosa CSS soma com a WebGL\": the CSS nebula becomes the 2D fallback only. Depends on T-083 because both edit the layer wiring in scene.ts."
+      ],
+      "status": "todo",
+      "attempts": 0,
+      "commit": null
+    },
+    {
+      "id": "T-085",
+      "title": "Render the current world as a warm stellar core with a rippling surface and a blue-violet halo",
+      "type": "feature",
+      "priority": "P1",
+      "touchesUi": true,
+      "acceptance": [
+        "In src/lib/journey-scene/planets.ts the current world uses a ShaderMaterial with noise vertex displacement animated over time and a warm gradient (white to #ffd9a0 to #ff9a5c, from tokens), plus a halo in the blue-violet halo token",
+        "Bloom is recalibrated (BLOOM_STRENGTH/threshold in bloom.ts or emissive levels) so a 1280x800 screenshot of the landed camera shows surface variation on the current world, not a flat white disk",
+        "Pausing the scene stops the ripple; hover and focus highlight (T-068, T-077) still work on the current world",
+        "yarn build passes and the scene chunk stays within the ADR 0009 budget"
+      ],
+      "dependsOn": [
+        "T-081",
+        "T-084"
+      ],
+      "notes": [
+        "2026-11-26 rodada 13 (PO): Source: REPORT \"Decisões do stakeholder para a próxima rodada\" and spec docs/specs/2026-11-25-jornada-ai-engineer.md \"Revisão 2\". Also answers the open T-077 review item (current world turns into a white disk). Depends on T-084 so the bloom is calibrated against the final background."
+      ],
+      "status": "todo",
+      "attempts": 0,
+      "commit": null
+    },
+    {
+      "id": "T-086",
+      "title": "Recolor completed and locked worlds, the light trail and the final boss to the space palette",
+      "type": "feature",
+      "priority": "P1",
+      "touchesUi": true,
+      "acceptance": [
+        "Completed worlds have a procedural lit surface in blues and violets with a subtle gold ring or seal (#e8c27a token); locked worlds are dark blue-gray (#2a3045 token), desaturated, keeping fog and lock",
+        "The light trail and its flow particles are blue-white; the final boss is a large warm star (white to amber/orange core with violet halo) and its locked state stays readable with the lock",
+        "grep in src/lib/journey-scene finds no teal value and no --color-accent-* read for scene colors",
+        "Progress simulated in dev (not committed) shows completed, current and locked side by side and the reviewer attaches the screenshot; yarn build passes within the ADR 0009 budget"
+      ],
+      "dependsOn": [
+        "T-081",
+        "T-085"
+      ],
+      "notes": [
+        "2026-11-26 rodada 13 (PO): Source: REPORT \"Decisões do stakeholder para a próxima rodada\" and spec docs/specs/2026-11-25-jornada-ai-engineer.md \"Revisão 2\". PO decision: the final boss stays a warm star (evolution of T-077) instead of a black hole, to keep the task to one commit and reuse the current-world shader. Depends on T-085 because both edit planets.ts."
+      ],
+      "status": "todo",
+      "attempts": 0,
+      "commit": null
     }
   ]
 }
