@@ -185,6 +185,51 @@ function sealTexture(fill: Color, ink: Color): CanvasTexture {
   });
 }
 
+/**
+ * Procedural lit surface for completed worlds: soft bands and cloud blobs in
+ * blues and violets from the palette. Deterministic, so every build matches.
+ */
+function surfaceTexture(base: Color, mid: Color, light: Color): CanvasTexture {
+  const size = 256;
+  const canvas = document.createElement("canvas");
+  canvas.width = size;
+  canvas.height = size / 2;
+  const context = canvas.getContext("2d");
+  if (context !== null) {
+    const height = canvas.height;
+    const bands = context.createLinearGradient(0, 0, 0, height);
+    bands.addColorStop(0, base.getStyle());
+    bands.addColorStop(0.35, mid.getStyle());
+    bands.addColorStop(0.6, base.getStyle());
+    bands.addColorStop(1, mid.getStyle());
+    context.fillStyle = bands;
+    context.fillRect(0, 0, size, height);
+    let seed = 7;
+    const next = () => {
+      seed = (seed * 16807) % 2147483647;
+      return seed / 2147483647;
+    };
+    for (let blob = 0; blob < 46; blob += 1) {
+      const x = next() * size;
+      const y = next() * height;
+      const reach = 10 + next() * 26;
+      const tint = blob % 3 === 0 ? light : mid;
+      for (const dx of [-size, 0, size]) {
+        const gradient = context.createRadialGradient(x + dx, y, 0, x + dx, y, reach);
+        gradient.addColorStop(0, tint.getStyle());
+        gradient.addColorStop(1, "rgba(0,0,0,0)");
+        context.globalAlpha = 0.16 + next() * 0.18;
+        context.fillStyle = gradient;
+        context.fillRect(x + dx - reach, y - reach, reach * 2, reach * 2);
+      }
+    }
+    context.globalAlpha = 1;
+  }
+  const texture = new CanvasTexture(canvas);
+  texture.colorSpace = SRGBColorSpace;
+  return texture;
+}
+
 function lockTexture(ink: Color): CanvasTexture {
   return drawTexture((context, size) => {
     context.strokeStyle = ink.getStyle();
@@ -245,10 +290,15 @@ export function createPlanets(
   const spacing = pathSpacing(stageList.length);
   const radius = Math.min(MAX_RADIUS, spacing * RADIUS_RATIO);
 
-  const lockedTone = palette.locked.clone().multiplyScalar(0.55);
+  const lockedTone = palette.lockedBody.clone();
   const glow = glowTexture();
   const flare = flareTexture();
-  const seal = sealTexture(palette.completed, palette.space);
+  const seal = sealTexture(palette.seal, palette.space);
+  const surface = surfaceTexture(
+    palette.nebulaBlue,
+    palette.nebulaViolet.clone().lerp(palette.completed, 0.35),
+    palette.completed,
+  );
   const lock = lockTexture(palette.locked);
   const geometries: BufferGeometry[] = [];
   const materials: AnyMaterial[] = [];
@@ -287,7 +337,10 @@ export function createPlanets(
     const emissiveBase = stage.isBoss ? 0.9 : 0.18;
     const tone =
       stage.status === "completed" ? palette.completed : palette.current;
-    const isCore = stage.status === "current" && !stage.isBoss;
+    // The current world and the lit final boss are warm stars; the boss
+    // differs by its larger size, violet halo and rays.
+    const isCore = lit && (stage.status === "current" || stage.isBoss);
+    const surfaced = stage.status === "completed" && !stage.isBoss;
     const coreMaterial = isCore
       ? trackMaterial(
           new ShaderMaterial({
@@ -311,8 +364,10 @@ export function createPlanets(
           new MeshStandardMaterial(
             lit
               ? {
-                  color: tone,
-                  emissive: tone,
+                  color: surfaced ? 0xffffff : tone,
+                  map: surfaced ? surface : null,
+                  emissive: surfaced ? 0xffffff : tone,
+                  emissiveMap: surfaced ? surface : null,
                   emissiveIntensity: emissiveBase,
                   roughness: 0.7,
                   metalness: 0,
@@ -320,11 +375,11 @@ export function createPlanets(
               : { color: lockedTone, roughness: 1, metalness: 0 },
           ),
         );
-    const surface = coreMaterial ?? body;
-    if (surface === null) return;
+    const skin = coreMaterial ?? body;
+    if (skin === null) return;
     const planet = new Mesh(
       track(new SphereGeometry(size, isCore ? 64 : 32, isCore ? 48 : 24)),
-      surface,
+      skin,
     );
     // The core stays out of the bloom pass: its glow comes from the halo, so
     // the bloom does not wash the surface variation out to white.
@@ -378,9 +433,9 @@ export function createPlanets(
     if (stage.status !== "locked" && !stage.isBoss) {
       const ringMaterial = trackMaterial(
         new MeshBasicMaterial({
-          color: palette.completed,
+          color: stage.status === "completed" ? palette.seal : palette.halo,
           transparent: true,
-          opacity: 0.7,
+          opacity: stage.status === "completed" ? 0.55 : 0.7,
           side: DoubleSide,
         }),
       );
@@ -408,7 +463,7 @@ export function createPlanets(
       const flareMaterial = trackMaterial(
         new SpriteMaterial({
           map: flare,
-          color: lit ? palette.star : palette.locked,
+          color: lit ? palette.coreAmber : palette.locked,
           transparent: true,
           opacity: lit ? 0.9 : 0.6,
           depthWrite: false,
@@ -428,7 +483,7 @@ export function createPlanets(
         trackMaterial(
           new SpriteMaterial({
             map: glow,
-            color: stage.status === "current" ? palette.halo : tone,
+            color: palette.halo,
             transparent: true,
             opacity: HALO_OPACITY.base,
             depthWrite: false,
@@ -555,7 +610,7 @@ export function createPlanets(
     const reached = next.status !== "locked";
     const material = trackMaterial(
       new MeshBasicMaterial({
-        color: reached ? palette.completed : palette.locked,
+        color: reached ? palette.trail : palette.lockedBody,
         transparent: true,
         opacity: reached ? 0.9 : 0.22,
         blending: reached ? AdditiveBlending : NormalBlending,
@@ -591,7 +646,7 @@ export function createPlanets(
       new PointsMaterial({
         size: radius * 0.55,
         map: glow,
-        color: palette.star,
+        color: palette.trail,
         transparent: true,
         depthWrite: false,
         blending: AdditiveBlending,
@@ -663,6 +718,7 @@ export function createPlanets(
       glow.dispose();
       flare.dispose();
       seal.dispose();
+      surface.dispose();
       lock.dispose();
     },
   };

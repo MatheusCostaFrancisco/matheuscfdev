@@ -1944,8 +1944,8 @@
       "notes": [
         "2026-11-26 rodada 13 (PO): Source: REPORT \"Decisões do stakeholder para a próxima rodada\" and spec docs/specs/2026-11-25-jornada-ai-engineer.md \"Revisão 2\". PO decision: the final boss stays a warm star (evolution of T-077) instead of a black hole, to keep the task to one commit and reuse the current-world shader. Depends on T-085 because both edit planets.ts."
       ],
-      "status": "todo",
-      "attempts": 0,
+      "status": "done",
+      "attempts": 1,
       "commit": null
     }
   ]
