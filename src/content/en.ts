@@ -99,6 +99,7 @@ export const createEn = (years: ExperienceYears): SiteContent => ({
       description: 'My own software development consultancy.',
       bullets: [
         "Health platform for a client under contract: two brands on the same codebase, four repositories, Express and MySQL back end deployed on Railway, and PIX billing through SICOOB's banking API",
+        'Maintenance and new feature development for ESALQ/USP systems',
         'Lead generation pipeline with Apify and Google Maps data: 34 qualified leads, each with a personalized Next.js preview page',
         'Requirements gathering, commercial proposal and contract handled directly with clients',
       ],

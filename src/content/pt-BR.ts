@@ -99,6 +99,7 @@ export const createPtBR = (years: ExperienceYears): SiteContent => ({
       description: 'Minha própria consultoria de desenvolvimento de software.',
       bullets: [
         'Plataforma de saúde para um cliente sob contrato: duas marcas na mesma base de código, quatro repositórios, back-end em Express e MySQL com deploy no Railway e cobrança por PIX pela API bancária do SICOOB',
+        'Manutenção e desenvolvimento de novas funcionalidades para sistemas da ESALQ/USP',
         'Pipeline de geração de leads com Apify e dados do Google Maps: 34 leads qualificados, cada um com uma página de prévia personalizada em Next.js',
         'Levantamento de requisitos, proposta comercial e contrato conduzidos diretamente com os clientes',
       ],

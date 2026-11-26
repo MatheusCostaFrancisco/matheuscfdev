@@ -1245,8 +1245,8 @@
         "T-020",
         "T-030"
       ],
-      "status": "todo",
-      "attempts": 0,
+      "status": "done",
+      "attempts": 1,
       "commit": null,
       "notes": [
         "2026-11-25 rodada 9 (PO): cv.md hash changed (f85c18b9 -> 7251aa7a) by commit 6394018, which only adds this bullet to ElevaTech under \"Products I built\" in cv.md and cv.pt-BR.md. Done tasks T-016/T-017/T-020 are not reopened (backlog rule); this task carries the change. Stakeholder decision 2 in REPORT (P1, content)."
