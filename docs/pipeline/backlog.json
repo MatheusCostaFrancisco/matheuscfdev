@@ -300,7 +300,8 @@
         "2026-11-25 rodada 8 (PO): content/assets/profile.jpg still unchanged since dc647ca and the photo pending item is still [ ]. Stays blocked.",
         "2026-11-25 rodada 9 (PO): content/assets/profile.jpg still unchanged since dc647ca and the photo pending item is still [ ]. Stays blocked.",
         "2026-11-26 rodada 10 (PO): content/assets/profile.jpg still unchanged since dc647ca and the photo pending item is still [ ]. Stays blocked.",
-        "2026-11-26 rodada 11 (PO): content/assets/profile.jpg still unchanged since dc647ca and the photo pending item is still [ ]. Stays blocked."
+        "2026-11-26 rodada 11 (PO): content/assets/profile.jpg still unchanged since dc647ca and the photo pending item is still [ ]. Stays blocked.",
+        "2026-11-26 rodada 12 (PO): content/assets/profile.jpg still unchanged since dc647ca and the photo pending item is still [ ]. Stays blocked."
       ]
     },
     {
@@ -1625,6 +1626,190 @@
       "commit": "847a797",
       "notes": [
         "2026-11-26 rodada 11 (PO): decision on the REPORT pending item \"Orçamento do chunk principal (ADR 0009)\", still [ ]: with T-066 merged the home downloads 94.65 kB (main) + 0.99 kB (warp) = 95.64 kB gzip of entry JS, 2.06 kB over the 93.58 kB budget, so option (a) of raising the limit to 94.5 kB no longer covers it. The PO picks option (b), cutting weight, because the home is the recruiter page and today it ships the whole journey page code it never renders. Rough esbuild estimate of the journey modules alone: ~6.4 kB gzip standalone, plus ~1 kB for Books, enough to clear the 2.06 kB gap. If the stakeholder prefers raising the budget, he can write it next to the pending item and this task gets reviewed."
+      ]
+    },
+    {
+      "id": "T-073",
+      "title": "Turn the journey page into a full-viewport 3D stage with the world list below it",
+      "type": "feature",
+      "priority": "P1",
+      "touchesUi": true,
+      "acceptance": [
+        "In 3D mode /en/journey/ and /pt/jornada/ open with a stage element that spans the full viewport width (outside the max-w-5xl of <main>) and whose height is 100dvh minus var(--spacing-header); the canvas is mounted inside the stage (no longer a fixed layer portaled to <body>) and the current planet is centered in it (the ANCHOR_X/ANCHOR_Y view offset from T-071 is removed)",
+        "At 1280x800 and 375x812 nothing from the world list, the summary panel or a scrim overlaps the stage: the ::after scrim, the 80% translucent panels (panelSurface) and the inside focus ring (cardFocus) from T-071 are removed, and the list section below the stage has a heading \"View as list\" / \"Ver em lista\" and an opaque background in every mode",
+        "The render loop also pauses while the stage is out of the viewport (IntersectionObserver) and resumes when it comes back",
+        "With the capability gate failing, reduced motion, a chunk load error or a lost WebGL context (tested with WEBGL_lose_context), no stage or empty block is rendered: the page shows the title, summary and list as the 2D layout, with the same content as before",
+        "ADR 0007 gets a dated addendum superseding the T-071 addendum (scrim and translucent cards), and yarn typecheck, yarn lint, yarn test and yarn build pass"
+      ],
+      "dependsOn": [
+        "T-071",
+        "T-072"
+      ],
+      "status": "todo",
+      "attempts": 0,
+      "commit": null,
+      "notes": [
+        "2026-11-26 rodada 12 (PO): stakeholder decision in REPORT \"Decisões do stakeholder para a próxima rodada\" item 1 and spec docs/specs/2026-11-25-jornada-ai-engineer.md, \"Revisão 1 — 3D protagonista\", items 1 and 5: step (a) of the suggested order. The canvas moves inside the stage so the list below has no scene behind it, as the spec asks, and the render can stop when the stage scrolls away. The lost-context criterion also resolves the T-070 review item (\"Se o contexto WebGL for perdido, o botão continua visível\"): today dispose() on webglcontextlost never calls onActiveChange(false), and with a full-viewport stage that would leave an empty black screen. The planet raycast stays until T-075 replaces it with labels."
+      ]
+    },
+    {
+      "id": "T-074",
+      "title": "Add the minimal HUD over the journey stage",
+      "type": "feature",
+      "priority": "P1",
+      "touchesUi": true,
+      "acceptance": [
+        "In 3D mode the only elements over the stage are the h1, From -> To, total XP, \"N/8 worlds\" and the pause button, placed in the stage corners; the legend and the destination phrase move to the list section",
+        "At 1280x800 and 375x812 no HUD block covers the current planet (the stage center)",
+        "Each HUD block has a translucent background whose measured worst-case contrast for every HUD text against a white scene pixel is >= 4.5:1, with the numbers in a dated addendum to ADR 0007",
+        "The pause button keeps aria-pressed and a fixed accessible name, and its pressed state differs by more than color: a Pause/Play icon swap and a filled background (WCAG 1.4.1)",
+        "In the 2D layout the same title and summary render as a static block above the list, without the pause button; axe-core reports no violations on /en/journey/ and /pt/jornada/ and yarn typecheck, yarn lint and yarn build pass"
+      ],
+      "dependsOn": [
+        "T-073"
+      ],
+      "status": "todo",
+      "attempts": 0,
+      "commit": null,
+      "notes": [
+        "2026-11-26 rodada 12 (PO): spec docs/specs/2026-11-25-jornada-ai-engineer.md, \"Revisão 1 — 3D protagonista\", item 2. Decision on the T-070 review item (\"Estado pausado só muda a cor da borda\"): icon swap plus filled background, keeping a fixed label, because changing the name of an aria-pressed toggle makes screen readers announce a contradictory state. Lucide is not a dependency today: the dev may draw the two icons as inline SVG at stroke 1.75 instead of adding lucide-react for two glyphs, and must state the choice in the task summary. Remembering the pause per visitor (localStorage) is out of scope."
+      ]
+    },
+    {
+      "id": "T-075",
+      "title": "Attach HTML label buttons to the journey planets by 3D projection",
+      "type": "feature",
+      "priority": "P1",
+      "touchesUi": true,
+      "acceptance": [
+        "In 3D mode the stage renders one <button> per stage (8 worlds and the final boss), in stage order, with \"World N · Name\" / \"Mundo N · Nome\", the status label and the XP, positioned at its planet by projecting the planet position each frame, so labels follow camera moves",
+        "Label positions are written to style.transform from the scene render loop through a handle callback, with no React state update per frame",
+        "Clicking a label or pressing Enter/Space on it opens the WorldDialog of that stage, and closing the dialog returns focus to the same label; focusing or hovering a label lights its planet (setFocus/setHover)",
+        "The raycast picking is removed: pickStage, the Raycaster, the window click/pointermove pick listeners and every data-scene-pick attribute are gone from src/",
+        "axe-core reports no violations on the stage in /en/journey/ and /pt/jornada/, and yarn typecheck, yarn lint and yarn build pass"
+      ],
+      "dependsOn": [
+        "T-073"
+      ],
+      "status": "todo",
+      "attempts": 0,
+      "commit": null,
+      "notes": [
+        "2026-11-26 rodada 12 (PO): spec docs/specs/2026-11-25-jornada-ai-engineer.md, \"Revisão 1 — 3D protagonista\", item 3: step (b), first half. The labels become the click, keyboard and screen reader target of each planet, which retires the page-background raycast of T-066 and the T-068/T-071 review items about planet hover and focus that \"quase não se notam\". The canvas stays aria-hidden; the label layer does not."
+      ]
+    },
+    {
+      "id": "T-076",
+      "title": "Navigate between worlds on the journey stage with arrows, drag, swipe and previous/next controls",
+      "type": "feature",
+      "priority": "P1",
+      "touchesUi": true,
+      "acceptance": [
+        "With focus on a stage label, ArrowLeft/ArrowUp and ArrowRight/ArrowDown move focus to the previous/next label and fly the camera to that planet; Tab between labels flies the camera too; at the first and last stage the arrows do nothing (no wrap)",
+        "A mouse drag or a horizontal touch swipe on the stage longer than a fixed threshold moves exactly one world; the stage has touch-action: pan-y, so vertical swipes and the mouse wheel keep scrolling the page down to the list",
+        "The stage shows previous/next buttons with accessible names that name the target world, at least 44x44 px, disabled (with disabled styling) at the ends",
+        "On load the camera is on the current world, or on the world named by the URL hash (#world-3 / #mundo-3); the camera no longer follows scroll over the list cards (useActiveStage stops driving it)",
+        "yarn typecheck, yarn lint, yarn test and yarn build pass"
+      ],
+      "dependsOn": [
+        "T-075"
+      ],
+      "status": "todo",
+      "attempts": 0,
+      "commit": null,
+      "notes": [
+        "2026-11-26 rodada 12 (PO): spec docs/specs/2026-11-25-jornada-ai-engineer.md, \"Revisão 1 — 3D protagonista\", item 4: step (b), second half. Decision: the spec says \"roda do mouse ou arrasto\"; the PO picks drag and keeps the wheel for page scrolling, because a 100dvh stage that captures the wheel traps the visitor before the list and the footer (up to 9 stops from world 0). The same reasoning makes the touch gesture horizontal. Registered as a review item. This supersedes the T-069 review items (camera lock on card click, arrows only with focus in the list)."
+      ]
+    },
+    {
+      "id": "T-077",
+      "title": "Strengthen the journey stage effects for current, completed and locked worlds and the final boss",
+      "type": "feature",
+      "priority": "P1",
+      "touchesUi": true,
+      "acceptance": [
+        "The current planet has an atmosphere shell, a ring and orbiting particles; completed planets keep the ring and seal; locked planets are dark and desaturated with the padlock and a fog sprite around them",
+        "The trail from the first stage up to the current one has an animated light flow that stops while the scene is paused; the trail after the current stage stays unlit",
+        "The final boss renders as a star or a black hole visibly different from the planets, dimmed while locked",
+        "Bloom strength, radius and threshold are recalibrated for the stage without scrim, and ADR 0009 gets a dated addendum with the new values and the measured scene chunk size; the stale numbers in ADR 0009 and in the vite.config.ts comment are corrected",
+        "yarn typecheck, yarn lint and yarn build pass, with the scene chunk below the chunkSizeWarningLimit in vite.config.ts or the limit change justified in the same addendum"
+      ],
+      "dependsOn": [
+        "T-073"
+      ],
+      "status": "todo",
+      "attempts": 0,
+      "commit": null,
+      "notes": [
+        "2026-11-26 rodada 12 (PO): spec docs/specs/2026-11-25-jornada-ai-engineer.md, \"Revisão 1 — 3D protagonista\", item 6: step (c), first half. Several of these visuals exist since T-064; the task raises them to the \"mais efeito, não menos\" bar now that nothing covers the scene. The ADR 0009 number fix answers the T-068/T-071 review item that asked for a small docs task."
+      ]
+    },
+    {
+      "id": "T-078",
+      "title": "Land the camera on the current world when the journey scene starts",
+      "type": "feature",
+      "priority": "P1",
+      "touchesUi": true,
+      "acceptance": [
+        "On the first mount of the 3D scene the camera starts far back along the path and flies in, decelerating, to the initial stage (current world, or the hash world), finishing within 1.6 s",
+        "Arriving through the light tunnel of T-067, the landing starts with the warp-arrive fade, so the tunnel visually ends on the current world",
+        "Pausing the animation during the landing jumps the camera to its final position; a bfcache restore (pageshow persisted) does not replay the landing",
+        "Under reduced motion nothing changes (no stage, no landing), and yarn typecheck, yarn lint and yarn build pass"
+      ],
+      "dependsOn": [
+        "T-076"
+      ],
+      "status": "todo",
+      "attempts": 0,
+      "commit": null,
+      "notes": [
+        "2026-11-26 rodada 12 (PO): spec docs/specs/2026-11-25-jornada-ai-engineer.md, \"Revisão 1 — 3D protagonista\", item 6 (\"O túnel termina aterrissando no mundo atual\"): step (c), second half. Depends on T-076 because both change the camera rig and its initial index."
+      ]
+    },
+    {
+      "id": "T-079",
+      "title": "Fit the journey stage to phones at 375 px with a vertical path and non-overlapping labels",
+      "type": "feature",
+      "priority": "P1",
+      "touchesUi": true,
+      "acceptance": [
+        "At 375x812 and 390x844 portrait the stage fills the viewport below the header and shows the current planet and the next one with legible labels, with no HUD block over either",
+        "On portrait viewports (aspect ratio below 1) the planets follow a vertical path and the camera frames it, re-evaluated on resize and orientation change",
+        "No two visible stage labels overlap at 375 px (bounding boxes do not intersect); labels of planets outside the stage are hidden from pointer and view but stay reachable by Tab and arrows",
+        "At 320 px width and 400% zoom the page has no horizontal scroll and the HUD, labels and previous/next controls stay usable; yarn typecheck, yarn lint and yarn build pass"
+      ],
+      "dependsOn": [
+        "T-074",
+        "T-075",
+        "T-076"
+      ],
+      "status": "todo",
+      "attempts": 0,
+      "commit": null,
+      "notes": [
+        "2026-11-26 rodada 12 (PO): spec docs/specs/2026-11-25-jornada-ai-engineer.md, \"Revisão 1 — 3D protagonista\", item 7: step (d). The swipe is horizontal (see T-076 note) even though the path is vertical, so the page keeps its vertical scroll."
+      ]
+    },
+    {
+      "id": "T-080",
+      "title": "Restore the scroll reveal on the lazy-loaded journey and books pages",
+      "type": "fix",
+      "priority": "P1",
+      "touchesUi": true,
+      "acceptance": [
+        "On /en/books/, /pt/livros/, /en/journey/ and /pt/jornada/ the reveal runs after the lazy page content mounts: below-the-fold sections and items get data-reveal and fade in when scrolled into view, as on the home (today 0 elements get data-reveal)",
+        "The journey 3D stage is never hidden or faded by the reveal; under reduced motion no element on these pages gets data-reveal",
+        "The T-052 rule holds (nothing stays hidden at 400% zoom or small viewports) and the URL hash focus of T-040 still works on the four pages",
+        "yarn typecheck, yarn lint and yarn build pass"
+      ],
+      "dependsOn": [
+        "T-073"
+      ],
+      "status": "todo",
+      "attempts": 0,
+      "commit": null,
+      "notes": [
+        "2026-11-26 rodada 12 (PO): spec docs/specs/2026-11-25-jornada-ai-engineer.md, \"Revisão 1 — 3D protagonista\", item 8: step (e), regression of T-072 (useReveal runs in App before the Suspense content exists). Depends on T-073 so the stage that must stay visible already exists."
       ]
     }
   ]
