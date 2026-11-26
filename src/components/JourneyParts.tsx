@@ -45,14 +45,16 @@ export function StatusIcon({ status }: StatusIconProps) {
 type StatusBadgeProps = {
   status: JourneyStatus;
   label: string;
+  /** Over the 3D canvas the locked tone is too dark for a translucent panel. */
+  scene?: boolean;
 };
 
-export function StatusBadge({ status, label }: StatusBadgeProps) {
+export function StatusBadge({ status, label, scene = false }: StatusBadgeProps) {
   return (
     <span
       className={cn(
         "inline-flex items-center gap-1.5 rounded-2xl border border-current px-3 py-1 text-sm font-medium",
-        statusTone[status],
+        scene && status === "locked" ? "text-fg-muted" : statusTone[status],
       )}
     >
       <StatusIcon status={status} />

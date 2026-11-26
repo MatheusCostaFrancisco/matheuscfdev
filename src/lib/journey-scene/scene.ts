@@ -21,6 +21,11 @@ import type {
   SceneStages,
 } from "./types";
 
+// Where the focused planet sits on screen, as a fraction of the viewport. The
+// page keeps this spot free of panels on first load (ADR 0007, addendum).
+const ANCHOR_X = 0.8;
+const ANCHOR_Y = 0.28;
+
 export const MAX_PIXEL_RATIO = 2;
 const MAX_FRAME_DELTA = 0.1; // seconds; avoids a jump after a long frame
 const FOG_DENSITY = 0.0008;
@@ -111,7 +116,17 @@ export function mountJourneyScene(
     renderer.setSize(width, height, false);
     bloom.setSize(width, height, pixelRatio);
     camera.aspect = width / height;
-    camera.updateProjectionMatrix();
+    // Slide the projection so the planet the camera looks at lands on the
+    // anchor (upper right), beside the title panel and above the summary
+    // panel instead of behind them.
+    camera.setViewOffset(
+      width,
+      height,
+      width * (0.5 - ANCHOR_X),
+      height * (0.5 - ANCHOR_Y),
+      width,
+      height,
+    );
     // Resizing clears the canvas; while paused, redraw the held frame once.
     if (userPaused && shown) bloom.render();
   };

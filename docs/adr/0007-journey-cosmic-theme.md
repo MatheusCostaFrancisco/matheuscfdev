@@ -119,3 +119,25 @@ Fórmula de luminância relativa da WCAG 2.1. "Pico da nebulosa" é a cor mais c
 - Pedido de dark mode no site inteiro: reaproveitar o remapeamento daqui numa ADR nova que supersede a seção "Claro/escuro" da ADR 0001.
 - Uma segunda página quiser o tema (ex.: livros no espaço): rever se a exceção continua restrita ou vira tema do site.
 - Upgrade do Tailwind que mude o comportamento de `@theme inline` ou a forma como `shadow-*` e `drop-shadow-*` incorporam o valor do token.
+
+## Adendo 2026-11-26 (T-071): painéis translúcidos sobre a cena 3D
+
+Até aqui o scrim do canvas (70% de `#060e12`) e os cards opacos escondiam o planeta atual: o 3D era só um tom no fundo. O scrim passa a 35% e, **só com a cena 3D montada**, os painéis do conteúdo (cards dos mundos, resumo, bloco do título e do botão de pausa) usam `bg-surface-raised/80`. Sem a cena (fallback 2D, reduced motion, sem WebGL) os painéis seguem opacos, com os contrastes da tabela acima. O mundo atual também passa a ser o foco inicial da câmera quando a URL não tem hash.
+
+Pior caso medido: o pixel mais claro que a cena pode produzir atrás do texto é branco puro (bloom saturado). Sob o scrim de 35% ele vira `rgb(168 171 172)`; o painel a 80% sobre isso vira `rgb(43 55 59)`. Fórmula de luminância da WCAG 2.1, cálculo reproduzível com os valores do documento:
+
+| Texto sobre o painel (pior caso) | Razão | Mínimo | Resultado |
+|---|---|---|---|
+| `fg` #e8f3f1 | 10.82 | 4.5 | Passa |
+| `fg-muted` #9fb5b1 | 5.68 | 4.5 | Passa |
+| `journey-current` #cbf5ec | 10.40 | 4.5 | Passa |
+| `journey-completed` / `accent-700` #5dd5c3 | 6.87 | 4.5 | Passa |
+| `journey-locked` #6f8582 | 3.13 | 4.5 | Reprova: com a cena, o texto e o selo "bloqueado" usam `fg-muted` (5.68); cadeado, borda tracejada e texto continuam distinguindo o estado |
+
+O pior caso global é `fg-muted` a **5.68:1**. Texto sobre o fundo nu não existe mais com a cena ativa (o `h1` ganhou painel); sobre o scrim nu `fg` mediria apenas 2.05:1. O botão de pausa tem fundo opaco; os botões "Abrir painel" dos cards usam `fg` sobre o painel a 80% (10.82:1). `BossBlock` mantém fundo opaco. Header, footer e diálogo seguem opacos.
+
+**Posição do planeta.** A câmera desloca a projeção (`setViewOffset`) para que o planeta em foco caia em 80% da largura e 28% da altura da viewport. O bloco do título tem `w-fit` e `max-w-[65%]`, então a região do planeta fica sem painel na primeira carga em 1280x800 e 375x812 (o resumo começa abaixo do raio do planeta). Conferido por geometria; captura de tela fica como item de revisão.
+
+**Indicador de foco.** O anel global (`accent-600` #2db9a8, 2px, offset 2px) ficava fora do card, sobre o canvas quase nu, e media 1.00:1 no pior pixel. Na cena o anel dos cards é desenhado por dentro (`outline-offset: -4px`), sobre o painel a 80%: pior caso medido na revisão, 5.03:1 contra pixel branco. Os botões já tinham o anel sobre o painel (mínimo 5.03:1).
+
+Quando reabrir (acréscimo): alguém adicionar texto fora de um painel translúcido na jornada, ou o brilho máximo da cena passar de branco (não passa: é o teto do canal).

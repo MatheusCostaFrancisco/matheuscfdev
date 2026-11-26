@@ -17,9 +17,11 @@ import {
  * main chunk carries only this shell. If the gate fails, the chunk does not
  * load or WebGL breaks, nothing is shown and the HTML map stays as the view.
  *
- * An ::after scrim in the space color sits over the canvas so text on the
- * bare page background keeps 4.5:1 even over the brightest lit planet or glow
- * (axe cannot measure contrast over a canvas).
+ * A light ::after scrim (35%) in the space color sits over the canvas so the
+ * planets stay visible. It does not carry text contrast: every text block on
+ * the page sits on a translucent panel sized for the worst case, a white
+ * canvas pixel (ADR 0007, addendum 2026-11-26; axe cannot measure contrast
+ * over a canvas).
  *
  * Rendered into <body> so no transformed ancestor (scroll reveal) turns the
  * fixed layer into a local one.
@@ -194,7 +196,7 @@ export function JourneyScene({
     <div
       ref={hostRef}
       aria-hidden="true"
-      className="pointer-events-none fixed inset-0 -z-10 print:hidden after:absolute after:inset-0 after:bg-(--journey-space) after:opacity-70 after:content-['']"
+      className="pointer-events-none fixed inset-0 -z-10 print:hidden after:absolute after:inset-0 after:bg-(--journey-space) after:opacity-35 after:content-['']"
     />,
     document.body,
   );

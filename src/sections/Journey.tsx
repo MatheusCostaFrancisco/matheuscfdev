@@ -20,8 +20,20 @@ const legendStatuses: readonly JourneyStatus[] = [
 
 const keyboardHintId = "journey-keyboard-hint";
 
-const cardClass =
-  "relative min-w-0 section-offset rounded-2xl border bg-surface-raised p-6";
+const cardClass = "relative min-w-0 section-offset rounded-2xl border p-6";
+
+// Over the 3D canvas the panels are 80% opaque so the scene shows through.
+// ADR 0007 (addendum 2026-11-26) measures every text on them against a white
+// canvas pixel. Without the scene they stay opaque, as before.
+function panelSurface(scene: boolean): string {
+  return scene ? "bg-surface-raised/80" : "bg-surface-raised";
+}
+
+// The global focus ring sits outside the element, on the bare canvas, where it
+// can fall under 3:1. In scene mode the card ring is drawn inside the panel.
+function cardFocus(scene: boolean): string | false {
+  return scene && "focus-visible:outline-offset-[-4px]";
+}
 
 function cardTone(status: JourneyStatus): string {
   if (status === "current") {
@@ -65,6 +77,7 @@ type StageCardProps = {
   lockedWorld: number | undefined;
   checklist?: ReactNode;
   boss: JourneyBoss;
+  scene: boolean;
   onOpen: (id: string, opener: HTMLElement) => void;
 };
 
@@ -77,6 +90,7 @@ function StageCard({
   lockedWorld,
   checklist,
   boss,
+  scene,
   onOpen,
 }: StageCardProps) {
   const { ui } = useContent();
@@ -95,7 +109,12 @@ function StageCard({
           onOpen(id, event.currentTarget);
         }
       }}
-      className={cn(cardClass, cardTone(status))}
+      className={cn(
+        cardClass,
+        panelSurface(scene),
+        cardTone(status),
+        cardFocus(scene),
+      )}
     >
       <Marker status={status} />
       <div className="flex flex-wrap items-center justify-between gap-2">
@@ -105,7 +124,11 @@ function StageCard({
         >
           {title}
         </h3>
-        <StatusBadge status={status} label={text.status[status]} />
+        <StatusBadge
+          status={status}
+          label={text.status[status]}
+          scene={scene}
+        />
       </div>
       <button
         type="button"
@@ -116,7 +139,12 @@ function StageCard({
         {text.openPanelAction}
       </button>
       {status === "locked" && lockedWorld !== undefined && (
-        <p className="mt-2 text-sm text-journey-locked">
+        <p
+          className={cn(
+            "mt-2 text-sm",
+            scene ? "text-fg-muted" : "text-journey-locked",
+          )}
+        >
           {text.lockedBy(lockedWorld)}
         </p>
       )}
@@ -140,13 +168,20 @@ export function Journey() {
   useJourneyProgress(trackRef, fillRef);
   const { destination, worlds, finalBoss } = journey[locale];
   const stageIds = [...worlds.map((world) => world.id), finalBoss.id];
-  const activeIndex = useActiveStage(stageIds, listRef);
+  const state = journeyState(worlds, finalBoss);
+  const currentIndex = [...state.worlds, state.finalBoss].findIndex(
+    (stage) => stage.status === "current",
+  );
+  const activeIndex = useActiveStage(
+    stageIds,
+    listRef,
+    Math.max(currentIndex, 0),
+  );
   const [sceneActive, setSceneActive] = useState(false);
   const [animationPaused, setAnimationPaused] = useState(false);
   const [openId, setOpenId] = useState<string | null>(null);
   const openerRef = useRef<HTMLElement | null>(null);
 
-  const state = journeyState(worlds, finalBoss);
   const lastWorld = worlds[worlds.length - 1];
   const text = ui.journey;
 
@@ -209,24 +244,38 @@ export function Journey() {
         paused={animationPaused}
       />
       <WorldDialog panel={openPanelData} onClosed={handleClosed} />
-      <h1
-        id="journey-title"
-        className="text-3xl font-bold text-fg sm:text-4xl [overflow-wrap:anywhere]"
+      <div
+        className={cn(
+          "w-fit max-w-[65%] rounded-2xl border p-6",
+          sceneActive
+            ? ["border-line", panelSurface(true)]
+            : "border-transparent",
+        )}
       >
-        {text.title}
-      </h1>
-      {sceneActive && (
-        <button
-          type="button"
-          aria-pressed={animationPaused}
-          onClick={() => setAnimationPaused((value) => !value)}
-          className="mt-4 cursor-pointer rounded-2xl border border-line-strong bg-surface-raised min-h-11 min-w-11 px-4 py-2 text-sm font-medium text-fg transition-colors hover:bg-surface-sunken focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-600 active:bg-surface-sunken aria-pressed:border-journey-current disabled:cursor-not-allowed disabled:opacity-50"
+        <h1
+          id="journey-title"
+          className="text-3xl font-bold text-fg sm:text-4xl [overflow-wrap:anywhere]"
         >
-          {text.pauseAnimation}
-        </button>
-      )}
+          {text.title}
+        </h1>
+        {sceneActive && (
+          <button
+            type="button"
+            aria-pressed={animationPaused}
+            onClick={() => setAnimationPaused((value) => !value)}
+            className="mt-4 cursor-pointer rounded-2xl border border-line-strong bg-surface-raised min-h-11 min-w-11 px-4 py-2 text-sm font-medium text-fg transition-colors hover:bg-surface-sunken focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-600 active:bg-surface-sunken aria-pressed:border-journey-current disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            {text.pauseAnimation}
+          </button>
+        )}
+      </div>
 
-      <div className="mt-8 rounded-2xl border border-line bg-surface-raised p-6">
+      <div
+        className={cn(
+          "mt-8 rounded-2xl border border-line p-6",
+          panelSurface(sceneActive),
+        )}
+      >
         <dl className="grid gap-4 sm:grid-cols-2">
           <div className="min-w-0">
             <dt className="text-sm font-medium text-fg-muted">{text.from}</dt>
@@ -270,7 +319,11 @@ export function Journey() {
         <ul className="mt-2 flex flex-wrap gap-2">
           {legendStatuses.map((status) => (
             <li key={status}>
-              <StatusBadge status={status} label={text.status[status]} />
+              <StatusBadge
+                status={status}
+                label={text.status[status]}
+                scene={sceneActive}
+              />
             </li>
           ))}
         </ul>
@@ -308,6 +361,7 @@ export function Journey() {
                 xp={stage.xp}
                 lockedWorld={worlds[index - 1]?.number}
                 boss={world.boss}
+                scene={sceneActive}
                 checklist={<StudyList study={world.study} />}
                 onOpen={openPanel}
               />
@@ -321,6 +375,7 @@ export function Journey() {
             xp={state.finalBoss.xp}
             lockedWorld={lastWorld?.number}
             boss={finalBoss.boss}
+            scene={sceneActive}
             onOpen={openPanel}
           />
         </ol>

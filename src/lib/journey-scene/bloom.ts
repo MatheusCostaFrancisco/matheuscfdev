@@ -61,10 +61,9 @@ type Hidden = Object3D[];
  * scene is rendered once with only the objects on BLOOM_LAYER visible and
  * blurred by UnrealBloomPass, then rendered normally and the glow is added on
  * top. Lights stay untouched so no shader is recompiled between the passes.
- * Contrast worst case: a canvas pixel saturated to white under the 70% scrim
- * (ADR 0007) leaves text-fg on the bare page at about 6.5:1, and all
- * text-fg-muted sits on opaque bg-surface-raised cards, so the bloom cannot
- * push the HUD text below 4.5:1.
+ * Contrast worst case: a canvas pixel saturated to white under the 35% scrim.
+ * Text sits on 80% panels sized for that case (ADR 0007, addendum
+ * 2026-11-26), so the bloom cannot push the HUD text below 4.5:1.
  * Non-glowing meshes are drawn black in the bloom pass (not hidden) so they
  * still occlude the glow behind them.
  */

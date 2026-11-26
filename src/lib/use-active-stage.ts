@@ -36,7 +36,8 @@ function isEditable(target: EventTarget | null): boolean {
 
 /**
  * Which stage of the journey list is active, for the 3D camera. It starts
- * from the URL hash (#world-3 / #mundo-3), then follows scroll (the card
+ * from the URL hash (#world-3 / #mundo-3), or from `fallbackIndex` (the
+ * current world) without one, then follows scroll (the card
  * closest to the middle of the viewport), focus inside a card (which also locks the index), and the arrow
  * keys while focus is in the list, which scroll to and focus the previous/next
  * card. Elsewhere, and past the first/last card, arrows scroll the page as
@@ -46,8 +47,12 @@ function isEditable(target: EventTarget | null): boolean {
 export function useActiveStage(
   ids: readonly string[],
   listRef: RefObject<HTMLElement | null>,
+  fallbackIndex = 0,
 ): number {
-  const [index, setIndex] = useState(() => Math.max(indexFromHash(ids), 0));
+  const [index, setIndex] = useState(() => {
+    const fromHash = indexFromHash(ids);
+    return fromHash >= 0 ? fromHash : fallbackIndex;
+  });
   const indexRef = useRef(index);
   const idsRef = useRef(ids);
   idsRef.current = ids;
