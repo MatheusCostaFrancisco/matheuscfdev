@@ -29,5 +29,7 @@ export type SceneLayer = {
 export type JourneySceneHandle = {
   /** Moves the camera to the stage at `index` (clamped to the stage count). */
   focusStage(index: number): void;
+  /** Index of the stage whose planet is under the viewport point, or null. */
+  pickStage(clientX: number, clientY: number): number | null;
   dispose(): void;
 };

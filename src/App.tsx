@@ -57,10 +57,11 @@ function App({ page }: AppProps) {
   const Content = pageContent[page];
 
   return (
-    <div className="flex min-h-[100dvh] flex-col">
+    <div data-scene-pick className="flex min-h-[100dvh] flex-col">
       <SkipLink />
       <Header page={page} />
       <main
+        data-scene-pick
         id="main"
         tabIndex={-1}
         className="mx-auto w-full max-w-5xl flex-1 section-offset px-4 py-10 sm:px-6"

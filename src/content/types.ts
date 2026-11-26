@@ -101,6 +101,9 @@ export interface UiStrings {
     readonly itemNotDone: string
     readonly bossHeading: string
     readonly deliverableLink: string
+    readonly openPanel: (stageName: string) => string
+    readonly openPanelAction: string
+    readonly closePanel: string
   }
   readonly books: {
     readonly heading: string

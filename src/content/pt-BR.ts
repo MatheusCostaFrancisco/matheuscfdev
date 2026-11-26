@@ -196,7 +196,7 @@ export const createPtBR = (years: ExperienceYears): SiteContent => ({
       totalXp: 'XP total',
       worldsCompleted: 'Mundos concluídos',
       legendHeading: 'Legenda',
-      keyboardHint: 'Use as setas do teclado para se mover entre os mundos.',
+      keyboardHint: 'Use as setas do teclado para se mover entre os mundos e Enter para abrir o painel do mundo.',
       worldsHeading: 'Mundos',
       worldLabel: 'Mundo',
       status: { completed: 'Concluído', current: 'Atual', locked: 'Bloqueado' },
@@ -207,6 +207,9 @@ export const createPtBR = (years: ExperienceYears): SiteContent => ({
       itemNotDone: 'Não feito',
       bossHeading: 'Chefão',
       deliverableLink: 'Ver entregável',
+      openPanel: (stageName) => `Abrir painel: ${stageName}`,
+      openPanelAction: 'Abrir painel',
+      closePanel: 'Fechar',
     },
     books: { heading: 'Livros', groups: { reading: 'Lendo agora', read: 'Lidos', wantToRead: 'Quero ler' }, seriesBooks: 'livros' },
     testimonials: {

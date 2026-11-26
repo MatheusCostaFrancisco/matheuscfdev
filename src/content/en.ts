@@ -196,7 +196,7 @@ export const createEn = (years: ExperienceYears): SiteContent => ({
       totalXp: 'Total XP',
       worldsCompleted: 'Worlds completed',
       legendHeading: 'Legend',
-      keyboardHint: 'Use the arrow keys to move between worlds.',
+      keyboardHint: 'Use the arrow keys to move between worlds and Enter to open the world panel.',
       worldsHeading: 'Worlds',
       worldLabel: 'World',
       status: { completed: 'Completed', current: 'Current', locked: 'Locked' },
@@ -207,6 +207,9 @@ export const createEn = (years: ExperienceYears): SiteContent => ({
       itemNotDone: 'Not done',
       bossHeading: 'Boss',
       deliverableLink: 'View deliverable',
+      openPanel: (stageName) => `Open panel: ${stageName}`,
+      openPanelAction: 'Open panel',
+      closePanel: 'Close',
     },
     books: { heading: 'Books', groups: { reading: 'Reading now', read: 'Read', wantToRead: 'Want to read' }, seriesBooks: 'books' },
     testimonials: {

@@ -1,5 +1,7 @@
-import { useRef, type ReactNode } from "react";
+import { useCallback, useRef, useState, type KeyboardEvent, type ReactNode } from "react";
+import { StatusBadge, StudyList, BossBlock, XpBar } from "../components/JourneyParts";
 import { JourneyScene } from "../components/JourneyScene";
+import { WorldDialog, type WorldPanel } from "../components/WorldDialog";
 import { journey } from "../content/journey";
 import type { JourneyBoss } from "../content/journey";
 import { cn } from "../lib/cn";
@@ -15,128 +17,6 @@ const legendStatuses: readonly JourneyStatus[] = [
   "current",
   "locked",
 ];
-
-const statusTone: Record<JourneyStatus, string> = {
-  completed: "text-journey-completed",
-  current: "text-journey-current",
-  locked: "text-journey-locked",
-};
-
-type StatusIconProps = {
-  status: JourneyStatus;
-};
-
-function StatusIcon({ status }: StatusIconProps) {
-  return (
-    <svg
-      aria-hidden="true"
-      width={16}
-      height={16}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth={1.75}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      className="shrink-0"
-    >
-      {status === "completed" && <path d="M20 6 9 17l-5-5" />}
-      {status === "current" && <circle cx="12" cy="12" r="5" fill="currentColor" />}
-      {status === "locked" && (
-        <>
-          <rect x="4" y="11" width="16" height="10" rx="2" />
-          <path d="M8 11V7a4 4 0 0 1 8 0v4" />
-        </>
-      )}
-    </svg>
-  );
-}
-
-type StatusBadgeProps = {
-  status: JourneyStatus;
-  label: string;
-};
-
-function StatusBadge({ status, label }: StatusBadgeProps) {
-  return (
-    <span
-      className={cn(
-        "inline-flex items-center gap-1.5 rounded-2xl border border-current px-3 py-1 text-sm font-medium",
-        statusTone[status],
-      )}
-    >
-      <StatusIcon status={status} />
-      {label}
-    </span>
-  );
-}
-
-type XpBarProps = {
-  value: number;
-  label: string;
-  status: JourneyStatus;
-};
-
-function XpBar({ value, label, status }: XpBarProps) {
-  return (
-    <div className="mt-4 flex items-center gap-3">
-      <progress
-        value={value}
-        max={100}
-        aria-label={label}
-        className={cn(
-          "h-2 min-w-0 flex-1 appearance-none overflow-hidden rounded-full border border-line-strong bg-surface-sunken",
-          "[&::-webkit-progress-bar]:bg-surface-sunken",
-          "[&::-webkit-progress-value]:rounded-full [&::-moz-progress-bar]:rounded-full",
-          status === "locked"
-            ? "[&::-webkit-progress-value]:bg-journey-locked [&::-moz-progress-bar]:bg-journey-locked"
-            : "[&::-webkit-progress-value]:bg-journey-completed [&::-moz-progress-bar]:bg-journey-completed",
-        )}
-      />
-      <span aria-hidden="true" className="text-sm font-medium text-fg-muted">
-        {value}%
-      </span>
-    </div>
-  );
-}
-
-type BossBlockProps = {
-  boss: JourneyBoss;
-};
-
-function BossBlock({ boss }: BossBlockProps) {
-  const locale = useLocale();
-  const { ui } = useContent();
-  const text = ui.journey;
-  return (
-    <div className="mt-4 rounded-2xl bg-surface-sunken p-4">
-      <p className="text-sm font-semibold text-fg">{text.bossHeading}</p>
-      <p
-        lang={langAttr(boss.lang, locale)}
-        className="mt-1 flex gap-2 text-sm text-fg-muted [overflow-wrap:anywhere]"
-      >
-        <span aria-hidden="true">{boss.done ? "✓" : "○"}</span>
-        <span className="min-w-0">
-          <span className="sr-only">
-            {boss.done ? text.itemDone : text.itemNotDone}:{" "}
-          </span>
-          {boss.label}
-        </span>
-      </p>
-      {boss.link !== undefined && (
-        <a
-          href={boss.link}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="mt-2 inline-block rounded-2xl text-sm font-medium text-accent-700 underline underline-offset-4 transition-colors hover:text-accent-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-600 active:text-accent-900"
-        >
-          {text.deliverableLink}
-          <span className="sr-only"> {ui.opensInNewTab}</span>
-        </a>
-      )}
-    </div>
-  );
-}
 
 const keyboardHintId = "journey-keyboard-hint";
 
@@ -185,6 +65,7 @@ type StageCardProps = {
   lockedWorld: number | undefined;
   checklist?: ReactNode;
   boss: JourneyBoss;
+  onOpen: (id: string, opener: HTMLElement) => void;
 };
 
 function StageCard({
@@ -196,6 +77,7 @@ function StageCard({
   lockedWorld,
   checklist,
   boss,
+  onOpen,
 }: StageCardProps) {
   const { ui } = useContent();
   const text = ui.journey;
@@ -207,6 +89,12 @@ function StageCard({
       aria-current={status === "current" ? "step" : undefined}
       aria-describedby={keyboardHintId}
       tabIndex={0}
+      onKeyDown={(event: KeyboardEvent<HTMLLIElement>) => {
+        if (event.key === "Enter" && event.target === event.currentTarget) {
+          event.preventDefault();
+          onOpen(id, event.currentTarget);
+        }
+      }}
       className={cn(cardClass, cardTone(status))}
     >
       <Marker status={status} />
@@ -219,6 +107,14 @@ function StageCard({
         </h3>
         <StatusBadge status={status} label={text.status[status]} />
       </div>
+      <button
+        type="button"
+        aria-label={text.openPanel(title)}
+        onClick={(event) => onOpen(id, event.currentTarget)}
+        className="mt-3 cursor-pointer rounded-2xl border border-line-strong min-h-11 px-4 py-2 text-sm font-medium text-fg transition-colors hover:bg-surface-sunken focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-600 active:bg-surface-sunken disabled:cursor-not-allowed disabled:opacity-50"
+      >
+        {text.openPanelAction}
+      </button>
       {status === "locked" && lockedWorld !== undefined && (
         <p className="mt-2 text-sm text-journey-locked">
           {text.lockedBy(lockedWorld)}
@@ -245,20 +141,69 @@ export function Journey() {
   const { destination, worlds, finalBoss } = journey[locale];
   const stageIds = [...worlds.map((world) => world.id), finalBoss.id];
   const activeIndex = useActiveStage(stageIds, listRef);
+  const [openId, setOpenId] = useState<string | null>(null);
+  const openerRef = useRef<HTMLElement | null>(null);
+
+  const state = journeyState(worlds, finalBoss);
+  const lastWorld = worlds[worlds.length - 1];
+  const text = ui.journey;
+
+  const worldTitle = (world: (typeof worlds)[number]) =>
+    `${text.worldLabel} ${world.number} · ${world.title}`;
+
+  const openPanel = useCallback((id: string, opener: HTMLElement | null) => {
+    openerRef.current = opener;
+    setOpenId(id);
+  }, []);
+  const openFromScene = (index: number) => {
+    const id = stageIds[index];
+    if (id !== undefined) openPanel(id, document.getElementById(id));
+  };
+  const handleClosed = useCallback(() => {
+    setOpenId(null);
+    const opener = openerRef.current;
+    openerRef.current = null;
+    opener?.focus();
+  }, []);
 
   if (!item) return null;
 
-  const text = ui.journey;
-  const state = journeyState(worlds, finalBoss);
-  const lastWorld = worlds[worlds.length - 1];
+  const panels: WorldPanel[] = [
+    ...worlds.map((world, index) => ({
+      id: world.id,
+      title: worldTitle(world),
+      status: state.worlds[index]?.status ?? "locked",
+      xp: state.worlds[index]?.xp ?? 0,
+      lockedWorld: worlds[index - 1]?.number,
+      boss: world.boss,
+      checklist: <StudyList study={world.study} headingLevel="h3" />,
+    })),
+    {
+      id: finalBoss.id,
+      title: finalBoss.title,
+      note: finalBoss.note,
+      status: state.finalBoss.status,
+      xp: state.finalBoss.xp,
+      lockedWorld: lastWorld?.number,
+      boss: finalBoss.boss,
+      checklist: null,
+    },
+  ];
+  const openPanelData = panels.find((panel) => panel.id === openId) ?? null;
 
   return (
     <section
+      data-scene-pick
       id={item.id}
       aria-labelledby="journey-title"
       className="section-offset py-10"
     >
-      <JourneyScene state={state} activeIndex={activeIndex} />
+      <JourneyScene
+        state={state}
+        activeIndex={activeIndex}
+        onPickStage={openFromScene}
+      />
+      <WorldDialog panel={openPanelData} onClosed={handleClosed} />
       <h1
         id="journey-title"
         className="text-3xl font-bold text-fg sm:text-4xl [overflow-wrap:anywhere]"
@@ -317,7 +262,7 @@ export function Journey() {
       </div>
 
       <h2 className="sr-only">{text.worldsHeading}</h2>
-      <div className="relative mt-8">
+      <div data-scene-pick className="relative mt-8">
         <div
           ref={trackRef}
           aria-hidden="true"
@@ -332,6 +277,7 @@ export function Journey() {
           {text.keyboardHint}
         </p>
         <ol
+          data-scene-pick
           ref={listRef}
           className="space-y-4 pl-8"
         >
@@ -342,38 +288,13 @@ export function Journey() {
               <StageCard
                 key={world.id}
                 id={world.id}
-                title={`${text.worldLabel} ${world.number} · ${world.title}`}
+                title={worldTitle(world)}
                 status={stage.status}
                 xp={stage.xp}
                 lockedWorld={worlds[index - 1]?.number}
                 boss={world.boss}
-                checklist={
-                  <>
-                    <h4 className="mt-4 text-sm font-semibold text-fg">
-                      {text.checklistHeading}
-                    </h4>
-                    <ul className="mt-1 space-y-1 text-sm text-fg-muted">
-                      {world.study.map((entry) => (
-                        <li
-                          key={entry.label}
-                          lang={langAttr(entry.lang, locale)}
-                          className="flex gap-2 [overflow-wrap:anywhere]"
-                        >
-                          <span aria-hidden="true">
-                            {entry.done ? "✓" : "○"}
-                          </span>
-                          <span className="min-w-0">
-                            <span className="sr-only">
-                              {entry.done ? text.itemDone : text.itemNotDone}
-                              :{" "}
-                            </span>
-                            {entry.label}
-                          </span>
-                        </li>
-                      ))}
-                    </ul>
-                  </>
-                }
+                checklist={<StudyList study={world.study} />}
+                onOpen={openPanel}
               />
             );
           })}
@@ -385,6 +306,7 @@ export function Journey() {
             xp={state.finalBoss.xp}
             lockedWorld={lastWorld?.number}
             boss={finalBoss.boss}
+            onOpen={openPanel}
           />
         </ol>
       </div>

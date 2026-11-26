@@ -29,14 +29,28 @@ import {
 type JourneySceneProps = {
   state: JourneyState;
   activeIndex: number;
+  /** Called with the stage index when a planet is clicked. */
+  onPickStage: (index: number) => void;
 };
 
-export function JourneyScene({ state, activeIndex }: JourneySceneProps) {
+// Pick only when the click lands on the bare page: html, body or a layout
+// surface marked with data-scene-pick (App wrapper, main, the journey section,
+// the world list and its track). Site chrome (header, footer), cards and
+// controls never match, so they cannot open a world the user did not choose.
+const pickableSelector = "html, body, [data-scene-pick]";
+
+export function JourneyScene({
+  state,
+  activeIndex,
+  onPickStage,
+}: JourneySceneProps) {
   const hostRef = useRef<HTMLDivElement>(null);
   const stagesRef = useRef<SceneStages>(state);
   stagesRef.current = state;
   const indexRef = useRef(activeIndex);
   indexRef.current = activeIndex;
+  const pickRef = useRef(onPickStage);
+  pickRef.current = onPickStage;
   const handleRef = useRef<JourneySceneHandle | null>(null);
   // Statuses do not depend on the locale: remount only when they change.
   const stagesKey = [...state.worlds, state.finalBoss]
@@ -98,6 +112,35 @@ export function JourneyScene({ state, activeIndex }: JourneySceneProps) {
       stop();
     };
   }, [stagesKey]);
+
+  // The canvas sits behind the page and takes no pointer events, so a pointer
+  // event that lands outside content and controls (page background, layout
+  // gutters) is tested against the planets. Keyboard users open the same
+  // panel from the cards.
+  useEffect(() => {
+    const pickAt = (event: MouseEvent): number | null => {
+      const target = event.target;
+      if (!(target instanceof Element)) return null;
+      if (!target.matches(pickableSelector)) return null;
+      if (window.getSelection()?.isCollapsed === false) return null;
+      return handleRef.current?.pickStage(event.clientX, event.clientY) ?? null;
+    };
+    const onClick = (event: MouseEvent) => {
+      if (event.button !== 0) return;
+      const index = pickAt(event);
+      if (index !== null) pickRef.current(index);
+    };
+    const onMove = (event: PointerEvent) => {
+      document.body.style.cursor = pickAt(event) !== null ? "pointer" : "";
+    };
+    window.addEventListener("click", onClick);
+    window.addEventListener("pointermove", onMove);
+    return () => {
+      window.removeEventListener("click", onClick);
+      window.removeEventListener("pointermove", onMove);
+      document.body.style.cursor = "";
+    };
+  }, []);
 
   useEffect(() => {
     handleRef.current?.focusStage(activeIndex);

@@ -123,6 +123,9 @@ function lockTexture(ink: Color): CanvasTexture {
   });
 }
 
+/** The planets layer also exposes each planet body, in stage order, for picking. */
+export type PlanetsLayer = SceneLayer & { bodies: readonly Mesh[] };
+
 /** Position of every stage, in order; the camera rig flies between them. */
 export function nodePositions(count: number): Vector3[] {
   const last = Math.max(count - 1, 1);
@@ -147,7 +150,7 @@ export function nodePositions(count: number): Vector3[] {
 export function createPlanets(
   palette: ScenePalette,
   stages: SceneStages,
-): SceneLayer {
+): PlanetsLayer {
   const group = new Group();
   const stageList: Stage[] = [
     ...stages.worlds.map((world) => ({
@@ -180,6 +183,7 @@ export function createPlanets(
   sun.position.set(-40, 50, 30);
   group.add(sun);
 
+  const bodies: Mesh[] = [];
   const pulses: { sprite: Sprite; base: number }[] = [];
   const orbits: Group[] = [];
 
@@ -206,7 +210,9 @@ export function createPlanets(
           : { color: lockedTone, roughness: 1, metalness: 0 },
       ),
     );
-    node.add(new Mesh(track(new SphereGeometry(size, 32, 24)), body));
+    const planet = new Mesh(track(new SphereGeometry(size, 32, 24)), body);
+    node.add(planet);
+    bodies.push(planet);
 
     if (stage.status === "completed") {
       const ringMaterial = trackMaterial(
@@ -356,6 +362,7 @@ export function createPlanets(
   let elapsed = 0;
   return {
     object: group,
+    bodies,
     update(delta) {
       elapsed += delta;
       const wave = (Math.sin(elapsed * PULSE_SPEED) + 1) / 2;

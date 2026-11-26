@@ -1,7 +1,15 @@
 // Lazy entry of the journey 3D scene (ADR 0009). Only reached through
 // import() from src/components/JourneyScene.tsx, so three stays out of the
 // main chunk.
-import { Color, FogExp2, PerspectiveCamera, Scene, WebGLRenderer } from "three";
+import {
+  Color,
+  FogExp2,
+  PerspectiveCamera,
+  Raycaster,
+  Scene,
+  Vector2,
+  WebGLRenderer,
+} from "three";
 import { createCameraRig } from "./camera";
 import { createPlanets, nodePositions } from "./planets";
 import { createStarfield } from "./starfield";
@@ -40,6 +48,9 @@ const inertHandle: JourneySceneHandle = {
   focusStage() {
     // Nothing was created, so there is nothing to move.
   },
+  pickStage() {
+    return null;
+  },
   dispose() {
     // Nothing was created, so there is nothing to free.
   },
@@ -71,10 +82,8 @@ export function mountJourneyScene(
   scene.fog = new FogExp2(palette.space, FOG_DENSITY);
   const camera = new PerspectiveCamera(60, 1, 0.1, 2000);
 
-  const layers: SceneLayer[] = [
-    createStarfield(palette),
-    createPlanets(palette, stages),
-  ];
+  const planets = createPlanets(palette, stages);
+  const layers: SceneLayer[] = [createStarfield(palette), planets];
   for (const layer of layers) scene.add(layer.object);
   const rig = createCameraRig(
     camera,
@@ -89,6 +98,22 @@ export function mountJourneyScene(
     renderer.setSize(width, height, false);
     camera.aspect = width / height;
     camera.updateProjectionMatrix();
+  };
+
+  const raycaster = new Raycaster();
+  const ndc = new Vector2();
+  const pickStage = (clientX: number, clientY: number): number | null => {
+    const rect = canvas.getBoundingClientRect();
+    if (rect.width === 0 || rect.height === 0) return null;
+    ndc.set(
+      ((clientX - rect.left) / rect.width) * 2 - 1,
+      -(((clientY - rect.top) / rect.height) * 2 - 1),
+    );
+    raycaster.setFromCamera(ndc, camera);
+    const hit = raycaster.intersectObjects([...planets.bodies], false)[0];
+    if (hit === undefined) return null;
+    const index = planets.bodies.findIndex((body) => body === hit.object);
+    return index < 0 ? null : index;
   };
 
   let frame = 0;
@@ -154,5 +179,5 @@ export function mountJourneyScene(
   resize();
   play();
 
-  return { focusStage: rig.focusStage, dispose };
+  return { focusStage: rig.focusStage, pickStage, dispose };
 }

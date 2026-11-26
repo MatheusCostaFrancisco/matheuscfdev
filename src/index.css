@@ -166,6 +166,10 @@
     color-scheme: light;
   }
 
+  html {
+    scrollbar-gutter: stable;
+  }
+
   /* Preflight falls back to currentColor once the default gray scale is reset */
   *,
   ::before,
