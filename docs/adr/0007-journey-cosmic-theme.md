@@ -149,3 +149,21 @@ O adendo do T-071 (scrim de 35%, painéis `bg-surface-raised/80`, anel de foco p
 Sem a cena (gate falhou, reduced motion, erro de chunk, contexto WebGL perdido) o palco não é renderizado: a página mostra título, resumo e lista como no layout 2D. O loop de render também pausa enquanto o palco está fora da viewport.
 
 Quando reabrir (acréscimo): texto ou controle voltar a ser posicionado sobre o palco; aí a tabela de pior caso do adendo do T-071 precisa ser refeita.
+
+## Adendo 2026-11-26 (T-074): HUD mínimo sobre o palco
+
+Com a cena 3D ativa, só cinco itens ficam sobre o palco, cada um num bloco nos cantos com `max-width: calc(50% - 0.5rem)`, então nada cruza a linha central onde fica o planeta atual (1280x800 e 375x812): título `h1` (alto-esquerdo), botão de pausa (alto-direito), De -> Para (baixo-esquerdo), XP total e "N/8 mundos" (baixo-direito). A legenda e a frase do destino foram para a seção da lista, em superfície opaca. Sem a cena, título e resumo viram um bloco estático acima da lista, sem o botão de pausa.
+
+Cada bloco usa `bg-surface-raised/90` (`#0c1a1f` a 90%). Pior caso: o pixel mais claro possível atrás do bloco é branco puro, que vira `rgb(36 49 53)`. Fórmula de luminância da WCAG 2.1:
+
+| Texto sobre o bloco (pior caso) | Razão | Mínimo | Resultado |
+|---|---|---|---|
+| `fg` #e8f3f1 | 11.83 | 4.5 | Passa |
+| `fg-muted` #9fb5b1 (rótulos `dt`) | 6.21 | 4.5 | Passa |
+| `journey-current` #cbf5ec (destino "To") | 11.38 | 4.5 | Passa |
+
+Pior caso global: `fg-muted` a **6.21:1**. Com 80% de opacidade o rótulo ficaria em 4.36 e reprovaria, por isso 90%.
+
+O botão de pausa mantém `aria-pressed` e o nome fixo "Pause animation" / "Pausar animação". O estado pressionado muda por mais que cor (WCAG 1.4.1): o ícone troca de Pause para Play e o fundo passa a ser preenchido com `journey-current` (texto `space`, opaco, mais de 11:1).
+
+Quando reabrir (acréscimo): mais texto ou controle no palco, ou a opacidade do bloco cair abaixo de 90%; refazer a tabela.

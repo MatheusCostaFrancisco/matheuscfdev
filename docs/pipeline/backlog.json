@@ -1668,8 +1668,8 @@
       "dependsOn": [
         "T-073"
       ],
-      "status": "todo",
-      "attempts": 0,
+      "status": "done",
+      "attempts": 1,
       "commit": null,
       "notes": [
         "2026-11-26 rodada 12 (PO): spec docs/specs/2026-11-25-jornada-ai-engineer.md, \"Revisão 1 — 3D protagonista\", item 2. Decision on the T-070 review item (\"Estado pausado só muda a cor da borda\"): icon swap plus filled background, keeping a fixed label, because changing the name of an aria-pressed toggle makes screen readers announce a contradictory state. Lucide is not a dependency today: the dev may draw the two icons as inline SVG at stroke 1.75 instead of adding lucide-react for two glyphs, and must state the choice in the task summary. Remembering the pause per visitor (localStorage) is out of scope."

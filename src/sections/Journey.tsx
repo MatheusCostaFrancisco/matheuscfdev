@@ -18,6 +18,32 @@ const legendStatuses: readonly JourneyStatus[] = [
   "locked",
 ];
 
+const hudPanel =
+  "rounded-2xl border border-line bg-surface-raised/90 p-3 text-fg sm:p-4";
+
+type PlayPauseIconProps = {
+  playing: boolean;
+};
+
+function PlayPauseIcon({ playing }: PlayPauseIconProps) {
+  return (
+    <svg
+      aria-hidden="true"
+      viewBox="0 0 24 24"
+      width="16"
+      height="16"
+      fill="currentColor"
+      className="shrink-0"
+    >
+      {playing ? (
+        <path d="M6 4h4v16H6zM14 4h4v16h-4z" />
+      ) : (
+        <path d="M7 4l13 8-13 8z" />
+      )}
+    </svg>
+  );
+}
+
 const keyboardHintId = "journey-keyboard-hint";
 
 const cardClass =
@@ -200,6 +226,53 @@ export function Journey() {
   ];
   const openPanelData = panels.find((panel) => panel.id === openId) ?? null;
 
+  const title = (
+    <h1
+      id="journey-title"
+      className="text-xl font-bold text-fg sm:text-3xl [overflow-wrap:anywhere]"
+    >
+      {text.title}
+    </h1>
+  );
+  const fromTo = (
+    <dl className="min-w-0 space-y-2">
+      <div className="min-w-0">
+        <dt className="text-sm font-medium text-fg-muted">{text.from}</dt>
+        <dd
+          lang={langAttr(destination.fromLang, locale)}
+          className="text-base font-semibold text-fg [overflow-wrap:anywhere]"
+        >
+          {destination.from}
+        </dd>
+      </div>
+      <div className="min-w-0">
+        <dt className="text-sm font-medium text-fg-muted">{text.to}</dt>
+        <dd
+          lang={langAttr(destination.toLang, locale)}
+          className="text-base font-semibold text-journey-current [overflow-wrap:anywhere]"
+        >
+          {destination.to}
+        </dd>
+      </div>
+    </dl>
+  );
+  const totals = (
+    <dl className="min-w-0 space-y-2">
+      <div className="min-w-0">
+        <dt className="text-sm font-medium text-fg-muted">{text.totalXp}</dt>
+        <dd className="text-base font-semibold text-fg">{state.totalXp}%</dd>
+      </div>
+      <div className="min-w-0">
+        <dt className="text-sm font-medium text-fg-muted">
+          {text.worldsCompleted}
+        </dt>
+        <dd className="text-base font-semibold text-fg">
+          {state.completedLabel}
+        </dd>
+      </div>
+    </dl>
+  );
+
   return (
     <section
       data-journey-paused={sceneActive && animationPaused ? "" : undefined}
@@ -213,79 +286,44 @@ export function Journey() {
         onPickStage={openFromScene}
         onActiveChange={setSceneActive}
         paused={animationPaused}
+        hud={
+          <div className="mx-auto h-full max-w-[90rem] px-4 sm:px-6">
+            <div className="relative h-full">
+              <div className={cn(hudPanel, "absolute left-0 top-[4.5rem] max-w-[calc(50%-0.5rem)]")}>
+                {title}
+              </div>
+              <button
+                type="button"
+                aria-pressed={animationPaused}
+                onClick={() => setAnimationPaused((value) => !value)}
+                className={cn(
+                  hudPanel,
+                  "pointer-events-auto absolute right-0 top-[4.5rem] flex min-h-11 min-w-11 max-w-[calc(50%-0.5rem)] cursor-pointer items-center gap-2 px-3 py-2 text-sm font-medium transition-colors hover:bg-surface-sunken focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-600 active:bg-surface-sunken disabled:cursor-not-allowed disabled:opacity-50 aria-pressed:border-journey-current aria-pressed:bg-journey-current aria-pressed:text-space",
+                )}
+              >
+                <PlayPauseIcon playing={!animationPaused} />
+                {text.pauseAnimation}
+              </button>
+              <div className={cn(hudPanel, "absolute bottom-6 left-0 max-w-[calc(50%-0.5rem)]")}>
+                {fromTo}
+              </div>
+              <div className={cn(hudPanel, "absolute bottom-6 right-0 max-w-[calc(50%-0.5rem)]")}>
+                {totals}
+              </div>
+            </div>
+          </div>
+        }
       />
       <WorldDialog panel={openPanelData} onClosed={handleClosed} />
-      <div>
-        <h1
-          id="journey-title"
-          className="text-3xl font-bold text-fg sm:text-4xl [overflow-wrap:anywhere]"
-        >
-          {text.title}
-        </h1>
-        {sceneActive && (
-          <button
-            type="button"
-            aria-pressed={animationPaused}
-            onClick={() => setAnimationPaused((value) => !value)}
-            className="mt-4 cursor-pointer rounded-2xl border border-line-strong bg-surface-raised min-h-11 min-w-11 px-4 py-2 text-sm font-medium text-fg transition-colors hover:bg-surface-sunken focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-600 active:bg-surface-sunken aria-pressed:border-journey-current disabled:cursor-not-allowed disabled:opacity-50"
-          >
-            {text.pauseAnimation}
-          </button>
-        )}
-      </div>
-
-      <div className="mt-8 rounded-2xl border border-line bg-surface-raised p-6">
-        <dl className="grid gap-4 sm:grid-cols-2">
-          <div className="min-w-0">
-            <dt className="text-sm font-medium text-fg-muted">{text.from}</dt>
-            <dd
-              lang={langAttr(destination.fromLang, locale)}
-              className="mt-1 text-lg font-semibold text-fg [overflow-wrap:anywhere]"
-            >
-              {destination.from}
-            </dd>
+      {!sceneActive && (
+        <div className="rounded-2xl border border-line bg-surface-raised p-6">
+          {title}
+          <div className="mt-4 grid gap-4 sm:grid-cols-2">
+            {fromTo}
+            {totals}
           </div>
-          <div className="min-w-0">
-            <dt className="text-sm font-medium text-fg-muted">{text.to}</dt>
-            <dd
-              lang={langAttr(destination.toLang, locale)}
-              className="mt-1 text-lg font-semibold text-journey-current [overflow-wrap:anywhere]"
-            >
-              {destination.to}
-            </dd>
-          </div>
-          <div className="min-w-0">
-            <dt className="text-sm font-medium text-fg-muted">
-              {text.totalXp}
-            </dt>
-            <dd className="mt-1 text-lg font-semibold text-fg">
-              {state.totalXp}%
-            </dd>
-          </div>
-          <div className="min-w-0">
-            <dt className="text-sm font-medium text-fg-muted">
-              {text.worldsCompleted}
-            </dt>
-            <dd className="mt-1 text-lg font-semibold text-fg">
-              {state.completedLabel}
-            </dd>
-          </div>
-        </dl>
-        <p className="mt-4 text-base text-fg-muted">{destination.phrase}</p>
-        <p className="mt-6 text-sm font-semibold text-fg">
-          {text.legendHeading}
-        </p>
-        <ul className="mt-2 flex flex-wrap gap-2">
-          {legendStatuses.map((status) => (
-            <li key={status}>
-              <StatusBadge
-                status={status}
-                label={text.status[status]}
-              />
-            </li>
-          ))}
-        </ul>
-      </div>
+        </div>
+      )}
 
       <h2
         className={cn(
@@ -296,6 +334,19 @@ export function Journey() {
       >
         {sceneActive ? text.viewAsList : text.worldsHeading}
       </h2>
+      <div className="mt-4 rounded-2xl border border-line bg-surface-raised p-6">
+        <p className="text-base text-fg-muted">{destination.phrase}</p>
+        <p className="mt-4 text-sm font-semibold text-fg">
+          {text.legendHeading}
+        </p>
+        <ul className="mt-2 flex flex-wrap gap-2">
+          {legendStatuses.map((status) => (
+            <li key={status}>
+              <StatusBadge status={status} label={text.status[status]} />
+            </li>
+          ))}
+        </ul>
+      </div>
       <div className="relative mt-8 bg-surface">
         <div
           ref={trackRef}

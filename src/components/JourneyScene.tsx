@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { cn } from "../lib/cn";
 import type { JourneyState } from "../lib/journey-state";
 import type {
@@ -18,8 +18,9 @@ import {
  * centered. three is fetched with import() on demand, so the main chunk
  * carries only this shell. If the gate fails, reduced motion is on, the chunk
  * does not load or the WebGL context is lost, the stage is not rendered at
- * all and the HTML map stays as the view. Nothing overlaps the stage, so it
- * carries no text and needs no contrast treatment.
+ * all and the HTML map stays as the view. The canvas host is aria-hidden; the
+ * HUD (ADR 0007 addendum T-074) sits in a sibling layer in the stage corners,
+ * on translucent panels with measured contrast, and never covers the center.
  *
  * The camera follows `activeIndex` (the stage being read or focused).
  */
@@ -32,6 +33,8 @@ type JourneySceneProps = {
   onActiveChange: (active: boolean) => void;
   /** User choice to hold the render loop. */
   paused: boolean;
+  /** Minimal HUD laid over the stage corners; rendered only while the stage is. */
+  hud: ReactNode;
 };
 
 export function JourneyScene({
@@ -40,6 +43,7 @@ export function JourneyScene({
   onPickStage,
   onActiveChange,
   paused,
+  hud,
 }: JourneySceneProps) {
   const hostRef = useRef<HTMLDivElement>(null);
   const [active, setActive] = useState(false);
@@ -183,13 +187,16 @@ export function JourneyScene({
 
   return (
     <div
-      ref={hostRef}
-      aria-hidden="true"
       className={cn(
         active &&
           "relative -mt-20 ml-[calc(50%-50vw)] h-[calc(100dvh-var(--spacing-header))] w-screen overflow-hidden bg-journey-space print:hidden",
         !active && "hidden",
       )}
-    />
+    >
+      <div ref={hostRef} aria-hidden="true" className="absolute inset-0" />
+      {active && (
+        <div className="pointer-events-none absolute inset-0">{hud}</div>
+      )}
+    </div>
   );
 }
