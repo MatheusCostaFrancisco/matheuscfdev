@@ -26,14 +26,9 @@ import {
 } from "three";
 import type { JourneyStatus } from "../journey-state";
 import { BLOOM_LAYER } from "./bloom";
+import { nodePositions, pathSpacing } from "./layout";
 import type { SceneLayer, ScenePalette, SceneStages } from "./types";
 
-// Layout: nodes follow a gentle S-curve down the view, at a fixed depth. The
-// spacing comes from the node count, so any number of worlds fits.
-const DEPTH = -120;
-const HALF_HEIGHT = 52;
-const CURVE_AMPLITUDE = 16;
-const CURVE_TURNS = 1.25; // sine periods over the whole path
 const MAX_RADIUS = 4;
 const RADIUS_RATIO = 0.3; // of the spacing between nodes
 const BOSS_SCALE = 1.25;
@@ -174,19 +169,6 @@ export type PlanetsLayer = SceneLayer & {
   setFocus(index: number | null): void;
 };
 
-/** Position of every stage, in order; the camera rig flies between them. */
-export function nodePositions(count: number): Vector3[] {
-  const last = Math.max(count - 1, 1);
-  return Array.from({ length: count }, (_, index) => {
-    const t = index / last;
-    return new Vector3(
-      Math.sin(t * Math.PI * 2 * CURVE_TURNS) * CURVE_AMPLITUDE,
-      HALF_HEIGHT - t * HALF_HEIGHT * 2,
-      DEPTH,
-    );
-  });
-}
-
 /**
  * One planet per world plus the final boss as a star at the end, linked by a
  * light trail. Count and order come from `stages`, whose statuses were
@@ -195,11 +177,13 @@ export function nodePositions(count: number): Vector3[] {
  * orbiting particles and the trail lit (with a light flow) up to it. locked:
  * dark, desaturated, lock marker and fog sprite, trail off. The final boss is
  * a star with rays and a flat corona, dim and grey while locked.
- * Owns every geometry, material and texture it creates.
+ * Owns every geometry, material and texture it creates. `portrait` picks the
+ * narrow, vertical path layout; a change of orientation rebuilds the layer.
  */
 export function createPlanets(
   palette: ScenePalette,
   stages: SceneStages,
+  portrait: boolean,
 ): PlanetsLayer {
   const group = new Group();
   const stageList: Stage[] = [
@@ -209,8 +193,8 @@ export function createPlanets(
     })),
     { status: stages.finalBoss.status, isBoss: true },
   ];
-  const positions = nodePositions(stageList.length);
-  const spacing = (HALF_HEIGHT * 2) / Math.max(stageList.length - 1, 1);
+  const positions = nodePositions(stageList.length, portrait);
+  const spacing = pathSpacing(stageList.length);
   const radius = Math.min(MAX_RADIUS, spacing * RADIUS_RATIO);
 
   const lockedTone = palette.locked.clone().multiplyScalar(0.55);

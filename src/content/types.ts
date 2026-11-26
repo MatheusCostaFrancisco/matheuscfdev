@@ -106,6 +106,8 @@ export interface UiStrings {
     readonly openPanelAction: string
     readonly previousWorld: (stageName: string) => string
     readonly nextWorld: (stageName: string) => string
+    readonly previousWorldNone: string
+    readonly nextWorldNone: string
     readonly pauseAnimation: string
     readonly closePanel: string
   }

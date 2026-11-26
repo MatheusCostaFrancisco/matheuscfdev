@@ -74,6 +74,8 @@ function NavButton({ direction, label, disabled, onClick }: NavButtonProps) {
   );
 }
 const LABEL_EDGE = 8;
+/** Minimum gap between two visible labels. */
+const LABEL_GAP = 4;
 /** Matches the mt-7 (1.75rem) that drops the label below its planet. */
 const LABEL_OFFSET = 28;
 
@@ -201,17 +203,18 @@ export function JourneyScene({
 
   const labelRefs = useRef<(HTMLButtonElement | null)[]>([]);
   const layerRef = useRef<HTMLDivElement>(null);
-  // A label hidden by the tracker cannot take focus: arrow navigation parks
-  // the target index here and the tracker focuses it once it is visible.
-  const pendingFocusRef = useRef<number | null>(null);
   const dragRef = useRef<{ id: number; x: number; y: number } | null>(null);
   const lastIndex = labels.length - 1;
+  const previousTitle = labels[activeIndex - 1]?.title;
+  const nextTitle = labels[activeIndex + 1]?.title;
 
   // Label buttons follow their planets: the scene loop hands over the
   // projected positions and they go straight to style.transform, with no
-  // React state per frame. A label is clamped to the stage and hidden while
-  // it would sit under a HUD panel; the stage cards stay the keyboard route
-  // for planets that are off camera or covered.
+  // React state per frame. A label is clamped to the stage. It is hidden from
+  // view and pointer (opacity 0, no pointer events) while its planet is off
+  // stage, while it sits under a HUD panel, or while it would overlap a label
+  // of a stage closer to the active one; the focused label is always shown. Hidden labels stay in the tab order
+  // and keep arrow navigation: focusing one flies the camera to its planet.
   useEffect(() => {
     if (!active) return;
     handleRef.current?.setLabelTracker((points) => {
@@ -222,35 +225,56 @@ export function JourneyScene({
         layer.querySelectorAll("[data-hud-panel]"),
         (panel) => panel.getBoundingClientRect(),
       );
-      points.forEach((point, index) => {
+      const placed: { left: number; top: number; right: number; bottom: number }[] = [];
+      const focused = document.activeElement;
+      const isFocused = (index: number) =>
+        labelRefs.current[index] === focused;
+      // The focused label goes first and is always shown, so its focus ring
+      // is never hidden; the others make way for it.
+      const order = points
+        .map((_, index) => index)
+        .sort(
+          (a, b) =>
+            Number(isFocused(b)) - Number(isFocused(a)) ||
+            Math.abs(a - indexRef.current) - Math.abs(b - indexRef.current),
+        );
+      for (const index of order) {
+        const point = points[index];
         const button = labelRefs.current[index];
-        if (button === null || button === undefined) return;
-        const halfWidth = button.offsetWidth / 2;
+        if (point === undefined || button === null || button === undefined)
+          continue;
+        const width = button.offsetWidth;
+        const height = button.offsetHeight;
+        const halfWidth = width / 2;
         const x = Math.min(
           Math.max(point.x, halfWidth + LABEL_EDGE),
           bounds.width - halfWidth - LABEL_EDGE,
         );
         const y = Math.min(
           Math.max(point.y, LABEL_EDGE),
-          bounds.height - LABEL_OFFSET - button.offsetHeight - LABEL_EDGE,
+          bounds.height - LABEL_OFFSET - height - LABEL_EDGE,
         );
         button.style.transform = `translate3d(${x.toFixed(1)}px, ${y.toFixed(1)}px, 0)`;
-        const left = bounds.left + x - halfWidth;
-        const top = bounds.top + y + LABEL_OFFSET;
-        const covered = panels.some(
-          (panel) =>
-            left < panel.right &&
-            left + button.offsetWidth > panel.left &&
-            top < panel.bottom &&
-            top + button.offsetHeight > panel.top,
-        );
-        const shown = point.visible && !covered;
-        button.style.visibility = shown ? "visible" : "hidden";
-        if (shown && pendingFocusRef.current === index) {
-          pendingFocusRef.current = null;
-          button.focus({ preventScroll: true });
-        }
-      });
+        const rect = {
+          left: bounds.left + x - halfWidth,
+          top: bounds.top + y + LABEL_OFFSET,
+          right: bounds.left + x + halfWidth,
+          bottom: bounds.top + y + LABEL_OFFSET + height,
+        };
+        const hits = (other: typeof rect, gap: number) =>
+          rect.left < other.right + gap &&
+          rect.right > other.left - gap &&
+          rect.top < other.bottom + gap &&
+          rect.bottom > other.top - gap;
+        const shown =
+          isFocused(index) ||
+          (point.visible &&
+            !panels.some((panel) => hits(panel, 0)) &&
+            !placed.some((other) => hits(other, LABEL_GAP)));
+        if (shown) placed.push(rect);
+        button.style.opacity = shown ? "1" : "0";
+        button.style.pointerEvents = shown ? "auto" : "none";
+      }
     });
     return () => handleRef.current?.setLabelTracker(null);
   }, [active, stagesKey]);
@@ -298,13 +322,7 @@ export function JourneyScene({
     event.preventDefault();
     const next = index + delta;
     if (next < 0 || next > lastIndex) return;
-    const target = labelRefs.current[next];
-    if (target !== null && target !== undefined && target.style.visibility === "visible") {
-      target.focus({ preventScroll: true });
-    } else {
-      pendingFocusRef.current = next;
-      onNavigate(next);
-    }
+    labelRefs.current[next]?.focus();
   };
 
   const onStagePointerDown = (event: PointerEvent<HTMLDivElement>) => {
@@ -340,7 +358,7 @@ export function JourneyScene({
       onPointerCancel={onStagePointerCancel}
       className={cn(
         active &&
-          "relative touch-pan-y -mt-20 ml-[calc(50%-50vw)] h-[calc(100dvh-var(--spacing-header))] w-screen overflow-hidden bg-journey-space print:hidden",
+          "relative touch-pan-y -mt-20 ml-[calc(50%-50vw)] h-[calc(100dvh-var(--spacing-header))] max-[30rem]:min-h-stage-min w-screen overflow-hidden bg-journey-space print:hidden",
         !active && "hidden",
       )}
     >
@@ -353,13 +371,17 @@ export function JourneyScene({
           {hud}
           <NavButton
             direction="previous"
-            label={text.previousWorld(labels[activeIndex - 1]?.title ?? "")}
+            label={previousTitle === undefined
+                ? text.previousWorldNone
+                : text.previousWorld(previousTitle)}
             disabled={activeIndex <= 0}
             onClick={() => step(activeIndex, -1)}
           />
           <NavButton
             direction="next"
-            label={text.nextWorld(labels[activeIndex + 1]?.title ?? "")}
+            label={nextTitle === undefined
+                ? text.nextWorldNone
+                : text.nextWorld(nextTitle)}
             disabled={activeIndex >= lastIndex}
             onClick={() => step(activeIndex, 1)}
           />
@@ -376,9 +398,9 @@ export function JourneyScene({
               onClick={(event) => onOpenStage(label.id, event.currentTarget)}
               onPointerEnter={() => handleRef.current?.hoverStage(index)}
               onPointerLeave={() => handleRef.current?.hoverStage(null)}
-              style={{ visibility: "hidden" }}
+              style={{ opacity: 0, pointerEvents: "none" }}
               className={cn(
-                "pointer-events-auto absolute left-0 top-0 mt-7 min-h-11 w-max max-w-40 -translate-x-1/2 cursor-pointer rounded-2xl border bg-surface-raised/90 px-3 py-1.5 text-left text-xs leading-tight text-fg transition-colors hover:bg-surface-sunken focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-600 active:bg-surface-sunken sm:max-w-52 sm:text-sm",
+                "pointer-events-auto absolute left-0 top-0 mt-7 min-h-11 w-max max-w-40 -translate-x-1/2 cursor-pointer rounded-2xl border bg-surface-raised/90 px-3 py-1.5 text-left text-xs leading-tight text-fg transition-colors hover:bg-surface-sunken focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:pointer-events-auto! focus-visible:opacity-100! focus-visible:outline-accent-600 active:bg-surface-sunken sm:max-w-52 sm:text-sm",
                 label.status === "current"
                   ? "border-journey-current"
                   : label.status === "locked"

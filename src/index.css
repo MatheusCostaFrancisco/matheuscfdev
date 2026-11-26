@@ -83,6 +83,8 @@
 @theme {
   /* Sticky header height: the single source for the header and section scroll offset */
   --spacing-header: 4.5rem;
+  /* Journey stage floor on narrow, short viewports (320px at 400% zoom) */
+  --spacing-stage-min: 32rem;
 
   /* Typography: one family */
   --font-*: initial;

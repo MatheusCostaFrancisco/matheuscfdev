@@ -11,7 +11,9 @@ import {
 } from "three";
 import { createBloom } from "./bloom";
 import { createCameraRig } from "./camera";
-import { createPlanets, nodePositions } from "./planets";
+import { CAMERA_FOV, framing, nodePositions } from "./layout";
+import { createPlanets } from "./planets";
+import type { PlanetsLayer } from "./planets";
 import { createStarfield } from "./starfield";
 import type {
   JourneySceneHandle,
@@ -74,23 +76,55 @@ export function mountJourneyScene(
 
   const scene = new Scene();
   scene.fog = new FogExp2(palette.space, FOG_DENSITY);
-  const camera = new PerspectiveCamera(60, 1, 0.1, 2000);
+  const camera = new PerspectiveCamera(CAMERA_FOV, 1, 0.1, 2000);
 
-  const planets = createPlanets(palette, stages);
-  const layers: SceneLayer[] = [createStarfield(palette), planets];
+  const stageCount = stages.worlds.length + 1;
+  // The host is hidden until the stage shows, so its size can still be 0 here.
+  const isPortrait = () =>
+    host.clientWidth > 0 && host.clientHeight > 0
+      ? host.clientWidth < host.clientHeight
+      : window.innerWidth < window.innerHeight;
+  let portrait = isPortrait();
+  let positions = nodePositions(stageCount, portrait);
+  let planets: PlanetsLayer = createPlanets(palette, stages, portrait);
+  const starfield = createStarfield(palette);
+  const layers: SceneLayer[] = [starfield, planets];
   for (const layer of layers) scene.add(layer.object);
   const rig = createCameraRig(
     camera,
-    nodePositions(stages.worlds.length + 1),
+    positions,
+    framing(stageCount, portrait),
     initialIndex,
     landing,
   );
+
+  let hovered: number | null = null;
+  let focused: number | null = null;
+
+  // Orientation flip (resize, device rotation): the path and the camera
+  // framing are rebuilt for the new aspect, keeping the current stage.
+  const relayout = () => {
+    const next = isPortrait();
+    if (next === portrait) return;
+    portrait = next;
+    const old = planets;
+    scene.remove(old.object);
+    old.dispose();
+    positions = nodePositions(stageCount, portrait);
+    planets = createPlanets(palette, stages, portrait);
+    planets.setHover(hovered);
+    planets.setFocus(focused);
+    layers[1] = planets;
+    scene.add(planets.object);
+    rig.setLayout(positions, framing(stageCount, portrait));
+  };
 
   const bloom = createBloom(renderer, scene, camera, palette.space);
 
   const resize = () => {
     const width = Math.max(host.clientWidth, 1);
     const height = Math.max(host.clientHeight, 1);
+    relayout();
     const pixelRatio = Math.min(window.devicePixelRatio, MAX_PIXEL_RATIO);
     renderer.setPixelRatio(pixelRatio);
     renderer.setSize(width, height, false);
@@ -104,9 +138,8 @@ export function mountJourneyScene(
     }
   };
 
-  const positions = nodePositions(stages.worlds.length + 1);
   const projected = new Vector3();
-  const points: LabelPoint[] = positions.map(() => ({
+  const points: LabelPoint[] = Array.from({ length: stageCount }, () => ({
     x: 0,
     y: 0,
     visible: false,
@@ -229,13 +262,23 @@ export function mountJourneyScene(
   play();
 
   return {
-    focusStage: rig.focusStage,
+    focusStage(index) {
+      rig.focusStage(index);
+      // Paused, the loop does not run: place the labels once for the new focus.
+      if (userPaused && shown) projectLabels();
+    },
     setLabelTracker(track) {
       tracker = track;
       projectLabels();
     },
-    hoverStage: planets.setHover,
-    highlightFocused: planets.setFocus,
+    hoverStage(index) {
+      hovered = index;
+      planets.setHover(index);
+    },
+    highlightFocused(index) {
+      focused = index;
+      planets.setFocus(index);
+    },
     setPaused,
     dispose,
   };

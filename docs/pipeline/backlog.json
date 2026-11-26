@@ -1783,8 +1783,8 @@
         "T-075",
         "T-076"
       ],
-      "status": "todo",
-      "attempts": 0,
+      "status": "done",
+      "attempts": 1,
       "commit": null,
       "notes": [
         "2026-11-26 rodada 12 (PO): spec docs/specs/2026-11-25-jornada-ai-engineer.md, \"Revisão 1 — 3D protagonista\", item 7: step (d). The swipe is horizontal (see T-076 note) even though the path is vertical, so the page keeps its vertical scroll."

@@ -212,6 +212,8 @@ export const createPtBR = (years: ExperienceYears): SiteContent => ({
       openPanelAction: 'Abrir painel',
       previousWorld: (stageName) => `Mundo anterior: ${stageName}`,
       nextWorld: (stageName) => `Próximo mundo: ${stageName}`,
+      previousWorldNone: 'Mundo anterior',
+      nextWorldNone: 'Próximo mundo',
       pauseAnimation: 'Pausar animação',
       closePanel: 'Fechar',
     },

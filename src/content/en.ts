@@ -212,6 +212,8 @@ export const createEn = (years: ExperienceYears): SiteContent => ({
       openPanelAction: 'Open panel',
       previousWorld: (stageName) => `Previous world: ${stageName}`,
       nextWorld: (stageName) => `Next world: ${stageName}`,
+      previousWorldNone: 'Previous world',
+      nextWorldNone: 'Next world',
       pauseAnimation: 'Pause animation',
       closePanel: 'Close',
     },

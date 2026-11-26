@@ -1,7 +1,7 @@
 import { MathUtils, Vector3 } from "three";
 import type { PerspectiveCamera } from "three";
+import type { Framing } from "./layout";
 
-const FOCUS_DISTANCE = 60; // from the planet plane, along z
 const FOLLOW_RATE = 3.5; // 1/s; higher is snappier
 const PARALLAX_X = 5; // world units at full pointer deflection
 const PARALLAX_Y = 3;
@@ -19,6 +19,8 @@ function orientationNeedsPermission(): boolean {
 
 export type CameraRig = {
   focusStage(index: number): void;
+  /** Swaps the stop positions and framing (orientation change), keeping the stage. */
+  setLayout(stops: readonly Vector3[], framing: Framing): void;
   /** Ends the landing flight at once, with the camera on its final position. */
   finishLanding(): void;
   update(delta: number): void;
@@ -35,7 +37,8 @@ export type CameraRig = {
  */
 export function createCameraRig(
   camera: PerspectiveCamera,
-  stops: readonly Vector3[],
+  initialStops: readonly Vector3[],
+  initialFraming: Framing,
   initialIndex: number,
   landing = false,
 ): CameraRig {
@@ -45,12 +48,18 @@ export function createCameraRig(
   const lookTarget = new Vector3();
   const pointer = { x: 0, y: 0 };
 
+  let stops = initialStops;
+  let frame = initialFraming;
+  let stopIndex = initialIndex;
+
   const setStop = (index: number) => {
     const last = stops.length - 1;
-    const stop = stops[MathUtils.clamp(index, 0, Math.max(last, 0))];
+    stopIndex = MathUtils.clamp(index, 0, Math.max(last, 0));
+    const stop = stops[stopIndex];
     if (stop === undefined) return;
-    lookTarget.copy(stop);
-    target.set(stop.x, stop.y, stop.z + FOCUS_DISTANCE);
+    const shift = stopIndex < last ? frame.shift : 0;
+    lookTarget.set(stop.x, stop.y + shift, stop.z);
+    target.set(stop.x, stop.y + shift, stop.z + frame.distance);
   };
 
   let landingTime = landing ? 0 : LANDING_SECONDS;
@@ -90,6 +99,11 @@ export function createCameraRig(
 
   return {
     focusStage: setStop,
+    setLayout(nextStops, nextFraming) {
+      stops = nextStops;
+      frame = nextFraming;
+      setStop(stopIndex);
+    },
     finishLanding() {
       if (landingTime >= LANDING_SECONDS) return;
       landingTime = LANDING_SECONDS;
