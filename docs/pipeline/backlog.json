@@ -1247,7 +1247,7 @@
       ],
       "status": "done",
       "attempts": 1,
-      "commit": null,
+      "commit": "4e5f9f1",
       "notes": [
         "2026-11-25 rodada 9 (PO): cv.md hash changed (f85c18b9 -> 7251aa7a) by commit 6394018, which only adds this bullet to ElevaTech under \"Products I built\" in cv.md and cv.pt-BR.md. Done tasks T-016/T-017/T-020 are not reopened (backlog rule); this task carries the change. Stakeholder decision 2 in REPORT (P1, content)."
       ]
@@ -1271,7 +1271,7 @@
       ],
       "status": "done",
       "attempts": 1,
-      "commit": null,
+      "commit": "f7d0205",
       "notes": [
         "2026-11-25 rodada 9 (PO): Stakeholder decision 1 in REPORT, spec docs/specs/2026-11-25-jornada-ai-engineer.md step (a), Goal 1. The old src/content/roadmap.ts stays until T-061 so every commit keeps the build green.",
         "2026-11-25 rodada 9 (PO): PO decision: anchors are localized (world-N / mundo-N), matching the spec edge case \"/pt/jornada/#mundo-3\"."
@@ -1295,7 +1295,7 @@
       ],
       "status": "done",
       "attempts": 1,
-      "commit": null,
+      "commit": "08f1b25",
       "notes": [
         "2026-11-25 rodada 9 (PO): Spec docs/specs/2026-11-25-jornada-ai-engineer.md step (a) and Critérios de pronto (\"Vitest, escopo mínimo: só essa função\"). New dependency justified by the spec and by the global rule of testing what is painful to check by hand (state derivation with edge cases).",
         "2026-11-25 rodada 9 (PO): PO decision: the boss checkbox counts toward XP because estudos-2027.md lists it as a checkbox of the world; a world with only the boss marked is completed with XP below 100. Listed for stakeholder review."
@@ -1319,7 +1319,7 @@
       ],
       "status": "done",
       "attempts": 1,
-      "commit": null,
+      "commit": "cb32e7a",
       "notes": [
         "2026-11-25 rodada 9 (PO): Spec docs/specs/2026-11-25-jornada-ai-engineer.md table \"Intensidade: máxima nesta página\" and Goal 7 (AA contrast on the HUD). Needed before the page (T-060) because ADR 0001 rules out neon glow and a dark theme site-wide."
       ]
@@ -1344,7 +1344,7 @@
       ],
       "status": "done",
       "attempts": 1,
-      "commit": null,
+      "commit": "31c8232",
       "notes": [
         "2026-11-25 rodada 9 (PO): Spec docs/specs/2026-11-25-jornada-ai-engineer.md step (c), Goals 6 and 7. Built before the route rename (T-062) so that, if the round stops halfway, production already drops the dated 2027 roadmap that the stakeholder no longer wants published. This list is also the 2D fallback of the 3D scene."
       ]
@@ -1367,7 +1367,7 @@
       ],
       "status": "done",
       "attempts": 1,
-      "commit": null,
+      "commit": "acc4e67",
       "notes": [
         "2026-11-25 rodada 9 (PO): Spec docs/specs/2026-11-25-jornada-ai-engineer.md Goal 9. Supersedes the open T-046 review item (teaser showing the stage theme), since stages no longer exist."
       ]
@@ -1392,7 +1392,7 @@
       ],
       "status": "done",
       "attempts": 1,
-      "commit": null,
+      "commit": "b195b2c",
       "notes": [
         "2026-11-25 rodada 9 (PO): Spec docs/specs/2026-11-25-jornada-ai-engineer.md step (b), Goals 2 and 9. The production 301 check (Critérios de pronto) is done by the deployer after the push."
       ]
@@ -1415,7 +1415,7 @@
       ],
       "status": "done",
       "attempts": 1,
-      "commit": null,
+      "commit": "63e1ee0",
       "notes": [
         "2026-11-25 rodada 9 (PO): Spec docs/specs/2026-11-25-jornada-ai-engineer.md step (d), Goals 4, 7 and 8. New dependency (three) required by the spec."
       ]
@@ -1437,7 +1437,7 @@
       ],
       "status": "done",
       "attempts": 1,
-      "commit": null,
+      "commit": "d29955d",
       "notes": [
         "2026-11-25 rodada 9 (PO): Spec docs/specs/2026-11-25-jornada-ai-engineer.md step (d), Goal 4."
       ]
@@ -1459,7 +1459,7 @@
       ],
       "status": "done",
       "attempts": 1,
-      "commit": null,
+      "commit": "9d1fbf7",
       "notes": [
         "2026-11-25 rodada 9 (PO): Spec docs/specs/2026-11-25-jornada-ai-engineer.md Goals 4 and 7, edge case \"Link com hash vindo de fora\"."
       ]
