@@ -280,7 +280,7 @@ export function Journey() {
       data-journey-paused={sceneActive && animationPaused ? "" : undefined}
       id={item.id}
       aria-labelledby="journey-title"
-      className="section-offset py-10"
+      className="journey-section section-offset py-10"
     >
       <JourneyScene
         state={state}

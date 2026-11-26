@@ -5,12 +5,9 @@ import {
   CanvasTexture,
   Color,
   Group,
-  NormalBlending,
   Points,
   SRGBColorSpace,
   ShaderMaterial,
-  Sprite,
-  SpriteMaterial,
   Vector2,
 } from "three";
 import type { SceneLayer, ScenePalette } from "./types";
@@ -56,22 +53,6 @@ void main() {
   gl_FragColor = vec4(vColor * alpha, 1.0);
 }
 `;
-
-// Nebula clouds: peak opacity at or below the 0.22 alpha of the CSS nebula
-// (ADR 0007), so HUD text over the scene keeps the AA contrast computed there.
-type NebulaCloud = {
-  x: number;
-  y: number;
-  z: number;
-  size: number;
-  opacity: number;
-};
-
-const NEBULAE: readonly NebulaCloud[] = [
-  { x: -520, y: 320, z: -1300, size: 1500, opacity: 0.22 },
-  { x: 700, y: -380, z: -1100, size: 1300, opacity: 0.14 },
-  { x: 60, y: -40, z: -1500, size: 1900, opacity: 0.08 },
-];
 
 const drawingSize = new Vector2();
 
@@ -175,7 +156,7 @@ function createStarLayer(
 }
 
 /**
- * Starfield with depth plus nebula clouds: a fixed layer of additive white and
+ * Starfield with depth: a fixed layer of additive white and
  * blue-white star sprites, and a falling layer that drifts slowly into the
  * scene and respawns near the camera once a star passes the far plane. Sprites
  * are drawn procedurally; depth fades the far ones. Owns its geometry, materials and textures.
@@ -191,33 +172,6 @@ export function createStarfield(palette: ScenePalette): SceneLayer {
   const fixed = createStarLayer(palette, FIXED_COUNT, starTexture, 0);
   const falling = createStarLayer(palette, FALLING_COUNT, starTexture, FADE_IN);
   group.add(fixed.points, falling.points);
-
-  const nebulaTexture = radialTexture([
-    [0, "rgba(255,255,255,1)"],
-    [0.45, "rgba(255,255,255,0.45)"],
-    [1, "rgba(255,255,255,0)"],
-  ]);
-  const nebulaMaterials = NEBULAE.map(
-    (cloud) =>
-      new SpriteMaterial({
-        map: nebulaTexture,
-        color: palette.nebula,
-        opacity: cloud.opacity,
-        transparent: true,
-        depthWrite: false,
-        blending: NormalBlending,
-        fog: false,
-      }),
-  );
-  NEBULAE.forEach((cloud, index) => {
-    const material = nebulaMaterials[index];
-    if (material === undefined) return;
-    const sprite = new Sprite(material);
-    sprite.position.set(cloud.x, cloud.y, cloud.z);
-    sprite.scale.set(cloud.size, cloud.size, 1);
-    sprite.renderOrder = -1;
-    group.add(sprite);
-  });
 
   return {
     object: group,
@@ -243,8 +197,6 @@ export function createStarfield(palette: ScenePalette): SceneLayer {
       fixed.dispose();
       falling.dispose();
       starTexture.dispose();
-      for (const material of nebulaMaterials) material.dispose();
-      nebulaTexture.dispose();
     },
   };
 }

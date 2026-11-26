@@ -12,6 +12,7 @@ import {
 import { createBloom } from "./bloom";
 import { createCameraRig } from "./camera";
 import { CAMERA_FOV, framing, nodePositions } from "./layout";
+import { createNebula } from "./nebula";
 import { createPlanets } from "./planets";
 import type { PlanetsLayer } from "./planets";
 import { createStarfield } from "./starfield";
@@ -39,7 +40,6 @@ const PALETTE_TOKENS = {
   current: "--journey-current",
   completed: "--journey-completed",
   locked: "--journey-locked",
-  nebula: "--color-accent-500",
   nebulaIndigo: "--journey-nebula-indigo",
   nebulaViolet: "--journey-nebula-violet",
   nebulaBlue: "--journey-nebula-blue",
@@ -66,7 +66,6 @@ function readPalette(host: HTMLElement): ScenePalette | null {
   const current = read("current");
   const completed = read("completed");
   const locked = read("locked");
-  const nebula = read("nebula");
   const nebulaIndigo = read("nebulaIndigo");
   const nebulaViolet = read("nebulaViolet");
   const nebulaBlue = read("nebulaBlue");
@@ -85,7 +84,6 @@ function readPalette(host: HTMLElement): ScenePalette | null {
     !current ||
     !completed ||
     !locked ||
-    !nebula ||
     !nebulaIndigo ||
     !nebulaViolet ||
     !nebulaBlue ||
@@ -106,7 +104,6 @@ function readPalette(host: HTMLElement): ScenePalette | null {
     current,
     completed,
     locked,
-    nebula,
     nebulaIndigo,
     nebulaViolet,
     nebulaBlue,
@@ -162,7 +159,8 @@ export function mountJourneyScene(
   let positions = nodePositions(stageCount, portrait);
   let planets: PlanetsLayer = createPlanets(palette, stages, portrait);
   const starfield = createStarfield(palette);
-  const layers: SceneLayer[] = [starfield, planets];
+  const nebula = createNebula(palette);
+  const layers: SceneLayer[] = [nebula, starfield, planets];
   for (const layer of layers) scene.add(layer.object);
   const rig = createCameraRig(
     camera,
@@ -188,7 +186,8 @@ export function mountJourneyScene(
     planets = createPlanets(palette, stages, portrait);
     planets.setHover(hovered);
     planets.setFocus(focused);
-    layers[1] = planets;
+    const slot = layers.indexOf(old);
+    if (slot >= 0) layers[slot] = planets;
     scene.add(planets.object);
     rig.setLayout(positions, framing(stageCount, portrait));
   };
@@ -250,6 +249,7 @@ export function mountJourneyScene(
     last = now;
     for (const layer of layers) layer.update(delta);
     rig.update(delta);
+    nebula.object.position.copy(camera.position);
     projectLabels();
     bloom.render();
     if (!shown) {

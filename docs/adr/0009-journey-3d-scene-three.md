@@ -121,6 +121,8 @@ Na camada de bloom: planetas acesos, casca de atmosfera, anéis, partículas orb
 
 Medida com `yarn build`: `scene-*.js` em **545.75 kB · 141.17 kB gzip** (antes 544.73 kB · 140.92 kB). Fica abaixo de `chunkSizeWarningLimit` (550), então o limite não muda. A medida de 495.11 kB na tabela de orçamento inicial é histórica (antes do bloom).
 
+Adendo T-084 (esfera de nebulosa): a camada `nebula.ts` adiciona uma esfera `BackSide` com `ShaderMaterial` e ruído procedural, sem textura de imagem. `scene-*.js` foi de 548.79 kB (142.37 kB gzip) para 550.46 kB (142.85 kB gzip), acima do limite de 550, então `chunkSizeWarningLimit` subiu para 560. A linha de contraste da tabela (sprites `accent-500` com pico 0.22) foi substituída: a nebulosa da cena agora é a esfera de shader, limitada por `INTENSITY` 0.85. A nebulosa CSS (`--journey-nebula`) só aparece no fallback 2D; com o canvas pronto, o `::before` da seção faz crossfade para opacidade 0 via `:has([data-ready])`, evitando nebulosa dupla. No fallback ela cobre a largura da viewport, e o contraste do texto segue AA (cálculo da ADR 0007).
+
 ## Alternativas consideradas
 
 - **Canvas 2D próprio, sem lib:** zero dependência e chunk mínimo, mas planetas iluminados, anéis, partículas e câmera em perspectiva viram um motor 3D escrito à mão.

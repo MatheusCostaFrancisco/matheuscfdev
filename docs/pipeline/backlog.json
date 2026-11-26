@@ -1898,8 +1898,8 @@
       "notes": [
         "2026-11-26 rodada 13 (PO): Source: REPORT \"Decisões do stakeholder para a próxima rodada\" and spec docs/specs/2026-11-25-jornada-ai-engineer.md \"Revisão 2\". PO decision on the open review item \"a nebulosa CSS soma com a WebGL\": the CSS nebula becomes the 2D fallback only. Depends on T-083 because both edit the layer wiring in scene.ts."
       ],
-      "status": "todo",
-      "attempts": 0,
+      "status": "done",
+      "attempts": 1,
       "commit": null
     },
     {

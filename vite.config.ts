@@ -191,9 +191,10 @@ export default defineConfig(({ command, mode }) => {
       __JOURNEY_PATHS__: JSON.stringify(locales.map((locale) => routes[locale].journey)),
     },
     build: {
-      // The scene chunk (three and its bloom pass, ADR 0009) is 545.75 kB (141.17 kB gzip) and
-      // loads only on the journey page; 550 is the next round value above it (ADR 0009, addendum T-077).
-      chunkSizeWarningLimit: 550,
+      // The scene chunk (three, its bloom pass and the nebula sphere, ADR 0009) is 550.46 kB
+      // (142.85 kB gzip) and loads only on the journey page; 560 is the next round value above it
+      // (ADR 0009, addenda T-077 and T-084).
+      chunkSizeWarningLimit: 560,
       rollupOptions: {
         input: {
           root: "index.html",

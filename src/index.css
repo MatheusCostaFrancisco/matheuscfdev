@@ -412,6 +412,34 @@
   opacity: 1;
 }
 
+/*
+ * CSS nebula fallback (2D list: no WebGL2, Save-Data, low memory, reduced
+ * motion). It sits behind the content and cross-fades out with the same 800ms
+ * ease-out as the canvas fade-in once the canvas is ready, so there is no
+ * double nebula and no dark gap.
+ */
+.journey-section {
+  position: relative;
+  isolation: isolate;
+}
+
+.journey-section::before {
+  content: "";
+  position: absolute;
+  inset-block: 0;
+  left: calc(50% - 50vw);
+  width: 100vw;
+  z-index: -1;
+  background-image: var(--journey-nebula);
+  opacity: 1;
+  transition: opacity 800ms ease-out;
+  pointer-events: none;
+}
+
+.journey-section:has(.journey-scene-canvas[data-ready])::before {
+  opacity: 0;
+}
+
 @utility section-offset {
   scroll-margin-top: calc(var(--spacing-header) + 1px + 1rem);
 }

@@ -21,8 +21,6 @@ export type ScenePalette = {
   completed: Color;
   /** --journey-locked: locked state color (lock icon, unlit trail). */
   locked: Color;
-  /** --color-accent-500 of the journey scale: legacy nebula sprites. */
-  nebula: Color;
   /** --journey-nebula-indigo / -violet / -blue / -magenta: nebula stops. */
   nebulaIndigo: Color;
   nebulaViolet: Color;
