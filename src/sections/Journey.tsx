@@ -1,4 +1,5 @@
 import { useRef, type ReactNode } from "react";
+import { JourneyScene } from "../components/JourneyScene";
 import { journey } from "../content/journey";
 import type { JourneyBoss } from "../content/journey";
 import { cn } from "../lib/cn";
@@ -249,6 +250,7 @@ export function Journey() {
       aria-labelledby="journey-title"
       className="section-offset py-10"
     >
+      <JourneyScene />
       <h1
         id="journey-title"
         className="text-3xl font-bold text-fg sm:text-4xl [overflow-wrap:anywhere]"

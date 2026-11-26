@@ -360,6 +360,23 @@
   }
 }
 
+/*
+ * Journey 3D scene canvas (src/lib/journey-scene/scene.ts, ADR 0009). Starts
+ * transparent over the body's space color and fades in after the first frame,
+ * so the scene never pops in. The scene never runs under reduced motion.
+ */
+.journey-scene-canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  transition: opacity 800ms ease-out;
+}
+
+.journey-scene-canvas[data-ready] {
+  opacity: 1;
+}
+
 @utility section-offset {
   scroll-margin-top: calc(var(--spacing-header) + 1px + 1rem);
 }
