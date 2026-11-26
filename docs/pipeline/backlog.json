@@ -1480,11 +1480,12 @@
       "dependsOn": [
         "T-064"
       ],
-      "status": "todo",
-      "attempts": 0,
+      "status": "review",
+      "attempts": 1,
       "commit": null,
       "notes": [
-        "2026-11-25 rodada 9 (PO): Spec docs/specs/2026-11-25-jornada-ai-engineer.md Goals 5 and 7."
+        "2026-11-25 rodada 9 (PO): Spec docs/specs/2026-11-25-jornada-ai-engineer.md Goals 5 and 7.",
+        "2026-11-26: 2 achado(s) blocker após 2 ciclos de correção"
       ]
     },
     {
