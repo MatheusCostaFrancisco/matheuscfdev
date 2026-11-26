@@ -1293,8 +1293,8 @@
       "dependsOn": [
         "T-057"
       ],
-      "status": "todo",
-      "attempts": 0,
+      "status": "done",
+      "attempts": 1,
       "commit": null,
       "notes": [
         "2026-11-25 rodada 9 (PO): Spec docs/specs/2026-11-25-jornada-ai-engineer.md step (a) and Critérios de pronto (\"Vitest, escopo mínimo: só essa função\"). New dependency justified by the spec and by the global rule of testing what is painful to check by hand (state derivation with edge cases).",
