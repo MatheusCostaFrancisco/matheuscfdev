@@ -198,6 +198,7 @@ export const createPtBR = (years: ExperienceYears): SiteContent => ({
       legendHeading: 'Legenda',
       keyboardHint: 'Use as setas do teclado para se mover entre os mundos e Enter para abrir o painel do mundo.',
       worldsHeading: 'Mundos',
+      viewAsList: 'Ver em lista',
       worldLabel: 'Mundo',
       status: { completed: 'Concluído', current: 'Atual', locked: 'Bloqueado' },
       lockedBy: (previousWorld) => `Bloqueado: derrote o chefão do Mundo ${previousWorld}`,

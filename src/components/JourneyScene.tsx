@@ -1,5 +1,5 @@
-import { useEffect, useRef } from "react";
-import { createPortal } from "react-dom";
+import { useEffect, useRef, useState } from "react";
+import { cn } from "../lib/cn";
 import type { JourneyState } from "../lib/journey-state";
 import type {
   JourneySceneHandle,
@@ -11,20 +11,15 @@ import {
 } from "../lib/journey-scene/gate";
 
 /**
- * Decorative 3D backdrop of the journey page (ADR 0009). The HTML map is
- * always the content; this only adds an aria-hidden canvas behind it when the
- * capability gate passes. three is fetched with import() on demand, so the
- * main chunk carries only this shell. If the gate fails, the chunk does not
- * load or WebGL breaks, nothing is shown and the HTML map stays as the view.
- *
- * A light ::after scrim (35%) in the space color sits over the canvas so the
- * planets stay visible. It does not carry text contrast: every text block on
- * the page sits on a translucent panel sized for the worst case, a white
- * canvas pixel (ADR 0007, addendum 2026-11-26; axe cannot measure contrast
- * over a canvas).
- *
- * Rendered into <body> so no transformed ancestor (scroll reveal) turns the
- * fixed layer into a local one.
+ * Decorative 3D stage of the journey page (ADR 0009, ADR 0007 addendum
+ * 2026-11-26 T-073). The HTML map is always the content; when the capability
+ * gate passes this renders an aria-hidden, full-viewport-width stage (height
+ * 100dvh minus the header) holding the canvas, with the current planet
+ * centered. three is fetched with import() on demand, so the main chunk
+ * carries only this shell. If the gate fails, reduced motion is on, the chunk
+ * does not load or the WebGL context is lost, the stage is not rendered at
+ * all and the HTML map stays as the view. Nothing overlaps the stage, so it
+ * carries no text and needs no contrast treatment.
  *
  * The camera follows `activeIndex` (the stage being read or focused).
  */
@@ -39,12 +34,6 @@ type JourneySceneProps = {
   paused: boolean;
 };
 
-// Pick only when the click lands on the bare page: html, body or a layout
-// surface marked with data-scene-pick (App wrapper, main, the journey section,
-// the world list and its track). Site chrome (header, footer), cards and
-// controls never match, so they cannot open a world the user did not choose.
-const pickableSelector = "html, body, [data-scene-pick]";
-
 export function JourneyScene({
   state,
   activeIndex,
@@ -53,6 +42,7 @@ export function JourneyScene({
   paused,
 }: JourneySceneProps) {
   const hostRef = useRef<HTMLDivElement>(null);
+  const [active, setActive] = useState(false);
   const stagesRef = useRef<SceneStages>(state);
   stagesRef.current = state;
   const indexRef = useRef(activeIndex);
@@ -89,9 +79,11 @@ export function JourneyScene({
             host,
             stagesRef.current,
             indexRef.current,
+            stop,
           );
           handleRef.current = mounted;
           mounted.setPaused(pausedRef.current);
+          setActive(true);
           activeRef.current(true);
         })
         .catch(() => {
@@ -99,13 +91,14 @@ export function JourneyScene({
         });
     };
 
-    const stop = () => {
+    function stop() {
       generation += 1;
       mounted?.dispose();
       mounted = null;
       handleRef.current = null;
+      setActive(false);
       activeRef.current(false);
-    };
+    }
 
     // Back/forward cache: pagehide tears the scene down, pageshow restores it.
     const onPageShow = (event: PageTransitionEvent) => {
@@ -128,15 +121,12 @@ export function JourneyScene({
     };
   }, [stagesKey]);
 
-  // The canvas sits behind the page and takes no pointer events, so a pointer
-  // event that lands outside content and controls (page background, layout
-  // gutters) is tested against the planets. Keyboard users open the same
-  // panel from the cards.
+  // Pointer events on the stage are tested against the planets. Keyboard
+  // users open the same panel from the cards.
   useEffect(() => {
+    const host = hostRef.current;
+    if (host === null) return;
     const pickAt = (event: MouseEvent): number | null => {
-      const target = event.target;
-      if (!(target instanceof Element)) return null;
-      if (!target.matches(pickableSelector)) return null;
       if (window.getSelection()?.isCollapsed === false) return null;
       return handleRef.current?.pickStage(event.clientX, event.clientY) ?? null;
     };
@@ -146,19 +136,18 @@ export function JourneyScene({
       if (index !== null) pickRef.current(index);
     };
     const setHover = (index: number | null) => {
-      document.body.style.cursor = index !== null ? "pointer" : "";
+      host.style.cursor = index !== null ? "pointer" : "";
       handleRef.current?.hoverStage(index);
     };
     const onMove = (event: PointerEvent) => setHover(pickAt(event));
     const onLeave = () => setHover(null);
-    window.addEventListener("click", onClick);
-    window.addEventListener("pointermove", onMove);
-    document.documentElement.addEventListener("pointerleave", onLeave);
+    host.addEventListener("click", onClick);
+    host.addEventListener("pointermove", onMove);
+    host.addEventListener("pointerleave", onLeave);
     return () => {
-      window.removeEventListener("click", onClick);
-      window.removeEventListener("pointermove", onMove);
-      document.documentElement.removeEventListener("pointerleave", onLeave);
-      document.body.style.cursor = "";
+      host.removeEventListener("click", onClick);
+      host.removeEventListener("pointermove", onMove);
+      host.removeEventListener("pointerleave", onLeave);
     };
   }, []);
 
@@ -192,12 +181,15 @@ export function JourneyScene({
     handleRef.current?.focusStage(activeIndex);
   }, [activeIndex]);
 
-  return createPortal(
+  return (
     <div
       ref={hostRef}
       aria-hidden="true"
-      className="pointer-events-none fixed inset-0 -z-10 print:hidden after:absolute after:inset-0 after:bg-(--journey-space) after:opacity-35 after:content-['']"
-    />,
-    document.body,
+      className={cn(
+        active &&
+          "relative -mt-20 ml-[calc(50%-50vw)] h-[calc(100dvh-var(--spacing-header))] w-screen overflow-hidden bg-journey-space print:hidden",
+        !active && "hidden",
+      )}
+    />
   );
 }

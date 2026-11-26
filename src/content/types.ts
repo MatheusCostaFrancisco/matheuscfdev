@@ -92,6 +92,7 @@ export interface UiStrings {
     readonly legendHeading: string
     readonly keyboardHint: string
     readonly worldsHeading: string
+    readonly viewAsList: string
     readonly worldLabel: string
     readonly status: Record<'completed' | 'current' | 'locked', string>
     readonly lockedBy: (previousWorld: number) => string

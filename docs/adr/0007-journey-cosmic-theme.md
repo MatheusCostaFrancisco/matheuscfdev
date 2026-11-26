@@ -141,3 +141,11 @@ O pior caso global é `fg-muted` a **5.68:1**. Texto sobre o fundo nu não exist
 **Indicador de foco.** O anel global (`accent-600` #2db9a8, 2px, offset 2px) ficava fora do card, sobre o canvas quase nu, e media 1.00:1 no pior pixel. Na cena o anel dos cards é desenhado por dentro (`outline-offset: -4px`), sobre o painel a 80%: pior caso medido na revisão, 5.03:1 contra pixel branco. Os botões já tinham o anel sobre o painel (mínimo 5.03:1).
 
 Quando reabrir (acréscimo): alguém adicionar texto fora de um painel translúcido na jornada, ou o brilho máximo da cena passar de branco (não passa: é o teto do canal).
+
+## Adendo 2026-11-26 (T-073): cena 3D como palco, supersede o adendo do T-071
+
+O adendo do T-071 (scrim de 35%, painéis `bg-surface-raised/80`, anel de foco por dentro do card e o deslocamento `ANCHOR_X`/`ANCHOR_Y` da câmera) está **superado**. Com a cena 3D ativa, a página abre com um palco `aria-hidden` de largura total da viewport (fora do `max-w-5xl` do `main`) e altura `100dvh - var(--spacing-header)`; o canvas vive dentro dele e o planeta atual fica centralizado. Nada se sobrepõe ao palco: não há scrim, os cards, o resumo e a lista ficam abaixo, em superfícies opacas (`bg-surface-raised` / `bg-surface`) em todos os modos, sob o título "View as list" / "Ver em lista". Isso restaura as tabelas de contraste originais deste ADR (o texto nunca está sobre o canvas), inclusive `journey-locked` no selo "bloqueado", e o anel de foco global (fora do card) volta a valer, sobre superfície opaca.
+
+Sem a cena (gate falhou, reduced motion, erro de chunk, contexto WebGL perdido) o palco não é renderizado: a página mostra título, resumo e lista como no layout 2D. O loop de render também pausa enquanto o palco está fora da viewport.
+
+Quando reabrir (acréscimo): texto ou controle voltar a ser posicionado sobre o palco; aí a tabela de pior caso do adendo do T-071 precisa ser refeita.

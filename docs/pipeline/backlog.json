@@ -1645,8 +1645,8 @@
         "T-071",
         "T-072"
       ],
-      "status": "todo",
-      "attempts": 0,
+      "status": "done",
+      "attempts": 1,
       "commit": null,
       "notes": [
         "2026-11-26 rodada 12 (PO): stakeholder decision in REPORT \"Decisões do stakeholder para a próxima rodada\" item 1 and spec docs/specs/2026-11-25-jornada-ai-engineer.md, \"Revisão 1 — 3D protagonista\", items 1 and 5: step (a) of the suggested order. The canvas moves inside the stage so the list below has no scene behind it, as the spec asks, and the render can stop when the stage scrolls away. The lost-context criterion also resolves the T-070 review item (\"Se o contexto WebGL for perdido, o botão continua visível\"): today dispose() on webglcontextlost never calls onActiveChange(false), and with a full-viewport stage that would leave an empty black screen. The planet raycast stays until T-075 replaces it with labels."

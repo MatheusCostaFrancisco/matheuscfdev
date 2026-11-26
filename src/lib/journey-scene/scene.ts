@@ -21,11 +21,6 @@ import type {
   SceneStages,
 } from "./types";
 
-// Where the focused planet sits on screen, as a fraction of the viewport. The
-// page keeps this spot free of panels on first load (ADR 0007, addendum).
-const ANCHOR_X = 0.8;
-const ANCHOR_Y = 0.28;
-
 export const MAX_PIXEL_RATIO = 2;
 const MAX_FRAME_DELTA = 0.1; // seconds; avoids a jump after a long frame
 const FOG_DENSITY = 0.0008;
@@ -73,17 +68,19 @@ const inertHandle: JourneySceneHandle = {
 
 /**
  * Mounts the scene canvas inside `host` and returns its teardown. The render
- * loop runs only while the document is visible; the pixel ratio is capped at
+ * loop runs only while the document is visible and the host is in the
+ * viewport; the pixel ratio is capped at
  * MAX_PIXEL_RATIO. Teardown (idempotent) stops the loop, disposes every layer
  * (geometries, materials, textures) and the renderer, releases the WebGL
  * context and removes the canvas. A lost WebGL context tears the scene down
- * too, leaving the HTML map as the view. The camera starts on the stage at
+ * too (and calls `onLost`), leaving the HTML map as the view. The camera starts on the stage at
  * `initialIndex` and `focusStage` flies it to another one.
  */
 export function mountJourneyScene(
   host: HTMLElement,
   stages: SceneStages,
   initialIndex: number,
+  onLost?: () => void,
 ): JourneySceneHandle {
   const palette = readPalette(host);
   if (palette === null) return inertHandle;
@@ -116,17 +113,7 @@ export function mountJourneyScene(
     renderer.setSize(width, height, false);
     bloom.setSize(width, height, pixelRatio);
     camera.aspect = width / height;
-    // Slide the projection so the planet the camera looks at lands on the
-    // anchor (upper right), beside the title panel and above the summary
-    // panel instead of behind them.
-    camera.setViewOffset(
-      width,
-      height,
-      width * (0.5 - ANCHOR_X),
-      height * (0.5 - ANCHOR_Y),
-      width,
-      height,
-    );
+    camera.updateProjectionMatrix();
     // Resizing clears the canvas; while paused, redraw the held frame once.
     if (userPaused && shown) bloom.render();
   };
@@ -151,6 +138,7 @@ export function mountJourneyScene(
   let last = 0;
   let shown = false;
   let userPaused = false;
+  let inView = true;
 
   const tick = (now: number) => {
     const delta = Math.min((now - last) / 1000, MAX_FRAME_DELTA);
@@ -166,7 +154,7 @@ export function mountJourneyScene(
   };
 
   const play = () => {
-    if (frame !== 0 || document.hidden || userPaused) return;
+    if (frame !== 0 || document.hidden || userPaused || !inView) return;
     last = performance.now();
     frame = requestAnimationFrame(tick);
   };
@@ -194,6 +182,8 @@ export function mountJourneyScene(
     pause();
     rig.dispose();
     window.removeEventListener("resize", resize);
+    intersection.disconnect();
+    sizeObserver.disconnect();
     document.removeEventListener("visibilitychange", onVisibilityChange);
     canvas.removeEventListener("webglcontextlost", onContextLost);
     for (const layer of layers) {
@@ -209,12 +199,27 @@ export function mountJourneyScene(
   function onContextLost(event: Event) {
     event.preventDefault();
     dispose();
+    onLost?.();
   }
+
+  // The loop also rests while the stage is scrolled out of the viewport (or
+  // hidden) and resumes when it comes back. The observer also tracks size
+  // changes of the host, such as the stage being shown for the first time.
+  const intersection = new IntersectionObserver((entries) => {
+    const entry = entries[entries.length - 1];
+    if (entry === undefined) return;
+    inView = entry.isIntersecting;
+    if (inView) play();
+    else pause();
+  });
+  const sizeObserver = new ResizeObserver(resize);
 
   canvas.addEventListener("webglcontextlost", onContextLost);
   window.addEventListener("resize", resize);
   document.addEventListener("visibilitychange", onVisibilityChange);
   host.append(canvas);
+  intersection.observe(host);
+  sizeObserver.observe(host);
   resize();
   play();
 

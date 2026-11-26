@@ -198,6 +198,7 @@ export const createEn = (years: ExperienceYears): SiteContent => ({
       legendHeading: 'Legend',
       keyboardHint: 'Use the arrow keys to move between worlds and Enter to open the world panel.',
       worldsHeading: 'Worlds',
+      viewAsList: 'View as list',
       worldLabel: 'World',
       status: { completed: 'Completed', current: 'Current', locked: 'Locked' },
       lockedBy: (previousWorld) => `Locked: defeat the boss of World ${previousWorld}`,

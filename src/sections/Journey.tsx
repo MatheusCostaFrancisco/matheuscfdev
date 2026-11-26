@@ -20,20 +20,8 @@ const legendStatuses: readonly JourneyStatus[] = [
 
 const keyboardHintId = "journey-keyboard-hint";
 
-const cardClass = "relative min-w-0 section-offset rounded-2xl border p-6";
-
-// Over the 3D canvas the panels are 80% opaque so the scene shows through.
-// ADR 0007 (addendum 2026-11-26) measures every text on them against a white
-// canvas pixel. Without the scene they stay opaque, as before.
-function panelSurface(scene: boolean): string {
-  return scene ? "bg-surface-raised/80" : "bg-surface-raised";
-}
-
-// The global focus ring sits outside the element, on the bare canvas, where it
-// can fall under 3:1. In scene mode the card ring is drawn inside the panel.
-function cardFocus(scene: boolean): string | false {
-  return scene && "focus-visible:outline-offset-[-4px]";
-}
+const cardClass =
+  "relative min-w-0 section-offset rounded-2xl border bg-surface-raised p-6";
 
 function cardTone(status: JourneyStatus): string {
   if (status === "current") {
@@ -77,7 +65,6 @@ type StageCardProps = {
   lockedWorld: number | undefined;
   checklist?: ReactNode;
   boss: JourneyBoss;
-  scene: boolean;
   onOpen: (id: string, opener: HTMLElement) => void;
 };
 
@@ -90,7 +77,6 @@ function StageCard({
   lockedWorld,
   checklist,
   boss,
-  scene,
   onOpen,
 }: StageCardProps) {
   const { ui } = useContent();
@@ -109,12 +95,7 @@ function StageCard({
           onOpen(id, event.currentTarget);
         }
       }}
-      className={cn(
-        cardClass,
-        panelSurface(scene),
-        cardTone(status),
-        cardFocus(scene),
-      )}
+      className={cn(cardClass, cardTone(status))}
     >
       <Marker status={status} />
       <div className="flex flex-wrap items-center justify-between gap-2">
@@ -124,11 +105,7 @@ function StageCard({
         >
           {title}
         </h3>
-        <StatusBadge
-          status={status}
-          label={text.status[status]}
-          scene={scene}
-        />
+        <StatusBadge status={status} label={text.status[status]} />
       </div>
       <button
         type="button"
@@ -139,12 +116,7 @@ function StageCard({
         {text.openPanelAction}
       </button>
       {status === "locked" && lockedWorld !== undefined && (
-        <p
-          className={cn(
-            "mt-2 text-sm",
-            scene ? "text-fg-muted" : "text-journey-locked",
-          )}
-        >
+        <p className="mt-2 text-sm text-journey-locked">
           {text.lockedBy(lockedWorld)}
         </p>
       )}
@@ -230,7 +202,6 @@ export function Journey() {
 
   return (
     <section
-      data-scene-pick
       data-journey-paused={sceneActive && animationPaused ? "" : undefined}
       id={item.id}
       aria-labelledby="journey-title"
@@ -244,14 +215,7 @@ export function Journey() {
         paused={animationPaused}
       />
       <WorldDialog panel={openPanelData} onClosed={handleClosed} />
-      <div
-        className={cn(
-          "w-fit max-w-[65%] rounded-2xl border p-6",
-          sceneActive
-            ? ["border-line", panelSurface(true)]
-            : "border-transparent",
-        )}
-      >
+      <div>
         <h1
           id="journey-title"
           className="text-3xl font-bold text-fg sm:text-4xl [overflow-wrap:anywhere]"
@@ -270,12 +234,7 @@ export function Journey() {
         )}
       </div>
 
-      <div
-        className={cn(
-          "mt-8 rounded-2xl border border-line p-6",
-          panelSurface(sceneActive),
-        )}
-      >
+      <div className="mt-8 rounded-2xl border border-line bg-surface-raised p-6">
         <dl className="grid gap-4 sm:grid-cols-2">
           <div className="min-w-0">
             <dt className="text-sm font-medium text-fg-muted">{text.from}</dt>
@@ -322,15 +281,22 @@ export function Journey() {
               <StatusBadge
                 status={status}
                 label={text.status[status]}
-                scene={sceneActive}
               />
             </li>
           ))}
         </ul>
       </div>
 
-      <h2 className="sr-only">{text.worldsHeading}</h2>
-      <div data-scene-pick className="relative mt-8">
+      <h2
+        className={cn(
+          sceneActive
+            ? "mt-10 text-2xl font-bold text-fg sm:text-3xl"
+            : "sr-only",
+        )}
+      >
+        {sceneActive ? text.viewAsList : text.worldsHeading}
+      </h2>
+      <div className="relative mt-8 bg-surface">
         <div
           ref={trackRef}
           aria-hidden="true"
@@ -345,7 +311,6 @@ export function Journey() {
           {text.keyboardHint}
         </p>
         <ol
-          data-scene-pick
           ref={listRef}
           className="space-y-4 pl-8"
         >
@@ -361,7 +326,6 @@ export function Journey() {
                 xp={stage.xp}
                 lockedWorld={worlds[index - 1]?.number}
                 boss={world.boss}
-                scene={sceneActive}
                 checklist={<StudyList study={world.study} />}
                 onOpen={openPanel}
               />
@@ -375,7 +339,6 @@ export function Journey() {
             xp={state.finalBoss.xp}
             lockedWorld={lastWorld?.number}
             boss={finalBoss.boss}
-            scene={sceneActive}
             onOpen={openPanel}
           />
         </ol>
