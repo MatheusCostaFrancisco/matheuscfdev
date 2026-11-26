@@ -1830,8 +1830,8 @@
       "notes": [
         "2026-11-26 rodada 13 (PO): Source: REPORT \"Decisões do stakeholder para a próxima rodada\" and spec docs/specs/2026-11-25-jornada-ai-engineer.md \"Revisão 2\". First of the palette tasks because the tunnel fix (T-082) must end on the final space color and the 3D tasks read these tokens. The teal accent outside the journey stays (ADR 0001); inside the journey the mirrored teal accent also leaves, because the stakeholder said the green does not look like space."
       ],
-      "status": "todo",
-      "attempts": 0,
+      "status": "done",
+      "attempts": 1,
       "commit": null
     },
     {

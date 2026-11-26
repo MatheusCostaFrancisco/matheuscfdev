@@ -32,19 +32,93 @@ function readColor(style: CSSStyleDeclaration, name: string): Color | null {
   return value === "" ? null : new Color(value);
 }
 
-// The tokens exist only under data-theme="journey" (ADR 0007). Without them
-// the page is not the journey and the scene does not start.
+const PALETTE_TOKENS = {
+  space: "--journey-space",
+  star: "--journey-star",
+  starBlue: "--journey-star-blue",
+  current: "--journey-current",
+  completed: "--journey-completed",
+  locked: "--journey-locked",
+  nebula: "--color-accent-500",
+  nebulaIndigo: "--journey-nebula-indigo",
+  nebulaViolet: "--journey-nebula-violet",
+  nebulaBlue: "--journey-nebula-blue",
+  nebulaMagenta: "--journey-nebula-magenta",
+  core: "--journey-core",
+  coreAmber: "--journey-core-amber",
+  coreEmber: "--journey-core-ember",
+  halo: "--journey-halo",
+  seal: "--journey-seal",
+  lockedBody: "--journey-locked-body",
+  trail: "--journey-trail",
+} satisfies Record<keyof ScenePalette, string>;
+
+// The tokens exist only under data-theme="journey" (ADR 0007, ADR 0010).
+// Without any one of them the page is not the journey and the scene does not
+// start.
 function readPalette(host: HTMLElement): ScenePalette | null {
   const style = getComputedStyle(host);
-  const space = readColor(style, "--journey-space");
-  const star = readColor(style, "--color-fg");
-  const current = readColor(style, "--journey-current");
-  const completed = readColor(style, "--journey-completed");
-  const locked = readColor(style, "--journey-locked");
-  const nebula = readColor(style, "--color-accent-500");
-  if (!space || !star || !current || !completed || !locked || !nebula)
+  const read = (key: keyof ScenePalette): Color | null =>
+    readColor(style, PALETTE_TOKENS[key]);
+  const space = read("space");
+  const star = read("star");
+  const starBlue = read("starBlue");
+  const current = read("current");
+  const completed = read("completed");
+  const locked = read("locked");
+  const nebula = read("nebula");
+  const nebulaIndigo = read("nebulaIndigo");
+  const nebulaViolet = read("nebulaViolet");
+  const nebulaBlue = read("nebulaBlue");
+  const nebulaMagenta = read("nebulaMagenta");
+  const core = read("core");
+  const coreAmber = read("coreAmber");
+  const coreEmber = read("coreEmber");
+  const halo = read("halo");
+  const seal = read("seal");
+  const lockedBody = read("lockedBody");
+  const trail = read("trail");
+  if (
+    !space ||
+    !star ||
+    !starBlue ||
+    !current ||
+    !completed ||
+    !locked ||
+    !nebula ||
+    !nebulaIndigo ||
+    !nebulaViolet ||
+    !nebulaBlue ||
+    !nebulaMagenta ||
+    !core ||
+    !coreAmber ||
+    !coreEmber ||
+    !halo ||
+    !seal ||
+    !lockedBody ||
+    !trail
+  )
     return null;
-  return { space, star, current, completed, locked, nebula };
+  return {
+    space,
+    star,
+    starBlue,
+    current,
+    completed,
+    locked,
+    nebula,
+    nebulaIndigo,
+    nebulaViolet,
+    nebulaBlue,
+    nebulaMagenta,
+    core,
+    coreAmber,
+    coreEmber,
+    halo,
+    seal,
+    lockedBody,
+    trail,
+  };
 }
 
 /**

@@ -1,6 +1,6 @@
 # 0007 — Tema cósmico restrito à página da jornada
 
-Status: Accepted · Data: 2026-11-25
+Status: Accepted (valores da paleta: Superseded pela [ADR 0010](0010-journey-space-palette.md)) · Data: 2026-11-25
 
 ## Contexto
 

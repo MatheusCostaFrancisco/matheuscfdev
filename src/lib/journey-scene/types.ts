@@ -4,14 +4,42 @@ import type { JourneyState } from "../journey-state";
 /** Order, count and status of every stage, straight from journeyState. */
 export type SceneStages = Pick<JourneyState, "worlds" | "finalBoss">;
 
-/** Colors read from the journey theme tokens (ADR 0007), never hardcoded. */
+/**
+ * Colors read from the journey theme tokens (ADR 0007, palette in ADR 0010),
+ * never hardcoded. Each field names the CSS custom property it comes from.
+ */
 export type ScenePalette = {
+  /** --journey-space: clear color and fog. */
   space: Color;
+  /** --journey-star: white stars and lights. */
   star: Color;
+  /** --journey-star-blue: blue-white stars. */
+  starBlue: Color;
+  /** --journey-current: current world state color (HUD tone). */
   current: Color;
+  /** --journey-completed: completed world state color. */
   completed: Color;
+  /** --journey-locked: locked state color (lock icon, unlit trail). */
   locked: Color;
+  /** --color-accent-500 of the journey scale: legacy nebula sprites. */
   nebula: Color;
+  /** --journey-nebula-indigo / -violet / -blue / -magenta: nebula stops. */
+  nebulaIndigo: Color;
+  nebulaViolet: Color;
+  nebulaBlue: Color;
+  nebulaMagenta: Color;
+  /** --journey-core / -core-amber / -core-ember: current world warm core, white to orange. */
+  core: Color;
+  coreAmber: Color;
+  coreEmber: Color;
+  /** --journey-halo: blue-violet halo around the current world. */
+  halo: Color;
+  /** --journey-seal: gold ring or seal of completed worlds. */
+  seal: Color;
+  /** --journey-locked-body: dark, desaturated locked planet body. */
+  lockedBody: Color;
+  /** --journey-trail: blue-white light of the trail. */
+  trail: Color;
 };
 
 /**
