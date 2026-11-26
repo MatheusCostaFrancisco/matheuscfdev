@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "cvHash": "f85c18b9b22a2884bae8a973d6e0ce7d3c55d953a5fd9bafb9e60859a295cc14",
+  "cvHash": "7251aa7a3dcc57d2a0155851dd0740985a77af642d970cd0e5da6e31d1d83e4e",
   "tasks": [
     {
       "id": "T-001",
@@ -297,7 +297,8 @@
         "2026-11-24 rodada 5 (PO): profile photo not yet confirmed by the stakeholder (pending item in REPORT); the task optimizes whatever content/assets/profile.jpg is, so it stays todo.",
         "2026-11-24 rodada 6 (PO): stakeholder answered the photo pending item with \"vou enviar outra depois\". Optimizing the current photo now would be redone when the new one arrives, so the task waits. Back to todo when content/assets/profile.jpg is replaced or the stakeholder marks the photo pending item [x].",
         "2026-11-25 rodada 7 retomada (PO): content/assets/profile.jpg unchanged since dc647ca and the photo pending item is still [ ]. Stays blocked.",
-        "2026-11-25 rodada 8 (PO): content/assets/profile.jpg still unchanged since dc647ca and the photo pending item is still [ ]. Stays blocked."
+        "2026-11-25 rodada 8 (PO): content/assets/profile.jpg still unchanged since dc647ca and the photo pending item is still [ ]. Stays blocked.",
+        "2026-11-25 rodada 9 (PO): content/assets/profile.jpg still unchanged since dc647ca and the photo pending item is still [ ]. Stays blocked."
       ]
     },
     {
@@ -1226,6 +1227,311 @@
       ],
       "notes": [
         "2026-11-25 rodada 8 (PO): PO decision on the open T-038/T-039/T-049 review item about language marks: the gaps break WCAG 3.1.2 (Language of Parts, AA), the project bar, so they become a task instead of waiting. Profile titles stay as written on LinkedIn (T-048); only their language is marked. The two existing marks the reviewer questioned are correct and are kept."
+      ]
+    },
+    {
+      "id": "T-056",
+      "title": "Add the ESALQ/USP systems work to the ElevaTech product entry",
+      "type": "content",
+      "priority": "P1",
+      "touchesUi": true,
+      "acceptance": [
+        "In src/content/en.ts the ElevaTech bullets include \"Maintenance and new feature development for ESALQ/USP systems\" as the 2nd bullet, in the same order as content/cv.md",
+        "In src/content/pt-BR.ts the ElevaTech bullets include \"Manutenção e desenvolvimento de novas funcionalidades para sistemas da ESALQ/USP\" as the 2nd bullet, in the same order as content/cv.pt-BR.md",
+        "#products on /en/ and /pt/ shows 4 ElevaTech bullets; no other product, experience or summary text changes in the diff",
+        "yarn typecheck, yarn lint and yarn build pass"
+      ],
+      "dependsOn": [
+        "T-020",
+        "T-030"
+      ],
+      "status": "todo",
+      "attempts": 0,
+      "commit": null,
+      "notes": [
+        "2026-11-25 rodada 9 (PO): cv.md hash changed (f85c18b9 -> 7251aa7a) by commit 6394018, which only adds this bullet to ElevaTech under \"Products I built\" in cv.md and cv.pt-BR.md. Done tasks T-016/T-017/T-020 are not reopened (backlog rule); this task carries the change. Stakeholder decision 2 in REPORT (P1, content)."
+      ]
+    },
+    {
+      "id": "T-057",
+      "title": "Create typed AI Engineer journey content from estudos-2027.md",
+      "type": "content",
+      "priority": "P1",
+      "touchesUi": false,
+      "acceptance": [
+        "src/content/journey.ts exports a typed journey per locale (Record<Locale, Journey>) with destination (from \"Senior Front-End Engineer\", to \"AI Engineer\", phrase), the 8 worlds (Mundo 0 to Mundo 7) and the final boss, in the order of content/estudos-2027.md; each world has an anchor id (world-N in en, mundo-N in pt-BR; final-boss / chefao-final), a title, its study items ({ label, done }) and a boss ({ label, done, link? })",
+        "pt-BR labels match content/estudos-2027.md word for word; en labels are translations with the same number of items per world (8 worlds with 4, 6, 7, 7, 6, 6, 7 and 4 study items (47 in total), 9 bosses including the final one)",
+        "Every done value matches the checkbox in estudos-2027.md (today all false) and no boss has a link (the \"Links de entregáveis\" section is empty); the type has no status or XP field, since both are derived (T-058)",
+        "The module contains no date, quarter, hours per week or duration; a label written wholly in the other language (e.g. \"Prompt caching\" on pt-BR) carries an optional lang field, following the themeLang pattern of src/content/roadmap.ts",
+        "yarn typecheck, yarn lint and yarn build pass"
+      ],
+      "dependsOn": [
+        "T-017",
+        "T-028"
+      ],
+      "status": "todo",
+      "attempts": 0,
+      "commit": null,
+      "notes": [
+        "2026-11-25 rodada 9 (PO): Stakeholder decision 1 in REPORT, spec docs/specs/2026-11-25-jornada-ai-engineer.md step (a), Goal 1. The old src/content/roadmap.ts stays until T-061 so every commit keeps the build green.",
+        "2026-11-25 rodada 9 (PO): PO decision: anchors are localized (world-N / mundo-N), matching the spec edge case \"/pt/jornada/#mundo-3\"."
+      ]
+    },
+    {
+      "id": "T-058",
+      "title": "Add Vitest and the pure journey state and XP function with edge-case tests",
+      "type": "infra",
+      "priority": "P1",
+      "touchesUi": false,
+      "acceptance": [
+        "vitest is a devDependency (version compatible with Vite 6) and package.json has \"test\": \"vitest run\"; the only test file is src/lib/journey-state.test.ts and there is no coverage config",
+        "src/lib/journey-state.ts exports a pure function (no Date, no DOM, no locale) that takes the worlds and the final boss and returns, per world, status completed | current | locked and xp as an integer 0-100, plus total XP, completed count (\"n/8\") and destinationReached",
+        "XP rule: marked checkboxes / all checkboxes of the world, boss included, rounded down (Math.floor), so 100 only when every checkbox is marked; total XP uses the same rule over all worlds and the final boss",
+        "Tests cover: nothing marked (world 0 current with xp 0, others locked); items or the boss marked in a locked world (xp counts, status stays locked); boss marked without link (completed); all 8 worlds completed (final boss current); final deliverable marked (destinationReached true)",
+        "yarn test, yarn typecheck, yarn lint and yarn build pass"
+      ],
+      "dependsOn": [
+        "T-057"
+      ],
+      "status": "todo",
+      "attempts": 0,
+      "commit": null,
+      "notes": [
+        "2026-11-25 rodada 9 (PO): Spec docs/specs/2026-11-25-jornada-ai-engineer.md step (a) and Critérios de pronto (\"Vitest, escopo mínimo: só essa função\"). New dependency justified by the spec and by the global rule of testing what is painful to check by hand (state derivation with edge cases).",
+        "2026-11-25 rodada 9 (PO): PO decision: the boss checkbox counts toward XP because estudos-2027.md lists it as a checkbox of the world; a world with only the boss marked is completed with XP below 100. Listed for stakeholder review."
+      ]
+    },
+    {
+      "id": "T-059",
+      "title": "Add the scoped cosmic theme tokens for the journey page with ADR",
+      "type": "design-system",
+      "priority": "P1",
+      "touchesUi": false,
+      "acceptance": [
+        "A new ADR in docs/adr/ (next free number, status Accepted, with \"Quando reabrir\") records the exception to ADR 0001 limited to the journey page: dark space background, glow tokens and maximum effects allowed there, same Poppins family and teal accent; the rest of the site keeps the light theme and tinted shadows",
+        "The tokens live in src/index.css under a journey-only scope (e.g. a [data-theme=\"journey\"] selector or journey- prefixed variables) and no existing token value of the home changes",
+        "The ADR lists the contrast ratios: body and HUD text on the space background >= 4.5:1, and the completed, current and locked state colors >= 3:1 against the background",
+        "yarn typecheck, yarn lint and yarn build pass"
+      ],
+      "dependsOn": [
+        "T-001",
+        "T-032"
+      ],
+      "status": "todo",
+      "attempts": 0,
+      "commit": null,
+      "notes": [
+        "2026-11-25 rodada 9 (PO): Spec docs/specs/2026-11-25-jornada-ai-engineer.md table \"Intensidade: máxima nesta página\" and Goal 7 (AA contrast on the HUD). Needed before the page (T-060) because ADR 0001 rules out neon glow and a dark theme site-wide."
+      ]
+    },
+    {
+      "id": "T-060",
+      "title": "Build the journey page in semantic HTML as the 2D map, replacing the roadmap section",
+      "type": "feature",
+      "priority": "P1",
+      "touchesUi": true,
+      "acceptance": [
+        "On /en/roadmap/ and /pt/roadmap/ the only h1 is \"Journey to AI Engineer\" / \"Jornada para AI Engineer\", followed by a HUD with destination (Senior Front-End Engineer -> AI Engineer), total XP, worlds completed (\"0/8\") and a legend of the three states; the page uses the T-059 theme",
+        "An ordered list renders the 8 worlds and the final boss, each with its anchor id, state as visible text (not color only), XP in a <progress> with an accessible name, the checklist with done / not done exposed to screen readers (no toggleable inputs), and the boss with its deliverable (link only when present); a locked world shows \"Locked: defeat the boss of World N-1\" / \"Bloqueado: derrote o chefão do Mundo N-1\"",
+        "States and XP come only from the T-058 function; the page shows no date, quarter, hours or duration, and src/sections/Roadmap.tsx no longer exists (replaced by src/sections/Journey.tsx)",
+        "Opening /pt/roadmap/#mundo-3 lands with world 3 in view below the header and focused (existing hash handling)",
+        "axe-core reports no violations on both pages, there is no horizontal scroll at 320px, and yarn typecheck, yarn lint and yarn build pass"
+      ],
+      "dependsOn": [
+        "T-057",
+        "T-058",
+        "T-059"
+      ],
+      "status": "todo",
+      "attempts": 0,
+      "commit": null,
+      "notes": [
+        "2026-11-25 rodada 9 (PO): Spec docs/specs/2026-11-25-jornada-ai-engineer.md step (c), Goals 6 and 7. Built before the route rename (T-062) so that, if the round stops halfway, production already drops the dated 2027 roadmap that the stakeholder no longer wants published. This list is also the 2D fallback of the 3D scene."
+      ]
+    },
+    {
+      "id": "T-061",
+      "title": "Show the current world and XP in the home teaser and remove the old roadmap modules",
+      "type": "feature",
+      "priority": "P1",
+      "touchesUi": true,
+      "acceptance": [
+        "The home teaser reads \"Current world: <name> · XP <n>%\" / \"Mundo atual: <nome> · XP <n>%\", computed by the T-058 function, with the strings in the locale content; when the destination is reached it shows a localized fallback text",
+        "The teaser links to routes[locale] of the journey page; the books teaser is unchanged",
+        "src/content/roadmap.ts, src/lib/roadmap-stage.ts and any hook used only by the old roadmap section are deleted, and grep for roadmap-stage and getStageStatuses in src/ returns nothing",
+        "axe-core reports no new violation on /en/ and /pt/, and yarn typecheck, yarn lint and yarn build pass"
+      ],
+      "dependsOn": [
+        "T-058",
+        "T-060"
+      ],
+      "status": "todo",
+      "attempts": 0,
+      "commit": null,
+      "notes": [
+        "2026-11-25 rodada 9 (PO): Spec docs/specs/2026-11-25-jornada-ai-engineer.md Goal 9. Supersedes the open T-046 review item (teaser showing the stage theme), since stages no longer exist."
+      ]
+    },
+    {
+      "id": "T-062",
+      "title": "Move the journey to /en/journey/ and /pt/jornada/ with 301 from the old URLs and ADR",
+      "type": "infra",
+      "priority": "P1",
+      "touchesUi": true,
+      "acceptance": [
+        "src/lib/routes.ts has the page key journey with /en/journey/ and /pt/jornada/; the HTML entries move to en/journey/index.html and pt/jornada/index.html with title, description and og tags for the AI Engineer journey and no date or quarter; dist/ has no en/roadmap/ or pt/roadmap/",
+        "The Caddyfile answers 301 from /en/roadmap and /pt/roadmap (with and without trailing slash and index.html) to the new paths",
+        "The header nav says \"Journey\" (en) and \"Jornada\" (pt-BR); 404.html, sitemap.xml and hreflang use only the new URLs",
+        "A new ADR in docs/adr/ (next free number, with \"Quando reabrir\") supersedes the slug table of ADR 0005; ADR 0005 gets only its status line updated to point to it",
+        "yarn typecheck, yarn lint and yarn build pass"
+      ],
+      "dependsOn": [
+        "T-054",
+        "T-060",
+        "T-061"
+      ],
+      "status": "todo",
+      "attempts": 0,
+      "commit": null,
+      "notes": [
+        "2026-11-25 rodada 9 (PO): Spec docs/specs/2026-11-25-jornada-ai-engineer.md step (b), Goals 2 and 9. The production 301 check (Critérios de pronto) is done by the deployer after the push."
+      ]
+    },
+    {
+      "id": "T-063",
+      "title": "Add the lazy-loaded 3D scene shell with starfield, capability gate and ADR",
+      "type": "infra",
+      "priority": "P1",
+      "touchesUi": true,
+      "acceptance": [
+        "three is a dependency imported only through dynamic import() from the journey page: the build emits a separate chunk and the home main chunk grows at most 2 kB gzip (before and after sizes recorded in the task summary)",
+        "The 3D scene loads only with WebGL2, without prefers-reduced-motion, without Save-Data and with navigator.deviceMemory >= 4 when defined; otherwise, and when the chunk fails to load, the T-060 HTML map stays as the view with no visible error",
+        "The canvas is aria-hidden behind the HUD and renders a starfield/nebula with depth; DPR is capped at 2, the render loop stops while the tab is hidden, and renderer, geometries, materials and textures are disposed on unmount and pagehide",
+        "A new ADR in docs/adr/ (next free number, with \"Quando reabrir\") records the three.js dependency, its budget and the fallback rules",
+        "yarn typecheck, yarn lint and yarn build pass"
+      ],
+      "dependsOn": [
+        "T-060"
+      ],
+      "status": "todo",
+      "attempts": 0,
+      "commit": null,
+      "notes": [
+        "2026-11-25 rodada 9 (PO): Spec docs/specs/2026-11-25-jornada-ai-engineer.md step (d), Goals 4, 7 and 8. New dependency (three) required by the spec."
+      ]
+    },
+    {
+      "id": "T-064",
+      "title": "Render the worlds as planets with completed, current and locked visuals and the light trail",
+      "type": "feature",
+      "priority": "P1",
+      "touchesUi": true,
+      "acceptance": [
+        "The scene draws one planet per world and the final boss as a star or black hole at the end, linked by a light trail, with count and order taken from the journey content (no hardcoded 8)",
+        "completed: lit planet with ring and achievement seal; current: pulsing glow, orbiting particles and trail lit up to it; locked: dark, desaturated, lock marker and trail off",
+        "Statuses come only from the T-058 function (no status literal assigned per world in scene code), and the HTML list of T-060 stays in the DOM and reachable by screen readers while the 3D view is on",
+        "yarn typecheck, yarn lint and yarn build pass"
+      ],
+      "dependsOn": [
+        "T-063"
+      ],
+      "status": "todo",
+      "attempts": 0,
+      "commit": null,
+      "notes": [
+        "2026-11-25 rodada 9 (PO): Spec docs/specs/2026-11-25-jornada-ai-engineer.md step (d), Goal 4."
+      ]
+    },
+    {
+      "id": "T-065",
+      "title": "Add camera parallax and keyboard, scroll and focus navigation between worlds",
+      "type": "feature",
+      "priority": "P1",
+      "touchesUi": true,
+      "acceptance": [
+        "Mouse movement moves the camera with a soft parallax; on mobile, device orientation does the same only where it needs no permission prompt",
+        "Arrow keys and wheel/scroll move the camera to the previous or next world; focusing a world control in the HTML moves the camera to that planet, and Tab order follows the world order with visible focus",
+        "Opening the journey page with #world-3 (en) or #mundo-3 (pt-BR) starts with the camera on world 3",
+        "yarn typecheck, yarn lint and yarn build pass"
+      ],
+      "dependsOn": [
+        "T-064"
+      ],
+      "status": "todo",
+      "attempts": 0,
+      "commit": null,
+      "notes": [
+        "2026-11-25 rodada 9 (PO): Spec docs/specs/2026-11-25-jornada-ai-engineer.md Goals 4 and 7, edge case \"Link com hash vindo de fora\"."
+      ]
+    },
+    {
+      "id": "T-066",
+      "title": "Add the world panel dialog opened from planets",
+      "type": "feature",
+      "priority": "P1",
+      "touchesUi": true,
+      "acceptance": [
+        "Clicking a planet, or pressing Enter on its focused world control in the 3D view, opens a dialog with the world name, XP bar, checklist (done / not done), boss and deliverable link when present",
+        "Focus is trapped in the dialog, Esc and the close button close it, and focus returns to the control that opened it",
+        "A locked world's dialog shows \"Locked: defeat the boss of World N-1\" / \"Bloqueado: derrote o chefão do Mundo N-1\" and its item list",
+        "At 320px and at 400% zoom the dialog scrolls and the close button stays reachable; axe-core reports no violations with the dialog open, and yarn typecheck, yarn lint and yarn build pass"
+      ],
+      "dependsOn": [
+        "T-064"
+      ],
+      "status": "todo",
+      "attempts": 0,
+      "commit": null,
+      "notes": [
+        "2026-11-25 rodada 9 (PO): Spec docs/specs/2026-11-25-jornada-ai-engineer.md Goals 5 and 7."
+      ]
+    },
+    {
+      "id": "T-067",
+      "title": "Add the change-of-dimension light tunnel transition into the journey",
+      "type": "feature",
+      "priority": "P1",
+      "touchesUi": true,
+      "acceptance": [
+        "Clicking the Journey link in the nav, the home teaser or the 404 page plays a light tunnel/warp of 1.2 to 1.8s and navigates in the same tab; the journey opens with an entrance already in space, using cross-document View Transitions where supported",
+        "Direct access by URL or by an external hash link shows only the entrance, with no tunnel; ctrl/cmd/shift/middle clicks behave as normal links",
+        "With prefers-reduced-motion the navigation is immediate with no tunnel or entrance animation",
+        "Going back from the journey with the browser button shows the previous page with no blank screen or stuck overlay (pageshow/bfcache handled)",
+        "The home main chunk stays within the 2 kB gzip budget of T-063 counting this change, and yarn typecheck, yarn lint and yarn build pass"
+      ],
+      "dependsOn": [
+        "T-062",
+        "T-063"
+      ],
+      "status": "todo",
+      "attempts": 0,
+      "commit": null,
+      "notes": [
+        "2026-11-25 rodada 9 (PO): Spec docs/specs/2026-11-25-jornada-ai-engineer.md step (e), Goal 3 and edge case \"Botão voltar\"."
+      ]
+    },
+    {
+      "id": "T-068",
+      "title": "Polish the journey effects: bloom, hover feedback and XP fill on entry",
+      "type": "feature",
+      "priority": "P1",
+      "touchesUi": true,
+      "acceptance": [
+        "A bloom/glow post-processing pass applies to lit planets, the current planet and the lit trail, using only modules shipped with three (no new dependency)",
+        "Hovering or focusing a planet highlights it (scale or glow) and the cursor becomes a pointer; locked planets get a distinct, dimmer highlight",
+        "On first entry the HUD XP bars fill from 0 to their value; under prefers-reduced-motion they render at the final value",
+        "HUD text keeps >= 4.5:1 contrast over the brightest part of the scene behind it, axe-core reports no violations in 3D and reduced-motion modes, and yarn typecheck, yarn lint and yarn build pass"
+      ],
+      "dependsOn": [
+        "T-065",
+        "T-066",
+        "T-067"
+      ],
+      "status": "todo",
+      "attempts": 0,
+      "commit": null,
+      "notes": [
+        "2026-11-25 rodada 9 (PO): Spec docs/specs/2026-11-25-jornada-ai-engineer.md step (f), stakeholder \"intensidade máxima\" on this page."
       ]
     }
   ]
