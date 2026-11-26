@@ -298,7 +298,8 @@
         "2026-11-24 rodada 6 (PO): stakeholder answered the photo pending item with \"vou enviar outra depois\". Optimizing the current photo now would be redone when the new one arrives, so the task waits. Back to todo when content/assets/profile.jpg is replaced or the stakeholder marks the photo pending item [x].",
         "2026-11-25 rodada 7 retomada (PO): content/assets/profile.jpg unchanged since dc647ca and the photo pending item is still [ ]. Stays blocked.",
         "2026-11-25 rodada 8 (PO): content/assets/profile.jpg still unchanged since dc647ca and the photo pending item is still [ ]. Stays blocked.",
-        "2026-11-25 rodada 9 (PO): content/assets/profile.jpg still unchanged since dc647ca and the photo pending item is still [ ]. Stays blocked."
+        "2026-11-25 rodada 9 (PO): content/assets/profile.jpg still unchanged since dc647ca and the photo pending item is still [ ]. Stays blocked.",
+        "2026-11-26 rodada 10 (PO): content/assets/profile.jpg still unchanged since dc647ca and the photo pending item is still [ ]. Stays blocked."
       ]
     },
     {
@@ -1520,7 +1521,8 @@
         "A bloom/glow post-processing pass applies to lit planets, the current planet and the lit trail, using only modules shipped with three (no new dependency)",
         "Hovering or focusing a planet highlights it (scale or glow) and the cursor becomes a pointer; locked planets get a distinct, dimmer highlight",
         "On first entry the HUD XP bars fill from 0 to their value; under prefers-reduced-motion they render at the final value",
-        "HUD text keeps >= 4.5:1 contrast over the brightest part of the scene behind it, axe-core reports no violations in 3D and reduced-motion modes, and yarn typecheck, yarn lint and yarn build pass"
+        "HUD text keeps >= 4.5:1 contrast over the brightest part of the scene behind it, axe-core reports no violations in 3D and reduced-motion modes, and yarn typecheck, yarn lint and yarn build pass",
+        "vite.config.ts sets build.chunkSizeWarningLimit to the smallest round value above the scene chunk (in kB, no more than 50 kB of headroom), yarn build prints no chunk size warning, and ADR 0009 gets a dated addendum explaining that the chunk loads only on the journey page"
       ],
       "dependsOn": [
         "T-065",
@@ -1531,7 +1533,74 @@
       "attempts": 0,
       "commit": null,
       "notes": [
-        "2026-11-25 rodada 9 (PO): Spec docs/specs/2026-11-25-jornada-ai-engineer.md step (f), stakeholder \"intensidade máxima\" on this page."
+        "2026-11-25 rodada 9 (PO): Spec docs/specs/2026-11-25-jornada-ai-engineer.md step (f), stakeholder \"intensidade máxima\" on this page.",
+        "2026-11-26 rodada 10 (PO): stakeholder marked [x] \"Limite de aviso do chunk\" in REPORT with the decision to raise chunkSizeWarningLimit only as needed, justified in ADR 0009, inside T-068. Added as acceptance 5; bloom adds to the scene chunk, so the limit is set here."
+      ]
+    },
+    {
+      "id": "T-069",
+      "title": "Fix keyboard navigation gaps in the journey world list",
+      "type": "fix",
+      "priority": "P1",
+      "touchesUi": true,
+      "acceptance": [
+        "With focus on the World 0 card, ArrowDown moves focus to World 1 and each further ArrowDown moves exactly one card until the final boss; ArrowUp walks back the same way, with no card skipped (useActiveStage in src/lib/use-active-stage.ts)",
+        "Focusing a card (Tab or click) locks the active index the same way a hash or arrow scroll does, so the scroll that follows focus cannot switch the camera to another card",
+        "The keyboard hint is referenced by aria-describedby on every focusable card (not only on the <ol>), so a screen reader announces it when a card receives focus",
+        "yarn typecheck, yarn lint, yarn test and yarn build pass, and axe-core reports no violations on /en/journey/ and /pt/jornada/"
+      ],
+      "dependsOn": [
+        "T-065"
+      ],
+      "status": "todo",
+      "attempts": 0,
+      "commit": null,
+      "notes": [
+        "2026-11-26 rodada 10 (PO): opened from the T-065 reviewer minors in docs/pipeline/runs/2026-11-25-3.md: (a) onFocusIn without lock(), (b) aria-describedby on the <ol>, (f) first ArrowDown skips World 0. REPORT T-065 item says the PO may open a task. A visible hint and role on the <li> stay as review questions."
+      ]
+    },
+    {
+      "id": "T-070",
+      "title": "Add a visible pause control for the journey scene animation",
+      "type": "fix",
+      "priority": "P1",
+      "touchesUi": true,
+      "acceptance": [
+        "In 3D mode /en/journey/ and /pt/jornada/ show a button \"Pause animation\" / \"Pausar animação\" with aria-pressed, placed before the world list in the tab order and visible without scrolling at 375px and 1280px",
+        "Pressing it stops the render loop, the current-world pulse, orbiting particles and parallax (no frame is drawn while paused); pressing again resumes from the same state",
+        "The button is not rendered in the 2D fallback or under prefers-reduced-motion, where nothing moves",
+        "The button has visible focus, hover, :active and disabled states from the design tokens, a 44x44px target, and >= 4.5:1 text contrast over the scene; yarn typecheck, yarn lint and yarn build pass"
+      ],
+      "dependsOn": [
+        "T-068"
+      ],
+      "status": "todo",
+      "attempts": 0,
+      "commit": null,
+      "notes": [
+        "2026-11-26 rodada 10 (PO): decision: WCAG 2.2.2 (Pause, Stop, Hide, level A, part of the 2.1 AA target in CLAUDE.md) requires a pause for decorative motion that starts on load and lasts over 5s. Today only prefers-reduced-motion stops it (REPORT T-063 item). Depends on T-068 so the pause also covers bloom and hover effects."
+      ]
+    },
+    {
+      "id": "T-071",
+      "title": "Let the 3D scene show through the journey content while keeping AA contrast",
+      "type": "fix",
+      "priority": "P1",
+      "touchesUi": true,
+      "acceptance": [
+        "At 1280x800 and 375x812 in 3D mode, the current planet is visible on first load, not covered by an opaque card or by the scrim",
+        "The scrim and card backgrounds are set so every text on the journey page measures >= 4.5:1 (>= 3:1 for large text) against the brightest scene pixel behind it, with the measured worst case written in ADR 0007 as a dated addendum",
+        "The 2D fallback and reduced-motion mode keep the current opaque cards and their contrast unchanged",
+        "axe-core reports no violations on /en/journey/ and /pt/jornada/ in 3D and reduced-motion modes, and yarn typecheck, yarn lint and yarn build pass"
+      ],
+      "dependsOn": [
+        "T-068"
+      ],
+      "status": "todo",
+      "attempts": 0,
+      "commit": null,
+      "notes": [
+        "2026-11-26 rodada 10 (PO): decision: the spec asks for maximum intensity on this page and a visible 3D map, but REPORT T-063/T-064 says the 70% scrim and opaque cards hide almost all of it. The PO picks the direction (scene visible, AA kept); the exact values (scrim around 55%, translucent or narrower cards) are left to the dev as long as the measured contrast passes. Depends on T-068 because bloom changes the brightest pixel."
       ]
     }
   ]
