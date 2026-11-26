@@ -2,6 +2,7 @@ import { useLayoutEffect } from 'react'
 
 const SECTION_SELECTOR = 'main > section'
 const ITEM_SELECTOR = '[data-reveal-item]'
+const SKIP_SELECTOR = '[data-reveal-skip], dialog'
 const HIDDEN_SELECTOR = '[data-reveal="hidden"]'
 const REDUCED_MOTION_QUERY = '(prefers-reduced-motion: reduce)'
 const STAGGER_MS = 70
@@ -158,11 +159,17 @@ function collectCandidates(): HTMLElement[] {
   for (const section of document.querySelectorAll<HTMLElement>(SECTION_SELECTOR)) {
     const items = Array.from(section.querySelectorAll<HTMLElement>(ITEM_SELECTOR))
     if (items.length === 0) {
-      result.push(section)
+      if (!section.matches(SKIP_SELECTOR)) result.push(section)
       continue
     }
     for (const child of Array.from(section.children)) {
-      if (child instanceof HTMLElement && !child.querySelector(ITEM_SELECTOR)) result.push(child)
+      if (
+        child instanceof HTMLElement &&
+        !child.matches(SKIP_SELECTOR) &&
+        !child.querySelector(ITEM_SELECTOR)
+      ) {
+        result.push(child)
+      }
     }
     items.forEach((item, index) => {
       item.style.setProperty('--reveal-delay', `${Math.min(index * STAGGER_MS, MAX_DELAY_MS)}ms`)

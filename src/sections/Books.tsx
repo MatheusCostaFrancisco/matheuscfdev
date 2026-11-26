@@ -35,7 +35,7 @@ type ProgressBookProps = {
 function ProgressBook({ book }: ProgressBookProps) {
   const locale = useLocale();
   return (
-    <li className="min-w-0 rounded-2xl border border-line bg-surface-raised p-5 shadow-sm">
+    <li data-reveal-item className="min-w-0 rounded-2xl border border-line bg-surface-raised p-5 shadow-sm">
       <BookLine book={book} />
       {book.progress !== null && (
         <div className="mt-3 flex items-center gap-3">
@@ -85,6 +85,7 @@ export function Books() {
           entry.kind === "series" ? (
             <li
               key={entry.name}
+              data-reveal-item
               className="min-w-0 rounded-2xl bg-surface-sunken p-5"
             >
               <h3 className="text-base font-semibold text-fg [overflow-wrap:anywhere]">
@@ -115,6 +116,7 @@ export function Books() {
           ) : (
             <li
               key={entry.title}
+              data-reveal-item
               className="min-w-0 rounded-2xl border border-line bg-surface-raised p-5"
             >
               <BookLine book={entry} />
@@ -130,6 +132,7 @@ export function Books() {
         {books.wantToRead.map((book) => (
           <li
             key={book.title}
+            data-reveal-item
             className="min-w-0 rounded-2xl border border-dashed border-line bg-surface-raised p-5"
           >
             <BookLine book={book} />

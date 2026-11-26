@@ -29,6 +29,11 @@ function HashFocus() {
   return null;
 }
 
+function Reveal() {
+  useReveal();
+  return null;
+}
+
 function PageFallback() {
   return <div aria-hidden="true" className="min-h-[100dvh]" />;
 }
@@ -60,8 +65,6 @@ type AppProps = {
 };
 
 function App({ page }: AppProps) {
-  useReveal();
-
   useEffect(() => {
     scrollToHash(window.location.hash);
 
@@ -83,6 +86,7 @@ function App({ page }: AppProps) {
       >
         <Suspense fallback={<PageFallback />}>
           <Content />
+          <Reveal />
           {page !== "home" && <HashFocus />}
         </Suspense>
       </main>

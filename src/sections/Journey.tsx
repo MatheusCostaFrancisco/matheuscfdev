@@ -111,6 +111,7 @@ function StageCard({
   return (
     <li
       id={id}
+      data-reveal-item
       aria-labelledby={headingId}
       aria-current={status === "current" ? "step" : undefined}
       aria-describedby={keyboardHintId}

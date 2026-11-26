@@ -353,6 +353,7 @@ export function JourneyScene({
 
   return (
     <div
+      data-reveal-skip
       onPointerDown={onStagePointerDown}
       onPointerUp={onStagePointerUp}
       onPointerCancel={onStagePointerCancel}

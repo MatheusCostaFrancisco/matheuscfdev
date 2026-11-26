@@ -1805,8 +1805,8 @@
       "dependsOn": [
         "T-073"
       ],
-      "status": "todo",
-      "attempts": 0,
+      "status": "done",
+      "attempts": 1,
       "commit": null,
       "notes": [
         "2026-11-26 rodada 12 (PO): spec docs/specs/2026-11-25-jornada-ai-engineer.md, \"Revisão 1 — 3D protagonista\", item 8: step (e), regression of T-072 (useReveal runs in App before the Suspense content exists). Depends on T-073 so the stage that must stay visible already exists."
