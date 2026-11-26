@@ -1759,8 +1759,8 @@
       "dependsOn": [
         "T-076"
       ],
-      "status": "todo",
-      "attempts": 0,
+      "status": "done",
+      "attempts": 1,
       "commit": null,
       "notes": [
         "2026-11-26 rodada 12 (PO): spec docs/specs/2026-11-25-jornada-ai-engineer.md, \"Revisão 1 — 3D protagonista\", item 6 (\"O túnel termina aterrissando no mundo atual\"): step (c), second half. Depends on T-076 because both change the camera rig and its initial index."

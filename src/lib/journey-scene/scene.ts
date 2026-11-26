@@ -54,13 +54,15 @@ function readPalette(host: HTMLElement): ScenePalette | null {
  * (geometries, materials, textures) and the renderer, releases the WebGL
  * context and removes the canvas. A lost WebGL context tears the scene down
  * too (and calls `onLost`), leaving the HTML map as the view. The camera starts on the stage at
- * `initialIndex` and `focusStage` flies it to another one.
+ * `initialIndex` and `focusStage` flies it to another one. With `landing` it
+ * first flies in from far back (T-078); pausing ends that flight at once.
  */
 export function mountJourneyScene(
   host: HTMLElement,
   stages: SceneStages,
   initialIndex: number,
   onLost?: () => void,
+  landing = false,
 ): JourneySceneHandle | null {
   const palette = readPalette(host);
   if (palette === null) return null;
@@ -81,6 +83,7 @@ export function mountJourneyScene(
     camera,
     nodePositions(stages.worlds.length + 1),
     initialIndex,
+    landing,
   );
 
   const bloom = createBloom(renderer, scene, camera, palette.space);
@@ -162,8 +165,14 @@ export function mountJourneyScene(
 
   const setPaused = (paused: boolean) => {
     userPaused = paused;
-    if (paused) pause();
-    else play();
+    if (paused) {
+      pause();
+      rig.finishLanding();
+      if (shown) {
+        bloom.render();
+        projectLabels();
+      }
+    } else play();
   };
 
   const onVisibilityChange = () => {

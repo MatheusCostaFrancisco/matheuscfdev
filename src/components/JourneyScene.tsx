@@ -125,6 +125,9 @@ export function JourneyScene({
   const pausedRef = useRef(paused);
   pausedRef.current = paused;
   const handleRef = useRef<JourneySceneHandle | null>(null);
+  // The landing flight plays on the first mount only; remounts (bfcache
+  // restore, status change) start already on the stage.
+  const landedRef = useRef(false);
   // Statuses do not depend on the locale: remount only when they change.
   const stagesKey = [...state.worlds, state.finalBoss]
     .map((stage) => `${stage.id}:${stage.status}`)
@@ -151,8 +154,10 @@ export function JourneyScene({
             stagesRef.current,
             indexRef.current,
             stop,
+            !landedRef.current,
           );
           if (handle === null) return;
+          landedRef.current = true;
           mounted = handle;
           handleRef.current = mounted;
           mounted.setPaused(pausedRef.current);
