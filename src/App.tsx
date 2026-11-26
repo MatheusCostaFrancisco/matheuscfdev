@@ -35,7 +35,7 @@ function Home() {
 
 const pageContent: Record<Page, ComponentType> = {
   home: Home,
-  roadmap: Journey,
+  journey: Journey,
   books: Books,
 };
 

@@ -167,7 +167,7 @@ export const createEn = (years: ExperienceYears): SiteContent => ({
     { id: 'products', label: 'Products' },
     { id: 'skills', label: 'Skills' },
     { id: 'education', label: 'Education' },
-    { id: 'roadmap', label: 'Roadmap' },
+    { id: 'journey', label: 'Journey' },
     { id: 'books', label: 'Books' },
     { id: 'contact', label: 'Contact' },
   ],

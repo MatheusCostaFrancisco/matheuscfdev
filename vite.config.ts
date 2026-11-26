@@ -58,7 +58,7 @@ function isPage(value: string): value is Page {
 // - %ROUTE_URL% is the absolute URL of the page the file builds (canonical, og:url);
 // - %ROUTE_URL:<locale>% is the same page in that locale (hreflang);
 // - %ROUTE_URL:x-default% is the root language redirect for the home and the
-//   default-locale page for the other pages (there is no root /roadmap/);
+//   default-locale page for the other pages (there is no root /journey/);
 // - %ROUTE_PATH:<locale>:<page>% is a root-relative path, for pages outside the
 //   map such as the root redirect.
 // A %ROUTE_URL% in a file that is not a page of the map fails the build.
@@ -90,7 +90,7 @@ const alternateTargets: readonly AlternateTarget[] = [...locales, "x-default"]
 
 // Absolute URL of a page in a locale. x-default is the root language redirect
 // for the home and the default-locale page for the other pages (there is no
-// root /roadmap/). Shared by the HTML hreflang links and the sitemap.
+// root /journey/). Shared by the HTML hreflang links and the sitemap.
 function pageUrl(siteUrl: string, target: AlternateTarget, page: Page): string {
   if (target !== "x-default") return `${siteUrl}${routes[target][page]}`
   return page === "home" ? `${siteUrl}/` : `${siteUrl}${routes[defaultLocale][page]}`

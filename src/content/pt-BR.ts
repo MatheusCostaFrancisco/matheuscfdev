@@ -167,7 +167,7 @@ export const createPtBR = (years: ExperienceYears): SiteContent => ({
     { id: 'products', label: 'Produtos' },
     { id: 'skills', label: 'Competências' },
     { id: 'education', label: 'Formação' },
-    { id: 'roadmap', label: 'Roadmap' },
+    { id: 'journey', label: 'Jornada' },
     { id: 'books', label: 'Livros' },
     { id: 'contact', label: 'Contato' },
   ],

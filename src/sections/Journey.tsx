@@ -231,7 +231,7 @@ function StageCard({
 export function Journey() {
   const { navigation, ui } = useContent();
   const locale = useLocale();
-  const item = navigation.find((nav) => nav.id === "roadmap");
+  const item = navigation.find((nav) => nav.id === "journey");
   const trackRef = useRef<HTMLDivElement>(null);
   const fillRef = useRef<HTMLDivElement>(null);
   useJourneyProgress(trackRef, fillRef);

@@ -1,10 +1,10 @@
-// Route map for the static pages (ADR 0005). This is the only place where page
+// Route map for the static pages (ADR 0005, slugs in ADR 0008). This is the only place where page
 // paths are written: vite.config.ts derives the HTML entries and the canonical,
 // og:url and hreflang URLs from it, and components link through it.
 // Keep it DOM-free: vite.config.ts imports it.
 import { defaultLocale, locales, type Locale } from './locale'
 
-export const pages = ['home', 'roadmap', 'books'] as const
+export const pages = ['home', 'journey', 'books'] as const
 
 export type Page = (typeof pages)[number]
 
@@ -17,12 +17,12 @@ export type Route = {
 export const routes: Readonly<Record<Locale, Readonly<Record<Page, string>>>> = {
   en: {
     home: '/en/',
-    roadmap: '/en/roadmap/',
+    journey: '/en/journey/',
     books: '/en/books/',
   },
   'pt-BR': {
     home: '/pt/',
-    roadmap: '/pt/roadmap/',
+    journey: '/pt/jornada/',
     books: '/pt/livros/',
   },
 }

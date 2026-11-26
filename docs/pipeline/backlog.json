@@ -1390,8 +1390,8 @@
         "T-060",
         "T-061"
       ],
-      "status": "todo",
-      "attempts": 0,
+      "status": "done",
+      "attempts": 1,
       "commit": null,
       "notes": [
         "2026-11-25 rodada 9 (PO): Spec docs/specs/2026-11-25-jornada-ai-engineer.md step (b), Goals 2 and 9. The production 301 check (Critérios de pronto) is done by the deployer after the push."

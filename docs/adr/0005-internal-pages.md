@@ -1,6 +1,6 @@
 # 0005 — Páginas internas estáticas por idioma (roadmap e livros)
 
-Status: Accepted · Data: 2026-11-24
+Status: Accepted (tabela de slugs: Superseded pela [ADR 0008](0008-journey-slugs.md)) · Data: 2026-11-24
 
 ## Contexto
 

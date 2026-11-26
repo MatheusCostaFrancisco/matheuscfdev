@@ -38,7 +38,7 @@ type HeaderProps = {
 }
 
 function isPageId(id: string): id is Exclude<Page, 'home'> {
-  return id === 'roadmap' || id === 'books'
+  return id === 'journey' || id === 'books'
 }
 
 export function Header({ page }: HeaderProps) {

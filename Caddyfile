@@ -41,6 +41,15 @@
 	@revalidate not path /assets/* /fonts/*
 	header @revalidate Cache-Control "no-cache"
 
+	# Old roadmap URLs move permanently to the journey (ADR 0008). Path matching
+	# is case-insensitive; the query string is kept and the browser keeps the
+	# #fragment across the redirect.
+	@roadmapEn path /en/roadmap /en/roadmap/ /en/roadmap/index.html
+	redir @roadmapEn /en/journey/{?query} 301
+
+	@roadmapPt path /pt/roadmap /pt/roadmap/ /pt/roadmap/index.html
+	redir @roadmapPt /pt/jornada/{?query} 301
+
 	# No SPA fallback: every page is its own HTML file (ADR 0005). A path with
 	# no file answers 404 with the body of 404.html.
 	file_server {

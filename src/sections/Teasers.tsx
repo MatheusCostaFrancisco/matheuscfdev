@@ -31,7 +31,7 @@ export function Teasers() {
       </h2>
       <ul className="grid gap-4 sm:grid-cols-2">
         <li className="min-w-0">
-          <a href={routes[locale].roadmap} className={linkClass}>
+          <a href={routes[locale].journey} className={linkClass}>
             <span>
               {state.destinationReached ? (
                 <>
