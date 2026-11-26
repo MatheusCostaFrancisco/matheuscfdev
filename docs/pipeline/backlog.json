@@ -1269,8 +1269,8 @@
         "T-017",
         "T-028"
       ],
-      "status": "todo",
-      "attempts": 0,
+      "status": "done",
+      "attempts": 1,
       "commit": null,
       "notes": [
         "2026-11-25 rodada 9 (PO): Stakeholder decision 1 in REPORT, spec docs/specs/2026-11-25-jornada-ai-engineer.md step (a), Goal 1. The old src/content/roadmap.ts stays until T-061 so every commit keeps the build green.",
