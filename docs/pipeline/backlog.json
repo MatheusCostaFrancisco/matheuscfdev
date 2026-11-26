@@ -1317,8 +1317,8 @@
         "T-001",
         "T-032"
       ],
-      "status": "todo",
-      "attempts": 0,
+      "status": "done",
+      "attempts": 1,
       "commit": null,
       "notes": [
         "2026-11-25 rodada 9 (PO): Spec docs/specs/2026-11-25-jornada-ai-engineer.md table \"Intensidade: máxima nesta página\" and Goal 7 (AA contrast on the HUD). Needed before the page (T-060) because ADR 0001 rules out neon glow and a dark theme site-wide."

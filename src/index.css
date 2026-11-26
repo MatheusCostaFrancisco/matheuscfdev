@@ -213,6 +213,88 @@
 }
 
 /*
+ * Journey theme: dark space, glow allowed. Exception to ADR 0001 limited to
+ * the journey page (docs/adr/0007-journey-cosmic-theme.md). Nothing here
+ * applies unless an ancestor has data-theme="journey"; the page sets it on
+ * <html> so header, footer and body follow.
+ *
+ * - The semantic tokens (surface, fg, line, accent, on-accent) are remapped,
+ *   so shared components keep their classes and stay AA on the dark
+ *   background. The accent is the same teal scale, mirrored (50 <-> 950).
+ * - Journey-only tokens are prefixed `journey-` and registered below with
+ *   `@theme inline`, so their utilities resolve to nothing outside the scope:
+ *   `text-journey-completed`, `bg-journey-current`, `shadow-journey-glow-md`,
+ *   `drop-shadow-journey-glow`, `bg-(image:--journey-nebula)`.
+ */
+@layer base {
+  [data-theme="journey"] {
+    color-scheme: dark;
+
+    /* Journey-only tokens */
+    --journey-space: #060e12;
+    --journey-completed: #5dd5c3;
+    --journey-current: #cbf5ec;
+    --journey-locked: #6f8582;
+
+    --journey-glow-sm: 0 0 8px 0 rgb(93 213 195 / 0.45);
+    --journey-glow-md: 0 0 4px 0 rgb(203 245 236 / 0.6),
+      0 0 16px 2px rgb(93 213 195 / 0.45);
+    --journey-glow-lg: 0 0 8px 0 rgb(203 245 236 / 0.6),
+      0 0 32px 6px rgb(93 213 195 / 0.4);
+    --journey-drop-glow: 0 0 6px rgb(93 213 195 / 0.6);
+
+    /* Teal nebula over the space color; peak alpha 0.22 keeps HUD text AA */
+    --journey-nebula: radial-gradient(
+        ellipse 60% 45% at 20% 15%,
+        rgb(21 154 140 / 0.22),
+        transparent 70%
+      ),
+      radial-gradient(
+        ellipse 50% 40% at 85% 70%,
+        rgb(45 185 168 / 0.14),
+        transparent 70%
+      );
+
+    /* Semantic remap for shared components */
+    --color-surface: var(--journey-space);
+    --color-surface-raised: #0c1a1f;
+    --color-surface-sunken: #040a0d;
+
+    --color-fg: #e8f3f1;
+    --color-fg-muted: #9fb5b1;
+    --color-on-accent: #052725;
+
+    --color-line: #1c2f33;
+    --color-line-strong: #5d7a78;
+
+    --color-accent-50: #052725;
+    --color-accent-100: #14423e;
+    --color-accent-200: #13504b;
+    --color-accent-300: #11645d;
+    --color-accent-400: #0f7c72;
+    --color-accent-500: #159a8c;
+    --color-accent-600: #2db9a8;
+    --color-accent-700: #5dd5c3;
+    --color-accent-800: #98eadb;
+    --color-accent-900: #cbf5ec;
+    --color-accent-950: #effcf9;
+  }
+}
+
+@theme inline {
+  --color-journey-space: var(--journey-space);
+  --color-journey-completed: var(--journey-completed);
+  --color-journey-current: var(--journey-current);
+  --color-journey-locked: var(--journey-locked);
+
+  --shadow-journey-glow-sm: var(--journey-glow-sm);
+  --shadow-journey-glow-md: var(--journey-glow-md);
+  --shadow-journey-glow-lg: var(--journey-glow-lg);
+
+  --drop-shadow-journey-glow: var(--journey-drop-glow);
+}
+
+/*
  * Scroll-triggered reveal (src/lib/use-reveal.ts): opacity + transform only,
  * 16px max, 400ms. The hidden state exists only while JS has set
  * data-reveal="hidden", so without JS, without IntersectionObserver or under
