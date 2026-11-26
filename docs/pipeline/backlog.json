@@ -1480,13 +1480,10 @@
       "dependsOn": [
         "T-064"
       ],
-      "status": "review",
+      "status": "done",
       "attempts": 1,
-      "commit": null,
-      "notes": [
-        "2026-11-25 rodada 9 (PO): Spec docs/specs/2026-11-25-jornada-ai-engineer.md Goals 5 and 7.",
-        "2026-11-26: 2 achado(s) blocker após 2 ciclos de correção"
-      ]
+      "commit": "2eafbcf",
+      "notes": "2026-11-25 rodada 9 (PO): Spec docs/specs/2026-11-25-jornada-ai-engineer.md Goals 5 and 7.,2026-11-26: 2 achado(s) blocker após 2 ciclos de correção Concluída pela sessão principal em 2026-11-26 a partir do stash esteira/2026-11-26/review/T-066, com o fix do allowlist data-scene-pick pedido pelo code-reviewer e pelo ui-reviewer."
     },
     {
       "id": "T-067",
