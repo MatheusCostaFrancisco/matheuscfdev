@@ -12,7 +12,7 @@ import { Experience } from "./sections/Experience";
 import { Hero } from "./sections/Hero";
 import { Products } from "./sections/Products";
 import { Books } from "./sections/Books";
-import { Roadmap } from "./sections/Roadmap";
+import { Journey } from "./sections/Journey";
 import { Testimonials } from "./sections/Testimonials";
 import { Teasers } from "./sections/Teasers";
 import { Skills } from "./sections/Skills";
@@ -35,7 +35,7 @@ function Home() {
 
 const pageContent: Record<Page, ComponentType> = {
   home: Home,
-  roadmap: Roadmap,
+  roadmap: Journey,
   books: Books,
 };
 

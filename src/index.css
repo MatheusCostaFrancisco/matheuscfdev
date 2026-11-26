@@ -326,7 +326,7 @@
 }
 
 /*
- * Roadmap journey (src/sections/Roadmap.tsx). The line fill is full length by
+ * Roadmap journey (src/sections/Journey.tsx). The line fill is full length by
  * default; src/lib/use-journey-progress.ts scales it with scroll. The current
  * marker ring pulses with opacity + transform only: 800ms cycle, so each
  * phase (out, back) lasts 400ms, and it stops after 5 cycles (4s). Nothing

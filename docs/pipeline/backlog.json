@@ -1342,8 +1342,8 @@
         "T-058",
         "T-059"
       ],
-      "status": "todo",
-      "attempts": 0,
+      "status": "done",
+      "attempts": 1,
       "commit": null,
       "notes": [
         "2026-11-25 rodada 9 (PO): Spec docs/specs/2026-11-25-jornada-ai-engineer.md step (c), Goals 6 and 7. Built before the route rename (T-062) so that, if the round stops halfway, production already drops the dated 2027 roadmap that the stakeholder no longer wants published. This list is also the 2D fallback of the 3D scene."

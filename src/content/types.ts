@@ -83,13 +83,23 @@ export interface UiStrings {
     readonly certificationsHeading: string
     readonly languagesHeading: string
   }
-  readonly roadmap: {
+  readonly journey: {
+    readonly title: string
     readonly from: string
     readonly to: string
-    readonly studyHeading: string
-    readonly deliverableHeading: string
-    readonly stagesHeading: string
-    readonly status: Record<'done' | 'current' | 'upcoming', string>
+    readonly totalXp: string
+    readonly worldsCompleted: string
+    readonly legendHeading: string
+    readonly worldsHeading: string
+    readonly worldLabel: string
+    readonly status: Record<'completed' | 'current' | 'locked', string>
+    readonly lockedBy: (previousWorld: number) => string
+    readonly xpLabel: (stageName: string) => string
+    readonly checklistHeading: string
+    readonly itemDone: string
+    readonly itemNotDone: string
+    readonly bossHeading: string
+    readonly deliverableLink: string
   }
   readonly books: {
     readonly heading: string
