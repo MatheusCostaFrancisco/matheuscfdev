@@ -18,7 +18,7 @@ export function Skills() {
       <h2 id="skills-title" className="text-2xl font-semibold text-fg">
         {skillsItem.label}
       </h2>
-      <div className="mt-8 grid gap-6 sm:grid-cols-2">
+      <div className="mt-8 grid items-stretch gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {skills.map((skill, index) => {
           const headingId = `skills-group-${index}`;
           const isLast = index === skills.length - 1;
@@ -28,7 +28,7 @@ export function Skills() {
               data-reveal-item
               className={cn(
                 "min-w-0 rounded-2xl border border-line bg-surface-raised p-6 shadow-sm",
-                hasOddGroups && isLast && "sm:col-span-2",
+                hasOddGroups && isLast && "sm:col-span-2 lg:col-span-1",
               )}
             >
               <h3 id={headingId} className="text-xl font-semibold text-fg">

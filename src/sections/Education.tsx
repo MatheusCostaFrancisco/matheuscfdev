@@ -15,7 +15,7 @@ export function Education() {
       <h2 id="education-title" className="text-2xl font-semibold text-fg">
         {educationItem.label}
       </h2>
-      <ul className="mt-8 space-y-6">
+      <ul className="mt-8 grid gap-6 md:grid-cols-2">
         {education.map((entry) => (
           <li key={`${entry.institution}-${entry.course}`} data-reveal-item className="min-w-0">
             <h3 className="text-xl font-semibold text-fg">{entry.course}</h3>
@@ -26,7 +26,7 @@ export function Education() {
           </li>
         ))}
       </ul>
-      <div className="mt-10 grid gap-8 sm:grid-cols-2">
+      <div className="mt-10 grid gap-8 sm:grid-cols-2 lg:gap-12">
         <div className="min-w-0">
           <h3 className="text-xl font-semibold text-fg">
             {ui.education.certificationsHeading}
