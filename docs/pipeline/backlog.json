@@ -1973,7 +1973,7 @@
       ],
       "status": "done",
       "attempts": 1,
-      "commit": null,
+      "commit": "99a65ae",
       "notes": [
         "2026-11-26 rodada 14 (PO): created from the stakeholder decisions in REPORT (rodada 4) and docs/specs/2026-11-26-dark-mode-e-produtos.md.",
         "Closes the T-031 review item (WoodFlow empty space). Same commit only touches Products.tsx; no content change."
@@ -1998,7 +1998,7 @@
       ],
       "status": "done",
       "attempts": 1,
-      "commit": null,
+      "commit": "ed96b42",
       "notes": [
         "2026-11-26 rodada 14 (PO): created from the stakeholder decisions in REPORT (rodada 4) and docs/specs/2026-11-26-dark-mode-e-produtos.md."
       ]
@@ -2022,7 +2022,7 @@
       ],
       "status": "done",
       "attempts": 1,
-      "commit": null,
+      "commit": "cd85896",
       "notes": [
         "2026-11-26 rodada 14 (PO): created from the stakeholder decisions in REPORT (rodada 4) and docs/specs/2026-11-26-dark-mode-e-produtos.md."
       ]
@@ -2043,7 +2043,7 @@
       ],
       "status": "done",
       "attempts": 1,
-      "commit": null,
+      "commit": "c839690",
       "notes": [
         "2026-11-26 rodada 14 (PO): created from the stakeholder decisions in REPORT (rodada 4) and docs/specs/2026-11-26-dark-mode-e-produtos.md."
       ]
@@ -2072,7 +2072,7 @@
       ],
       "status": "done",
       "attempts": 1,
-      "commit": null,
+      "commit": "6803aac",
       "notes": [
         "2026-11-26 rodada 14 (PO): created from the stakeholder decisions in REPORT (rodada 4) and docs/specs/2026-11-26-dark-mode-e-produtos.md.",
         "PO decision: on the journey the switcher is hidden instead of disabled; a disabled control with an explanation adds noise to a page that cannot change. Listed in reviewItems."
@@ -2097,7 +2097,7 @@
       ],
       "status": "done",
       "attempts": 1,
-      "commit": null,
+      "commit": "6b30a34",
       "notes": [
         "2026-11-26 rodada 14 (PO): created from the stakeholder decisions in REPORT (rodada 4) and docs/specs/2026-11-26-dark-mode-e-produtos.md."
       ]
