@@ -38,7 +38,7 @@ export function Skills() {
                 {skill.items.map((item) => (
                   <li
                     key={item}
-                    className="rounded-2xl bg-accent-50 px-3 py-1 text-sm font-medium text-accent-800 [overflow-wrap:anywhere]"
+                    className="rounded-2xl border border-accent-600 bg-accent-50 px-3 py-1 text-sm font-medium text-accent-800 [overflow-wrap:anywhere]"
                   >
                     {item}
                   </li>

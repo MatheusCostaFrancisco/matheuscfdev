@@ -267,8 +267,8 @@
   }
 
   ::selection {
-    background-color: var(--color-accent-200);
-    color: var(--color-fg);
+    background-color: var(--color-accent-600);
+    color: var(--color-on-accent);
   }
 
   :focus-visible {

@@ -2095,8 +2095,8 @@
         "T-089",
         "T-091"
       ],
-      "status": "todo",
-      "attempts": 0,
+      "status": "done",
+      "attempts": 1,
       "commit": null,
       "notes": [
         "2026-11-26 rodada 14 (PO): created from the stakeholder decisions in REPORT (rodada 4) and docs/specs/2026-11-26-dark-mode-e-produtos.md."

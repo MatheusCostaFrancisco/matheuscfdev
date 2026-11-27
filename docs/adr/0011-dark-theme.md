@@ -89,13 +89,17 @@ Calculado pela fórmula de luminância relativa da WCAG 2.1, nos papéis da ADR 
 | `accent-800` sobre `accent-100` (badge) | 9.01 | 4.5 | Passa |
 | `accent-700` sobre `accent-50` / `accent-100` (hover de botão secundário) | 8.81 / 7.26 | 4.5 | Passa |
 | `accent-900` sobre `accent-100` (item de nav ativo) | 10.59 | 4.5 | Passa |
-| `fg` sobre `accent-200` (seleção de texto) | 7.69 | 4.5 | Passa |
+| `on-accent` #052725 sobre `accent-600` (seleção de texto) | 6.79 | 4.5 | Passa |
+| `accent-600` (realce da seleção) sobre `surface` / `surface-raised` | 7.87 / 7.09 | 3 | Passa |
+| `accent-600` (borda das tags) sobre `surface-raised` | 7.09 | 3 | Passa |
 | `accent-600` (foco) sobre `accent-50` / `accent-100` | 6.75 / 5.56 | 3 | Passa |
 | `accent-900` (barra) sobre `line-strong` (trilho), progresso dos livros | 3.71 | 3 | Passa |
 
+Adendo T-092: `::selection` usa `accent-600` com `on-accent`, no claro #0f7c72 com branco: 5.06 (texto) e 4.83 / 5.06 (realce sobre `surface` / `surface-raised`). As tags de Produtos e Habilidades ganharam `border-accent-600`, como a de Experiência; as tags neutras do Hero e o rótulo "traduzido" dos depoimentos usam `border-line-strong`. Como `::selection` é global, este par também vale no claro e na jornada, e substitui a linha de seleção das ADRs 0001 (`accent-200` com `fg`) e 0010 (`fg` sobre `accent-200` #353386) sem editá-las; na jornada o par é `on-accent` #11143d sobre `accent-600` #8a90f4, 6.19:1.
+
 O anel de foco (`accent-600`, `outline 2px` + `offset 2px`) fica ≥ 5.56:1 sobre todas as superfícies e fundos de acento usados atrás de elementos focáveis. `line` (#24332f) é decorativo, como no claro.
 
-axe-core 4.10.2 (`wcag2a`, `wcag2aa`, `wcag21a`, `wcag21aa`) em Chrome headless, build de produção, `/en/`, `/pt/` e `/404.html`: zero violações com `data-theme="dark"`, `data-theme="light"` e sem atributo, com o sistema emulado em claro e em escuro. A jornada (`/en/journey/`, `/pt/jornada/`) com o sistema em escuro mantém `#05060f` e `accent-600` #8a90f4 da ADR 0010.
+axe-core 4.10.2 (`wcag2a`, `wcag2aa`, `wcag21a`, `wcag21aa`) em Chrome headless, build de produção, `/en/`, `/pt/` e `/404.html`: zero violações com `data-theme="dark"`, `data-theme="light"` e sem atributo, com o sistema emulado em claro e em escuro. Pendente de conferência pelo a11y-reviewer: axe em `/en/books/` e `/pt/livros/` nos dois temas forçados e rolagem horizontal a 375px. Para auditar, desligar `transition-colors` ou esperar `transitionend` após trocar o tema, senão o axe mede cores intermediárias. A jornada (`/en/journey/`, `/pt/jornada/`) com o sistema em escuro mantém `#05060f` e `accent-600` #8a90f4 da ADR 0010.
 
 ## Relação com a ADR 0001
 

@@ -46,7 +46,7 @@ export function Hero() {
             {profile.stack.map((item) => (
               <li
                 key={item}
-                className="rounded-2xl border border-line bg-surface-raised px-3 py-1 text-sm text-fg-muted"
+                className="rounded-2xl border border-line-strong bg-surface-raised px-3 py-1 text-sm text-fg-muted"
               >
                 {item}
               </li>

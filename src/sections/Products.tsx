@@ -72,7 +72,7 @@ export function Products() {
                   {product.stack.map((tech) => (
                     <li
                       key={tech}
-                      className="rounded-2xl bg-accent-50 px-3 py-1 text-sm font-medium text-accent-800"
+                      className="rounded-2xl border border-accent-600 bg-accent-50 px-3 py-1 text-sm font-medium text-accent-800"
                     >
                       {tech}
                     </li>
