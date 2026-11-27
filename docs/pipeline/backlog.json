@@ -303,7 +303,8 @@
         "2026-11-26 rodada 11 (PO): content/assets/profile.jpg still unchanged since dc647ca and the photo pending item is still [ ]. Stays blocked.",
         "2026-11-26 rodada 12 (PO): content/assets/profile.jpg still unchanged since dc647ca and the photo pending item is still [ ]. Stays blocked.",
         "2026-11-26 rodada 13 (PO): content/assets/profile.jpg still unchanged since dc647ca and the photo pending item is still [ ]. Stays blocked.",
-        "2026-11-26 rodada 14 (PO): content/assets/profile.jpg still unchanged since dc647ca and the photo pending item is still [ ]. Stays blocked."
+        "2026-11-26 rodada 14 (PO): content/assets/profile.jpg still unchanged since dc647ca and the photo pending item is still [ ]. Stays blocked.",
+        "2026-11-26 rodada 15 (PO): content/assets/profile.jpg still unchanged since dc647ca and the photo pending item is still [ ]. Stays blocked."
       ]
     },
     {
@@ -2100,6 +2101,181 @@
       "commit": "6b30a34",
       "notes": [
         "2026-11-26 rodada 14 (PO): created from the stakeholder decisions in REPORT (rodada 4) and docs/specs/2026-11-26-dark-mode-e-produtos.md."
+      ]
+    },
+    {
+      "id": "T-093",
+      "title": "Switch the accent and tinted neutrals from teal to blue in both themes (ADR 0012)",
+      "type": "design-system",
+      "priority": "P1",
+      "touchesUi": true,
+      "acceptance": [
+        "In src/index.css the light @theme scale --color-accent-50..950 is a blue scale at hue ~217deg with accent-600 = #2563eb and accent-700 = #1d4ed8; the dark block mirrors it (ADR 0011 pattern) with accent-600 = #60a5fa and accent-700 = #93c5fd; no token is renamed",
+        "surface*, fg*, line* and --shadow-tint are retinted toward the same blue in both themes, with dark --color-surface = #0b1120; shadows keep using --shadow-tint (no pure black, no glow); the journey block (--journey-* and the tokens it remaps) is unchanged",
+        "docs/adr/0012-blue-accent.md exists (status Accepted) with the light and dark values, a contrast table for the ADR 0001 roles in both themes (body text >= 4.5:1, UI and large text >= 3:1, focus ring >= 3:1 on surface, surface-raised and surface-sunken, tag pair accent-50/100 + accent-800 >= 4.5:1) and a \"Quando reabrir\" section",
+        "ADR 0001 and ADR 0011 each get a dated addendum pointing to ADR 0012; no existing paragraph of either is edited",
+        "yarn typecheck, yarn lint, yarn test and yarn build pass"
+      ],
+      "dependsOn": [],
+      "status": "todo",
+      "attempts": 0,
+      "commit": null,
+      "notes": [
+        "2026-11-26 rodada 15 (PO): created from the stakeholder decisions in REPORT (rodada 5) and docs/specs/2026-11-26-azul-e-largura.md.",
+        "One task for both themes on purpose: the accent is one decision recorded in one ADR, and splitting light and dark would publish a half-teal site if the second task were rejected."
+      ]
+    },
+    {
+      "id": "T-094",
+      "title": "Remove teal outside the tokens: no-JS fallback, theme-color, favicon and 404",
+      "type": "fix",
+      "priority": "P1",
+      "touchesUi": true,
+      "acceptance": [
+        "themeSurface in src/lib/theme.ts equals the new --color-surface values from T-093 (light and dark), so both generated theme-color metas use them",
+        "The no-JS fallback <style> in index.html and public/favicon.svg use the T-093 values (favicon tile = accent-600 light / accent-700 dark, mark = on-accent), and their mirror comments still name the tokens",
+        "grep -riE \"#0f7c72|#11645d|#159a8c|#0c1615|#62d4c2|#132120|#e4eeec|#f8faf9|#3dbcab|#cbf5ec|#effcf9|#13504b|#052725|teal\" over src/, public/, index.html, 404.html, en/, pt/ and vite.config.ts finds nothing (docs/adr and docs/pipeline are allowed)",
+        "axe-core reports no WCAG A/AA violations on /en/, /pt/, /en/books/, /pt/livros/ and the 404 page with data-theme forced to light and to dark; ::selection, tags, the books progress bar and the focus ring use only tokens",
+        "The journey pages (en/journey/index.html, pt/jornada/index.html) keep #05060f as theme-color and background"
+      ],
+      "dependsOn": [
+        "T-093"
+      ],
+      "status": "todo",
+      "attempts": 0,
+      "commit": null,
+      "notes": [
+        "2026-11-26 rodada 15 (PO): created from the stakeholder decisions in REPORT (rodada 5) and docs/specs/2026-11-26-azul-e-largura.md."
+      ]
+    },
+    {
+      "id": "T-095",
+      "title": "Widen the main container and footer to max-w-7xl aligned with the header",
+      "type": "feature",
+      "priority": "P1",
+      "touchesUi": true,
+      "acceptance": [
+        "The <main> in src/App.tsx and the inner wrapper of src/components/Footer.tsx use max-w-7xl with the same horizontal padding classes as the header wrapper (px-4 sm:px-6); no max-w-5xl remains in src/",
+        "At 1280px and 1536px the left edge of the header logo, the first section heading and the footer text share the same x coordinate, and the side margins at 1536px are symmetric",
+        "Running text (Hero tagline, About paragraphs, Products descriptions, Experience bullets, testimonial quotes, Journey and Books intro paragraphs) is capped with max-w-prose or an equivalent 65-75ch limit; no paragraph line exceeds 75 characters at 1536px",
+        "The journey page keeps its current widths: the stage stays full-bleed and the content below it is not wider than before this task",
+        "No horizontal scroll at 375px, 1024px, 1280px and 1536px on /en/, /pt/, /en/books/ and /pt/livros/"
+      ],
+      "dependsOn": [
+        "T-093"
+      ],
+      "status": "todo",
+      "attempts": 0,
+      "commit": null,
+      "notes": [
+        "2026-11-26 rodada 15 (PO): created from the stakeholder decisions in REPORT (rodada 5) and docs/specs/2026-11-26-azul-e-largura.md.",
+        "PO decision: products stay one per row with the approved 2/5 + 3/5 split and no sticky left column for now. The wider container already shortens the right column, so the empty space reported in T-087 is re-checked at 1280px before adding sticky."
+      ]
+    },
+    {
+      "id": "T-096",
+      "title": "Add xl columns to Skills and the Education side grid",
+      "type": "feature",
+      "priority": "P1",
+      "touchesUi": true,
+      "acceptance": [
+        "The Skills grid in src/sections/Skills.tsx keeps 1 column below sm and 2 from sm, and shows 3 columns from lg and 4 from xl (3 from xl if 4 would make a card narrower than 16rem at 1280px)",
+        "The certifications/languages grid in src/sections/Education.tsx uses the extra width from lg: at 1280px no group leaves an empty right half of the container",
+        "Cards in the same row have equal height (grid stretch) and tags wrap without horizontal scroll at 375px and 1280px"
+      ],
+      "dependsOn": [
+        "T-095"
+      ],
+      "status": "todo",
+      "attempts": 0,
+      "commit": null,
+      "notes": [
+        "2026-11-26 rodada 15 (PO): created from the stakeholder decisions in REPORT (rodada 5) and docs/specs/2026-11-26-azul-e-largura.md."
+      ]
+    },
+    {
+      "id": "T-097",
+      "title": "Lay out testimonials in two columns from lg",
+      "type": "feature",
+      "priority": "P1",
+      "touchesUi": true,
+      "acceptance": [
+        "The testimonials container in src/sections/Testimonials.tsx is 1 column below lg and 2 columns from lg, with the six testimonials in the same order as src/content/testimonials.ts",
+        "At 1280px the Testimonials section is at most 60% as tall as the single-column version measured before the change",
+        "Each quote keeps its lang attribute, the translated label and the figcaption structure; no horizontal scroll at 375px"
+      ],
+      "dependsOn": [
+        "T-095"
+      ],
+      "status": "todo",
+      "attempts": 0,
+      "commit": null,
+      "notes": [
+        "2026-11-26 rodada 15 (PO): created from the stakeholder decisions in REPORT (rodada 5) and docs/specs/2026-11-26-azul-e-largura.md."
+      ]
+    },
+    {
+      "id": "T-098",
+      "title": "Add xl columns to the Books lists and the home Teasers",
+      "type": "feature",
+      "priority": "P1",
+      "touchesUi": true,
+      "acceptance": [
+        "Both book lists in src/sections/Books.tsx are 1 column below sm, 2 from sm and 3 from lg (4 from xl optional)",
+        "The teaser list in src/sections/Teasers.tsx uses the extra width from lg: no teaser card is wider than 40rem at 1280px",
+        "Progress bars keep their percentage label and every book title stays visible at 375px, 1280px and 1536px"
+      ],
+      "dependsOn": [
+        "T-095"
+      ],
+      "status": "todo",
+      "attempts": 0,
+      "commit": null,
+      "notes": [
+        "2026-11-26 rodada 15 (PO): created from the stakeholder decisions in REPORT (rodada 5) and docs/specs/2026-11-26-azul-e-largura.md."
+      ]
+    },
+    {
+      "id": "T-099",
+      "title": "Split each Experience entry into a meta column and a details column from lg",
+      "type": "feature",
+      "priority": "P1",
+      "touchesUi": true,
+      "acceptance": [
+        "From lg each timeline item in src/sections/Experience.tsx shows role, company, period and context in a left column and the highlight badge and bullets in a right column; below lg the layout stays the current single column",
+        "The timeline line and the accent-600 dot stay attached to every entry, and the entries keep the cv.md order (reverse chronological)",
+        "The heading order (h2 section, h3 role) and the screen-reader separators in the period are unchanged; no horizontal scroll at 375px and 1024px"
+      ],
+      "dependsOn": [
+        "T-095"
+      ],
+      "status": "todo",
+      "attempts": 0,
+      "commit": null,
+      "notes": [
+        "2026-11-26 rodada 15 (PO): created from the stakeholder decisions in REPORT (rodada 5) and docs/specs/2026-11-26-azul-e-largura.md."
+      ]
+    },
+    {
+      "id": "T-100",
+      "title": "Sync the browser bar color on load and cancel the pending frame on rapid theme switches",
+      "type": "fix",
+      "priority": "P2",
+      "touchesUi": true,
+      "acceptance": [
+        "With dark saved and the OS in light (and the reverse), reloading any generated page except the journey leaves both theme-color metas with the saved theme surface at first paint (inline script from src/lib/theme.ts or equivalent)",
+        "applyThemePreference in src/lib/theme-apply.ts cancels the previous requestAnimationFrame chain before scheduling a new one, so two switches within two frames never let colors transition",
+        "A unit test (src/lib/theme.test.ts or a new file) covers the meta values for system, light and dark; yarn test passes"
+      ],
+      "dependsOn": [
+        "T-094"
+      ],
+      "status": "todo",
+      "attempts": 0,
+      "commit": null,
+      "notes": [
+        "2026-11-26 rodada 15 (PO): created from the stakeholder decisions in REPORT (rodada 5) and docs/specs/2026-11-26-azul-e-largura.md.",
+        "Merges the two T-091 follow-ups the stakeholder asked for in REPORT rodada 5 (item 3): same module, same concern, one small commit."
       ]
     }
   ]
