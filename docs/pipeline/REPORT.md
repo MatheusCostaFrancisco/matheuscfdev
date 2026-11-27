@@ -59,6 +59,18 @@ Resumo: 6 entregues · 29 para revisão · 1 bloqueadas · 0 no backlog
 - [ ] **Gate com navegador** — decidir se a esteira inclui Playwright com `reducedMotion: 'reduce'`. — Sim ou não.
 - [ ] **Limpeza local** — encerrar o `vite preview` na porta 4173; `docker rmi caddy:2-alpine` no WSL, se não for mais usado; reiniciar o Docker Desktop se ainda estiver travado.
 
+## Decisões do stakeholder para a próxima rodada
+
+Tomadas em 2026-11-26. A jornada foi aprovada ("ficou bom"), então fecham os itens de revisão T-081 a T-086 sobre túnel e paleta. O PO cria estas tarefas antes de qualquer P2. Spec: `docs/specs/2026-11-26-dark-mode-e-produtos.md`.
+
+1. **Dark mode (P1, várias tarefas).** O tema segue o sistema por padrão, e um botão no header oferece Sistema, Claro e Escuro, com a escolha salva no navegador.
+   - Tokens escuros com teal espelhado e AA.
+   - Script anti-flash no `<head>` de todas as páginas geradas.
+   - ADR 0011 substituindo a seção "Claro/escuro" da ADR 0001.
+   - A jornada continua sempre escura.
+   - O revisor confere em 375px e 1280px, nos dois temas.
+2. **Produtos na horizontal (P1, 1 tarefa).** Um card por linha na largura toda. A partir de `md`, nome, papel e descrição à esquerda; bullets, stack e link à direita. Isso fecha o item T-031 (espaço vazio do WoodFlow).
+
 ## Bloqueadas
 | Tarefa | Motivo | Tentativas |
 |---|---|---|
