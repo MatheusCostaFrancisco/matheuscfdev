@@ -73,7 +73,7 @@ export function Books() {
       </h1>
 
       <h2 className="mt-8 text-xl font-semibold text-fg">{groups.reading}</h2>
-      <ul className="mt-4 grid gap-4 sm:grid-cols-2">
+      <ul className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {books.reading.map((book) => (
           <ProgressBook key={book.title} book={book} />
         ))}
@@ -128,7 +128,7 @@ export function Books() {
       <h2 className="mt-10 text-xl font-semibold text-fg">
         {groups.wantToRead}
       </h2>
-      <ul className="mt-4 grid gap-4 sm:grid-cols-2">
+      <ul className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {books.wantToRead.map((book) => (
           <li
             key={book.title}
