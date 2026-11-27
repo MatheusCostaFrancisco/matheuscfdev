@@ -1,7 +1,9 @@
-import { themeSurface, type ThemePreference } from './theme'
+import { themeColorContent, type ThemePreference } from './theme'
 import { storeThemePreference } from './theme-storage'
 
 const switchingAttribute = 'data-theme-switching'
+
+let pendingFrame = 0
 
 /**
  * Keeps the browser bar in step with an explicit choice: both theme-color metas
@@ -10,8 +12,7 @@ const switchingAttribute = 'data-theme-switching'
 function syncThemeColorMetas(preference: ThemePreference): void {
   const metas = document.querySelectorAll<HTMLMetaElement>('meta[name="theme-color"]')
   metas.forEach((meta) => {
-    const own = meta.media.includes('dark') ? themeSurface.dark : themeSurface.light
-    meta.content = preference === 'system' ? own : themeSurface[preference]
+    meta.content = themeColorContent(preference, meta.media)
   })
 }
 
@@ -30,7 +31,8 @@ export function applyThemePreference(preference: ThemePreference): void {
   }
   syncThemeColorMetas(preference)
   storeThemePreference(preference)
-  window.requestAnimationFrame(() => {
-    window.requestAnimationFrame(() => root.removeAttribute(switchingAttribute))
+  window.cancelAnimationFrame(pendingFrame)
+  pendingFrame = window.requestAnimationFrame(() => {
+    pendingFrame = window.requestAnimationFrame(() => root.removeAttribute(switchingAttribute))
   })
 }

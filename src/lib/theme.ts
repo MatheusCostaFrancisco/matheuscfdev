@@ -33,9 +33,19 @@ export function parseThemePreference(value: string | null | undefined): ThemePre
 }
 
 /**
+ * Content of one theme-color meta. An explicit theme paints both metas with its
+ * surface; "system" leaves each meta on the surface of its own media query.
+ */
+export function themeColorContent(preference: ThemePreference, media: string): string {
+  if (preference !== 'system') return themeSurface[preference]
+  return media.includes('dark') ? themeSurface.dark : themeSurface.light
+}
+
+/**
  * Inline <head> script injected on every generated page except the journey
  * (vite.config.ts, themePlugin). It runs before the stylesheet paints and
  * applies the same rule as parseThemePreference: only "light" or "dark" set
- * data-theme, anything else leaves it unset.
+ * data-theme and paint both theme-color metas with that theme's surface (same
+ * result as themeColorContent); anything else leaves both untouched.
  */
-export const themeInitScript = `(function(){try{var t=window.localStorage.getItem(${JSON.stringify(themeStorageKey)});if(${JSON.stringify(explicitThemes)}.indexOf(t)>=0)document.documentElement.setAttribute("data-theme",t)}catch(e){}})();`
+export const themeInitScript = `(function(){try{var t=window.localStorage.getItem(${JSON.stringify(themeStorageKey)});if(${JSON.stringify(explicitThemes)}.indexOf(t)>=0){var d=document;d.documentElement.setAttribute("data-theme",t);var s=${JSON.stringify(themeSurface)}[t];var m=d.querySelectorAll('meta[name="theme-color"]');for(var i=0;i<m.length;i++)m[i].setAttribute("content",s)}}catch(e){}})();`
