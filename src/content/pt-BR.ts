@@ -181,6 +181,11 @@ export const createPtBR = (years: ExperienceYears): SiteContent => ({
           'pt-BR': { short: 'PT', name: 'Português do Brasil (PT)' },
         },
       },
+      theme: {
+        groupLabel: 'Tema',
+        options: { system: 'Sistema', light: 'Claro', dark: 'Escuro' },
+        currentLabel: (currentOption) => `Tema: ${currentOption}`,
+      },
     },
     hero: { stackLabel: 'Stack principal', getInTouch: 'Entre em contato', linkedin: 'LinkedIn' },
     contact: { email: 'E-mail', linkedin: 'LinkedIn', github: 'GitHub', location: 'Localização' },

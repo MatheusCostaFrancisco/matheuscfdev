@@ -63,6 +63,12 @@ export interface UiStrings {
       readonly groupLabel: string
       readonly options: Record<'en' | 'pt-BR', { readonly short: string; readonly name: string }>
     }
+    readonly theme: {
+      readonly groupLabel: string
+      readonly options: Record<'system' | 'light' | 'dark', string>
+      /** Accessible name of the control, naming the current option. */
+      readonly currentLabel: (currentOption: string) => string
+    }
   }
   readonly hero: {
     readonly stackLabel: string

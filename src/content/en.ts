@@ -181,6 +181,11 @@ export const createEn = (years: ExperienceYears): SiteContent => ({
           'pt-BR': { short: 'PT', name: 'Português do Brasil (PT)' },
         },
       },
+      theme: {
+        groupLabel: 'Theme',
+        options: { system: 'System', light: 'Light', dark: 'Dark' },
+        currentLabel: (currentOption) => `Theme: ${currentOption}`,
+      },
     },
     hero: { stackLabel: 'Main stack', getInTouch: 'Get in touch', linkedin: 'LinkedIn' },
     contact: { email: 'E-mail', linkedin: 'LinkedIn', github: 'GitHub', location: 'Location' },
