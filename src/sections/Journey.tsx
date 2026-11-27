@@ -320,83 +320,85 @@ export function Journey() {
         }
       />
       <WorldDialog panel={openPanelData} onClosed={handleClosed} />
-      {!sceneActive && (
-        <div className="rounded-2xl border border-line bg-surface-raised p-6">
-          {title}
-          <div className="mt-4 grid gap-4 sm:grid-cols-2">
-            {fromTo}
-            {totals}
+      <div className="mx-auto max-w-journey">
+        {!sceneActive && (
+          <div className="rounded-2xl border border-line bg-surface-raised p-6">
+            {title}
+            <div className="mt-4 grid gap-4 sm:grid-cols-2">
+              {fromTo}
+              {totals}
+            </div>
           </div>
-        </div>
-      )}
-
-      <h2
-        className={cn(
-          sceneActive
-            ? "mt-10 text-2xl font-bold text-fg sm:text-3xl"
-            : "sr-only",
         )}
-      >
-        {sceneActive ? text.viewAsList : text.worldsHeading}
-      </h2>
-      <div className="mt-4 rounded-2xl border border-line bg-surface-raised p-6">
-        <p className="text-base text-fg-muted">{destination.phrase}</p>
-        <p className="mt-4 text-sm font-semibold text-fg">
-          {text.legendHeading}
-        </p>
-        <ul className="mt-2 flex flex-wrap gap-2">
-          {legendStatuses.map((status) => (
-            <li key={status}>
-              <StatusBadge status={status} label={text.status[status]} />
-            </li>
-          ))}
-        </ul>
-      </div>
-      <div className="relative mt-8 bg-surface">
-        <div
-          ref={trackRef}
-          aria-hidden="true"
-          className="absolute bottom-0 left-[0.4375rem] top-9 w-0.5 bg-line"
+
+        <h2
+          className={cn(
+            sceneActive
+              ? "mt-10 text-2xl font-bold text-fg sm:text-3xl"
+              : "sr-only",
+          )}
         >
-          <div
-            ref={fillRef}
-            className="journey-fill h-full w-full bg-journey-completed"
-          />
+          {sceneActive ? text.viewAsList : text.worldsHeading}
+        </h2>
+        <div className="mt-4 rounded-2xl border border-line bg-surface-raised p-6">
+          <p className="max-w-measure text-base text-fg-muted">{destination.phrase}</p>
+          <p className="mt-4 text-sm font-semibold text-fg">
+            {text.legendHeading}
+          </p>
+          <ul className="mt-2 flex flex-wrap gap-2">
+            {legendStatuses.map((status) => (
+              <li key={status}>
+                <StatusBadge status={status} label={text.status[status]} />
+              </li>
+            ))}
+          </ul>
         </div>
-        <p id={keyboardHintId} className="sr-only">
-          {text.keyboardHint}
-        </p>
-        <ol
-          className="space-y-4 pl-8"
-        >
-          {worlds.map((world, index) => {
-            const stage = state.worlds[index];
-            if (!stage) return null;
-            return (
-              <StageCard
-                key={world.id}
-                id={world.id}
-                title={worldTitle(world)}
-                status={stage.status}
-                xp={stage.xp}
-                lockedWorld={worlds[index - 1]?.number}
-                boss={world.boss}
-                checklist={<StudyList study={world.study} />}
-                onOpen={openPanel}
-              />
-            );
-          })}
-          <StageCard
-            id={finalBoss.id}
-            title={finalBoss.title}
-            note={finalBoss.note}
-            status={state.finalBoss.status}
-            xp={state.finalBoss.xp}
-            lockedWorld={lastWorld?.number}
-            boss={finalBoss.boss}
-            onOpen={openPanel}
-          />
-        </ol>
+        <div className="relative mt-8 bg-surface">
+          <div
+            ref={trackRef}
+            aria-hidden="true"
+            className="absolute bottom-0 left-[0.4375rem] top-9 w-0.5 bg-line"
+          >
+            <div
+              ref={fillRef}
+              className="journey-fill h-full w-full bg-journey-completed"
+            />
+          </div>
+          <p id={keyboardHintId} className="sr-only">
+            {text.keyboardHint}
+          </p>
+          <ol
+            className="space-y-4 pl-8"
+          >
+            {worlds.map((world, index) => {
+              const stage = state.worlds[index];
+              if (!stage) return null;
+              return (
+                <StageCard
+                  key={world.id}
+                  id={world.id}
+                  title={worldTitle(world)}
+                  status={stage.status}
+                  xp={stage.xp}
+                  lockedWorld={worlds[index - 1]?.number}
+                  boss={world.boss}
+                  checklist={<StudyList study={world.study} />}
+                  onOpen={openPanel}
+                />
+              );
+            })}
+            <StageCard
+              id={finalBoss.id}
+              title={finalBoss.title}
+              note={finalBoss.note}
+              status={state.finalBoss.status}
+              xp={state.finalBoss.xp}
+              lockedWorld={lastWorld?.number}
+              boss={finalBoss.boss}
+              onOpen={openPanel}
+            />
+          </ol>
+        </div>
       </div>
     </section>
   );

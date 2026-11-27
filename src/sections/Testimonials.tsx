@@ -28,7 +28,7 @@ function TestimonialCard({ testimonial }: TestimonialCardProps) {
           {ui.testimonials.translatedLabel}
         </p>
       )}
-      <blockquote className="space-y-3 text-base text-fg [overflow-wrap:anywhere]">
+      <blockquote className="max-w-measure space-y-3 text-base text-fg [overflow-wrap:anywhere]">
         {paragraphs.map((paragraph) => (
           <p key={paragraph}>{paragraph}</p>
         ))}
@@ -70,7 +70,7 @@ export function Testimonials() {
       <h2 id="testimonials-title" className="text-2xl font-semibold text-fg">
         {ui.testimonials.heading}
       </h2>
-      <div className="mt-8 grid gap-4">
+      <div className="mt-8 grid gap-4 lg:grid-cols-2">
         {testimonials.map((testimonial) => (
           <TestimonialCard
             key={`${testimonial.name}-${testimonial.date}`}

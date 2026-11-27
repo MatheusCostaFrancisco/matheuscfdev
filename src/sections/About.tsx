@@ -16,7 +16,7 @@ export function About() {
         {aboutItem.label}
       </h2>
       {profile.summary.map((paragraph) => (
-        <p key={paragraph} className="mt-4 max-w-prose text-lg text-fg">
+        <p key={paragraph} className="mt-4 max-w-measure text-lg text-fg">
           {paragraph}
         </p>
       ))}

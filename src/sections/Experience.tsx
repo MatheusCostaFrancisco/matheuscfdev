@@ -59,7 +59,7 @@ export function Experience() {
                 </p>
               ) : null}
               {job.bullets.length > 0 ? (
-                <ul className="mt-4 list-disc space-y-2 pl-5 text-base text-fg marker:text-accent-600">
+                <ul className="mt-4 max-w-measure list-disc space-y-2 pl-5 text-base text-fg marker:text-accent-600">
                   {job.bullets.map((bullet) => (
                     <li key={bullet} className="break-words">
                       {bullet}

@@ -86,6 +86,10 @@
   --spacing-header: 4.5rem;
   /* Journey stage floor on narrow, short viewports (320px at 400% zoom) */
   --spacing-stage-min: 32rem;
+  /* Running-text measure: ~33em keeps Poppins lines under 75 characters */
+  --container-measure: 33em;
+  /* Journey list column: 64rem minus 2 x 1.5rem of section padding */
+  --container-journey: 61rem;
 
   /* Typography: one family */
   --font-*: initial;

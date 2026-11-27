@@ -82,7 +82,7 @@ function App({ page }: AppProps) {
       <main
         id="main"
         tabIndex={-1}
-        className="mx-auto w-full max-w-5xl flex-1 section-offset px-4 py-10 sm:px-6"
+        className="mx-auto w-full max-w-7xl flex-1 section-offset px-4 py-10 sm:px-6"
       >
         <Suspense fallback={<PageFallback />}>
           <Content />

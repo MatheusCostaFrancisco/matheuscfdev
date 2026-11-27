@@ -41,7 +41,7 @@ export function Hero() {
             {profile.name}
           </h1>
           <p className="mt-2 text-xl font-medium text-fg-muted">{profile.role}</p>
-          <p className="mt-4 max-w-prose text-lg text-fg">{profile.tagline}</p>
+          <p className="mt-4 max-w-measure text-lg text-fg">{profile.tagline}</p>
           <ul aria-label={ui.hero.stackLabel} className="mt-6 flex flex-wrap gap-2">
             {profile.stack.map((item) => (
               <li

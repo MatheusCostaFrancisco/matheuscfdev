@@ -51,12 +51,12 @@ export function Products() {
                   {product.role}
                 </p>
               ) : null}
-              <p className="mt-3 text-base text-fg">{product.description}</p>
+              <p className="mt-3 max-w-measure text-base text-fg">{product.description}</p>
               </div>
               {hasDetails ? (
               <div className="min-w-0 space-y-4 md:col-span-3">
               {product.bullets.length > 0 ? (
-                <ul className="list-disc space-y-2 pl-5 text-base text-fg marker:text-accent-600">
+                <ul className="max-w-measure list-disc space-y-2 pl-5 text-base text-fg marker:text-accent-600">
                   {product.bullets.map((bullet) => (
                     <li key={bullet} className="break-words">
                       {bullet}
