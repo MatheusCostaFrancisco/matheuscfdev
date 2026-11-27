@@ -15,11 +15,11 @@ Resumo: 7 entregues · 33 para revisão · 1 bloqueadas · 0 no backlog
 | T-100 | `0e87293` | Barra do navegador sincronizada com o tema salvo ao carregar. Troca rápida de tema cancela o frame pendente. |
 
 ## Para revisão
-- [ ] **T-093 Azul nos dois temas** — Conferir o tom em /pt/ e /en/, claro e escuro, incluindo seleção de texto e anel de foco. — Gosto: a ADR 0001 tinha descartado o azul clássico por parecer portfólio comum; a ADR 0012 registra a escolha.
-- [ ] **T-093 Ajustes do escuro** — Botão "Entrar em contato" azul-claro com texto escuro; barra de livros quase branca; tags menos saturadas (escala 50–400 customizada). — Confirmar visualmente. Não há violação de AA.
+- [x] **T-093 Azul nos dois temas** — Conferir o tom em /pt/ e /en/, claro e escuro, incluindo seleção de texto e anel de foco. — Gosto: a ADR 0001 tinha descartado o azul clássico por parecer portfólio comum; a ADR 0012 registra a escolha. — Aprovado pelo Matheus em 2026-11-27 ("Ficou bom").
+- [x] **T-093 Ajustes do escuro** — Botão "Entrar em contato" azul-claro com texto escuro; barra de livros quase branca; tags menos saturadas (escala 50–400 customizada). — Confirmar visualmente. Não há violação de AA. — Aprovado em 2026-11-27.
 - [ ] **T-093 accent-900 claro** — `#1b3378` em vez de `#1e3a8a` do Tailwind, para a barra de livros chegar a 3,22:1 (antes 2,85:1). — Confirmar o desvio de um passo da escala.
 - [ ] **T-094 Cor do sistema** — Barra do navegador e favicon agora azuis. No escuro do SO o favicon fica em #93c5fd. — Confirmar no celular e nas abas. O favicon segue o SO, não o seletor do site (limitação já registrada).
-- [ ] **Visual do publicado (T-093 a T-099)** — Abrir /pt/ e /en/ em claro e escuro, com Sistema, Claro e Escuro, em 375, 1280 e 1536 px: azul, largura, grids, home e livros. Conferir scroll horizontal em 768 e 1024 px. Rodar axe nas rotas de livros e 404 (não registrado em T-094). — Escrever ao lado do item correspondente se algo estiver ruim.
+- [x] **Visual do publicado (T-093 a T-099)** — Abrir /pt/ e /en/ em claro e escuro, com Sistema, Claro e Escuro, em 375, 1280 e 1536 px: azul, largura, grids, home e livros. Conferir scroll horizontal em 768 e 1024 px. Rodar axe nas rotas de livros e 404 (não registrado em T-094). — Escrever ao lado do item correspondente se algo estiver ruim. — Aprovado pelo Matheus em 2026-11-27 ("Ficou bom"); axe em livros e 404 segue sem registro.
 - [ ] **T-095 Jornada** — Conteúdo abaixo do palco ficou com 60rem centralizado e não alinha com a logo em 1280 e 1536 px. — Aceitar, ou tirar `mx-auto` para alinhar à esquerda.
 - [ ] **T-095 Medida do texto** — Texto corrido em 33em (~60–66 caracteres). Ao lado, About e Hero ficam com vazio à direita em telas largas. — Confirmar 33em, ou subir para 38em.
 - [ ] **T-096 Skills em lg** — Entre 1024 e 1279 px, 8 grupos em 3 colunas fecham em 3+3+2, com uma célula vazia. — Aceitar, ou o último card ocupa 2 colunas em lg.
