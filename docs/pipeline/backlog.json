@@ -1971,8 +1971,8 @@
       "extra": [
         "Closes the T-031 review item (WoodFlow empty space). Same commit only touches Products.tsx; no content change."
       ],
-      "status": "todo",
-      "attempts": 0,
+      "status": "done",
+      "attempts": 1,
       "commit": null,
       "notes": [
         "2026-11-26 rodada 14 (PO): created from the stakeholder decisions in REPORT (rodada 4) and docs/specs/2026-11-26-dark-mode-e-produtos.md.",

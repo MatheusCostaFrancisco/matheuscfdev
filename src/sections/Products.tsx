@@ -2,7 +2,7 @@ import { cn } from "../lib/cn";
 import { useContent } from "../lib/use-content";
 
 const cardClass =
-  "flex flex-col rounded-2xl border border-line bg-surface-raised p-6 shadow-sm";
+  "grid gap-x-8 gap-y-4 rounded-2xl border border-line bg-surface-raised p-6 shadow-sm";
 
 const interactiveCardClass = cn(
   "motion-safe:transition-shadow motion-safe:duration-200",
@@ -30,10 +30,21 @@ export function Products() {
       <h2 id="products-title" className="text-2xl font-semibold text-fg">
         {productsItem.label}
       </h2>
-      <ul className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {products.map((product) => (
+      <ul className="mt-8 grid grid-cols-1 gap-6">
+        {products.map((product) => {
+          const hasDetails =
+            product.bullets.length > 0 || product.stack.length > 0 || Boolean(product.url);
+          return (
           <li key={product.name} data-reveal-item className="flex">
-            <article className={cn(cardClass, "w-full min-w-0", product.url && interactiveCardClass)}>
+            <article
+              className={cn(
+                cardClass,
+                "w-full min-w-0",
+                hasDetails && "md:grid-cols-5",
+                product.url && interactiveCardClass,
+              )}
+            >
+              <div className={cn("min-w-0", hasDetails && "md:col-span-2")}>
               <h3 className="text-xl font-semibold text-fg">{product.name}</h3>
               {product.role ? (
                 <p className="mt-1 text-sm font-medium text-accent-700">
@@ -41,8 +52,11 @@ export function Products() {
                 </p>
               ) : null}
               <p className="mt-3 text-base text-fg">{product.description}</p>
+              </div>
+              {hasDetails ? (
+              <div className="min-w-0 space-y-4 md:col-span-3">
               {product.bullets.length > 0 ? (
-                <ul className="mt-4 list-disc space-y-2 pl-5 text-base text-fg marker:text-accent-600">
+                <ul className="list-disc space-y-2 pl-5 text-base text-fg marker:text-accent-600">
                   {product.bullets.map((bullet) => (
                     <li key={bullet} className="break-words">
                       {bullet}
@@ -53,7 +67,7 @@ export function Products() {
               {product.stack.length > 0 ? (
                 <ul
                   aria-label={ui.products.stackLabel(product.name)}
-                  className="mt-4 flex flex-wrap gap-2"
+                  className="flex flex-wrap gap-2"
                 >
                   {product.stack.map((tech) => (
                     <li
@@ -66,7 +80,7 @@ export function Products() {
                 </ul>
               ) : null}
               {product.url ? (
-                <p className="mt-4 text-base">
+                <p className="text-base">
                   <a
                     href={product.url}
                     target="_blank"
@@ -81,9 +95,12 @@ export function Products() {
                   </a>
                 </p>
               ) : null}
+              </div>
+              ) : null}
             </article>
           </li>
-        ))}
+          );
+        })}
       </ul>
     </section>
   );
