@@ -34,39 +34,43 @@ export function Experience() {
               aria-hidden="true"
               className="absolute top-2 -left-1.75 size-3 rounded-full border-2 border-accent-600 bg-surface"
             />
-            <article className="min-w-0">
-              <h3 className="text-xl font-semibold text-fg">{job.role}</h3>
-              <p className="mt-1 text-base font-medium text-accent-700">
-                {job.company}
-              </p>
-              <p className="mt-1 text-sm text-fg-muted">
-                <PeriodDate label={job.start} /> –{" "}
-                <PeriodDate label={job.end} />
-                {job.location ? (
-                  <>
-                    <span aria-hidden="true"> · </span>
-                    <span className="sr-only">, </span>
-                    {job.location}
-                  </>
-                ) : null}
-              </p>
-              {job.context ? (
-                <p className="mt-1 text-sm text-fg-muted">{job.context}</p>
-              ) : null}
-              {job.note ? (
-                <p className="mt-3 inline-block rounded-2xl border border-accent-600 bg-accent-50 px-3 py-1 text-sm font-medium text-accent-800">
-                  {job.note}
+            <article className="min-w-0 lg:grid lg:grid-cols-[minmax(0,18rem)_minmax(0,1fr)] lg:gap-x-10 xl:grid-cols-[minmax(0,22rem)_minmax(0,1fr)]">
+              <div className="min-w-0">
+                <h3 className="text-xl font-semibold text-fg">{job.role}</h3>
+                <p className="mt-1 text-base font-medium text-accent-700">
+                  {job.company}
                 </p>
-              ) : null}
-              {job.bullets.length > 0 ? (
-                <ul className="mt-4 max-w-measure list-disc space-y-2 pl-5 text-base text-fg marker:text-accent-600">
-                  {job.bullets.map((bullet) => (
-                    <li key={bullet} className="break-words">
-                      {bullet}
-                    </li>
-                  ))}
-                </ul>
-              ) : null}
+                <p className="mt-1 text-sm text-fg-muted">
+                  <PeriodDate label={job.start} /> –{" "}
+                  <PeriodDate label={job.end} />
+                  {job.location ? (
+                    <>
+                      <span aria-hidden="true"> · </span>
+                      <span className="sr-only">, </span>
+                      {job.location}
+                    </>
+                  ) : null}
+                </p>
+                {job.context ? (
+                  <p className="mt-1 text-sm text-fg-muted">{job.context}</p>
+                ) : null}
+              </div>
+              <div className="min-w-0">
+                {job.note ? (
+                  <p className="mt-3 inline-block lg:mt-0 rounded-2xl border border-accent-600 bg-accent-50 px-3 py-1 text-sm font-medium text-accent-800">
+                    {job.note}
+                  </p>
+                ) : null}
+                {job.bullets.length > 0 ? (
+                  <ul className="mt-4 max-w-measure list-disc lg:mt-4 space-y-2 pl-5 text-base text-fg marker:text-accent-600">
+                    {job.bullets.map((bullet) => (
+                      <li key={bullet} className="break-words">
+                        {bullet}
+                      </li>
+                    ))}
+                  </ul>
+                ) : null}
+              </div>
             </article>
           </li>
         ))}
