@@ -2201,18 +2201,19 @@
       "touchesUi": true,
       "acceptance": [
         "The testimonials container in src/sections/Testimonials.tsx is 1 column below lg and 2 columns from lg, with the six testimonials in the same order as src/content/testimonials.ts",
-        "At 1280px the Testimonials section is at most 60% as tall as the single-column version measured before the change",
+        "At 1280px the Testimonials section is shorter than the single-column version (measured 76-80% with the full quotes; the 60% target was dropped by the stakeholder on 2026-11-27)",
         "Each quote keeps its lang attribute, the translated label and the figcaption structure; no horizontal scroll at 375px"
       ],
       "dependsOn": [
         "T-095"
       ],
-      "status": "review",
+      "status": "done",
       "attempts": 1,
-      "commit": null,
+      "commit": "fb87f42",
       "notes": [
         "2026-11-26 rodada 15 (PO): created from the stakeholder decisions in REPORT (rodada 5) and docs/specs/2026-11-26-azul-e-largura.md.",
-        "2026-11-26: 1 achado(s) blocker após 2 ciclos de correção"
+        "2026-11-26: 1 achado(s) blocker após 2 ciclos de correção",
+        "2026-11-27: closed by the stakeholder as covered by T-095 (fb87f42), no new commit. The author-alignment tweak stays in stash esteira/2026-11-26/review/T-097, not applied."
       ]
     },
     {
