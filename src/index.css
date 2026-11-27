@@ -74,6 +74,7 @@
 
 /*
  * Design tokens. Decisions and contrast ratios: docs/adr/0001-visual-direction.md
+ * (light) and docs/adr/0011-dark-theme.md (dark values, below in @layer base).
  *
  * Each namespace that could leak a second font, a second accent or an untinted
  * shadow is reset with `initial` before the project tokens are declared, so
@@ -148,25 +149,101 @@
   /* Radius: rounded-2xl is the default for cards, buttons and inputs */
   --radius-2xl: 1rem;
 
-  /* Shadows tinted with the fg hue (rgb 18 34 32), never pure black or glow */
+  /*
+   * Shadows tinted with the fg hue, never pure black or glow. The color is
+   * read at runtime from --shadow-tint (rgb channels) and --shadow-strength
+   * (alpha multiplier), declared in the base layer per theme, because Tailwind
+   * inlines these values into the utilities: overriding --shadow-sm itself in
+   * the dark theme would not reach .shadow-sm. Light: 18 34 32 at x1.
+   */
   --shadow-*: initial;
-  --shadow-xs: 0 1px 2px 0 rgb(18 34 32 / 0.05);
-  --shadow-sm: 0 1px 3px 0 rgb(18 34 32 / 0.07), 0 1px 2px -1px rgb(18 34 32 / 0.05);
-  --shadow-md: 0 4px 10px -2px rgb(18 34 32 / 0.08), 0 2px 4px -2px rgb(18 34 32 / 0.05);
-  --shadow-lg: 0 12px 24px -6px rgb(18 34 32 / 0.1), 0 4px 8px -4px rgb(18 34 32 / 0.05);
-  --shadow-xl: 0 24px 48px -12px rgb(18 34 32 / 0.14);
+  --shadow-xs: 0 1px 2px 0 rgb(var(--shadow-tint) / calc(0.05 * var(--shadow-strength)));
+  --shadow-sm: 0 1px 3px 0 rgb(var(--shadow-tint) / calc(0.07 * var(--shadow-strength))),
+    0 1px 2px -1px rgb(var(--shadow-tint) / calc(0.05 * var(--shadow-strength)));
+  --shadow-md: 0 4px 10px -2px rgb(var(--shadow-tint) / calc(0.08 * var(--shadow-strength))),
+    0 2px 4px -2px rgb(var(--shadow-tint) / calc(0.05 * var(--shadow-strength)));
+  --shadow-lg: 0 12px 24px -6px rgb(var(--shadow-tint) / calc(0.1 * var(--shadow-strength))),
+    0 4px 8px -4px rgb(var(--shadow-tint) / calc(0.05 * var(--shadow-strength)));
+  --shadow-xl: 0 24px 48px -12px rgb(var(--shadow-tint) / calc(0.14 * var(--shadow-strength)));
 
   --inset-shadow-*: initial;
-  --inset-shadow-sm: inset 0 1px 2px rgb(18 34 32 / 0.06);
+  --inset-shadow-sm: inset 0 1px 2px rgb(var(--shadow-tint) / calc(0.06 * var(--shadow-strength)));
 
   --drop-shadow-*: initial;
-  --drop-shadow-md: 0 4px 6px rgb(18 34 32 / 0.08);
-  --drop-shadow-lg: 0 10px 16px rgb(18 34 32 / 0.1);
+  --drop-shadow-md: 0 4px 6px rgb(var(--shadow-tint) / calc(0.08 * var(--shadow-strength)));
+  --drop-shadow-lg: 0 10px 16px rgb(var(--shadow-tint) / calc(0.1 * var(--shadow-strength)));
+}
+
+/*
+ * Dark theme selection (docs/adr/0011-dark-theme.md): data-theme="dark" on
+ * <html>, or the system preference when <html> has neither data-theme="light"
+ * nor data-theme="journey" (the journey keeps its own palette, ADR 0010).
+ * The same rule backs the `dark:` variant, so tokens and utilities agree.
+ */
+@custom-variant dark {
+  &:where([data-theme="dark"], [data-theme="dark"] *) {
+    @slot;
+  }
+  @media (prefers-color-scheme: dark) {
+    &:where(
+        :root:not([data-theme="light"], [data-theme="journey"]),
+        :root:not([data-theme="light"], [data-theme="journey"]) *
+      ) {
+      @slot;
+    }
+  }
 }
 
 @layer base {
   :root {
+    color-scheme: light dark;
+    --shadow-tint: 18 34 32;
+    --shadow-strength: 1;
+  }
+
+  :root[data-theme="light"] {
     color-scheme: light;
+  }
+
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+  }
+
+  /*
+   * Dark values of the semantic tokens: same names, so no class changes. The
+   * teal scale is mirrored (50 is the darkest step), so light/dark pairs in
+   * components (bg-accent-50 + text-accent-800) stay pairs. Contrast table in
+   * ADR 0011.
+   */
+  :root {
+    @variant dark {
+      --color-surface: #0c1615;
+      --color-surface-raised: #132120;
+      --color-surface-sunken: #08100f;
+
+      --color-fg: #e4eeec;
+      --color-fg-muted: #a1b3af;
+      --color-on-accent: #052725;
+
+      --color-line: #24332f;
+      --color-line-strong: #667a75;
+
+      --color-accent-50: #0a2725;
+      --color-accent-100: #0e3734;
+      --color-accent-200: #13514b;
+      --color-accent-300: #176a61;
+      --color-accent-400: #1c857a;
+      --color-accent-500: #26a091;
+      --color-accent-600: #3dbcab;
+      --color-accent-700: #62d4c2;
+      --color-accent-800: #93e6d8;
+      --color-accent-900: #c0f2e8;
+      --color-accent-950: #e8fbf7;
+
+      /* Near-black teal (2 9 8), never #000; alphas x4 so elevation reads on dark */
+      --shadow-tint: 2 9 8;
+      --shadow-strength: 4;
+    }
   }
 
   html {
