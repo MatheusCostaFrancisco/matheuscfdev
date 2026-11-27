@@ -302,7 +302,8 @@
         "2026-11-26 rodada 10 (PO): content/assets/profile.jpg still unchanged since dc647ca and the photo pending item is still [ ]. Stays blocked.",
         "2026-11-26 rodada 11 (PO): content/assets/profile.jpg still unchanged since dc647ca and the photo pending item is still [ ]. Stays blocked.",
         "2026-11-26 rodada 12 (PO): content/assets/profile.jpg still unchanged since dc647ca and the photo pending item is still [ ]. Stays blocked.",
-        "2026-11-26 rodada 13 (PO): content/assets/profile.jpg still unchanged since dc647ca and the photo pending item is still [ ]. Stays blocked."
+        "2026-11-26 rodada 13 (PO): content/assets/profile.jpg still unchanged since dc647ca and the photo pending item is still [ ]. Stays blocked.",
+        "2026-11-26 rodada 14 (PO): content/assets/profile.jpg still unchanged since dc647ca and the photo pending item is still [ ]. Stays blocked."
       ]
     },
     {
@@ -1947,6 +1948,159 @@
       "status": "done",
       "attempts": 1,
       "commit": "39b959e"
+    },
+    {
+      "id": "T-087",
+      "title": "Lay out product cards as full-width rows with a two-column interior from md",
+      "type": "feature",
+      "priority": "P1",
+      "touchesUi": true,
+      "acceptance": [
+        "The product list in src/sections/Products.tsx is a single column (no sm:grid-cols-2 / lg:grid-cols-3): one card per row at the container width, products in the same order as src/content",
+        "From md (768px) each card has two internal columns: name, role and description on the left (about 2/5 of the width); bullets, stack and link on the right. Below md the same order stacks in one column, with no horizontal scroll at 375px",
+        "A product with no bullets, no stack and no url renders in a single column with no empty right column; a product with only some of them has no empty gap where the missing block would be",
+        "At 1024px and 1280px no product card has a blank area caused by a taller neighbor card (the WoodFlow gap from T-031 is gone)",
+        "data-reveal-item, the hover/focus-within styles of linked cards and the sr-only link and stack labels are kept"
+      ],
+      "dependsOn": [
+        "T-009",
+        "T-020",
+        "T-030",
+        "T-031"
+      ],
+      "extra": [
+        "Closes the T-031 review item (WoodFlow empty space). Same commit only touches Products.tsx; no content change."
+      ],
+      "status": "todo",
+      "attempts": 0,
+      "commit": null,
+      "notes": [
+        "2026-11-26 rodada 14 (PO): created from the stakeholder decisions in REPORT (rodada 4) and docs/specs/2026-11-26-dark-mode-e-produtos.md.",
+        "Closes the T-031 review item (WoodFlow empty space). Same commit only touches Products.tsx; no content change."
+      ]
+    },
+    {
+      "id": "T-088",
+      "title": "Add dark values for the semantic tokens with system-following selection and ADR 0011",
+      "type": "design-system",
+      "priority": "P1",
+      "touchesUi": true,
+      "acceptance": [
+        "src/index.css gives dark values to surface*, fg*, on-accent, line*, accent-50…950 and the shadow tokens without renaming any class; the teal accent scale is mirrored (dark accent-50 is the darkest step) and dark shadows are tinted, with no pure black and no glow",
+        "Dark values apply when :root[data-theme=\"dark\"], or under @media (prefers-color-scheme: dark) when <html> has no data-theme=\"light\"; neither rule overrides the journey tokens on <html data-theme=\"journey\"> (the journey stays dark with the ADR 0010 palette)",
+        "color-scheme is light dark on the site (light only when data-theme=\"light\", dark when data-theme=\"dark\"), so native scrollbars and form controls follow the theme",
+        "docs/adr/0011-dark-theme.md (status Accepted) lists the dark values with contrast ratios for the ADR 0001 roles (body text >= 4.5:1, UI and large text >= 3:1, focus ring visible on every surface), the selection rule, how it supersedes the \"Claro/escuro\" section of ADR 0001 (which is not rewritten) and a \"Quando reabrir\" section",
+        "axe-core reports no WCAG A/AA color-contrast violation on /en/ and /pt/ with <html data-theme=\"dark\"> forced"
+      ],
+      "dependsOn": [
+        "T-001",
+        "T-081"
+      ],
+      "status": "todo",
+      "attempts": 0,
+      "commit": null,
+      "notes": [
+        "2026-11-26 rodada 14 (PO): created from the stakeholder decisions in REPORT (rodada 4) and docs/specs/2026-11-26-dark-mode-e-produtos.md."
+      ]
+    },
+    {
+      "id": "T-089",
+      "title": "Apply the saved theme before first paint on every generated page with color-scheme and theme-color metas",
+      "type": "infra",
+      "priority": "P1",
+      "touchesUi": true,
+      "acceptance": [
+        "src/lib/theme.ts exports the storage key, the preference values (system, light, dark) and a pure parser that returns system for a missing or invalid saved value, covered by a Vitest test",
+        "en/index.html, pt/index.html, en/books/index.html, pt/livros/index.html, 404.html and the root index.html get, from a single source (Vite plugin or shared snippet, not hand-copied logic), an inline <head> script that sets data-theme to light or dark from the saved choice before the CSS paints, wraps localStorage access in try/catch and leaves data-theme unset for system",
+        "Those pages have <meta name=\"color-scheme\" content=\"light dark\"> and two theme-color metas with media=\"(prefers-color-scheme: light)\" and media=\"(prefers-color-scheme: dark)\" using the surface values of each theme",
+        "The no-JS fallback styles of the root index.html get a dark variant under prefers-color-scheme: dark that mirrors the T-088 tokens",
+        "The journey pages keep data-theme=\"journey\", color-scheme dark and theme-color #05060f; the script does not run there or does not change data-theme"
+      ],
+      "dependsOn": [
+        "T-088",
+        "T-062"
+      ],
+      "status": "todo",
+      "attempts": 0,
+      "commit": null,
+      "notes": [
+        "2026-11-26 rodada 14 (PO): created from the stakeholder decisions in REPORT (rodada 4) and docs/specs/2026-11-26-dark-mode-e-produtos.md."
+      ]
+    },
+    {
+      "id": "T-090",
+      "title": "Add typed theme switcher labels in pt-BR and en",
+      "type": "content",
+      "priority": "P1",
+      "touchesUi": false,
+      "acceptance": [
+        "The UiStrings type in src/content/types.ts has a theme switcher group with the control name and the labels for System, Light and Dark, plus an accessible name that includes the current option",
+        "src/content/en.ts and src/content/pt-BR.ts fill every field (pt-BR: Sistema, Claro, Escuro), with no hardcoded string left for the switcher in components",
+        "yarn typecheck passes"
+      ],
+      "dependsOn": [
+        "T-016"
+      ],
+      "status": "todo",
+      "attempts": 0,
+      "commit": null,
+      "notes": [
+        "2026-11-26 rodada 14 (PO): created from the stakeholder decisions in REPORT (rodada 4) and docs/specs/2026-11-26-dark-mode-e-produtos.md."
+      ]
+    },
+    {
+      "id": "T-091",
+      "title": "Add the three-option theme switcher to the header and mobile menu",
+      "type": "feature",
+      "priority": "P1",
+      "touchesUi": true,
+      "acceptance": [
+        "The header shows a System / Light / Dark control on desktop and inside the mobile menu, with inline Lucide Monitor, Sun and Moon icons (stroke-width 1.75, no new dependency), each target at least 44px, with hover, focus-visible, :active and disabled styles from the design tokens",
+        "Its accessible name announces the current option in the page language (labels from T-090); choosing an option sets or removes data-theme on <html> and saves it with the T-089 helpers, inside try/catch so a blocked localStorage only keeps the choice for the session with no console error",
+        "With System chosen, data-theme is absent, so switching the OS theme changes the site live without reload",
+        "The control is not rendered on the journey pages (always dark, ADR 0010)",
+        "Theme changes do not animate colors (no transition on color/background tied to the switch)"
+      ],
+      "dependsOn": [
+        "T-045",
+        "T-088",
+        "T-089",
+        "T-090"
+      ],
+      "extra": [
+        "PO decision: on the journey the switcher is hidden instead of disabled; a disabled control with an explanation adds noise to a page that cannot change. Listed in reviewItems."
+      ],
+      "status": "todo",
+      "attempts": 0,
+      "commit": null,
+      "notes": [
+        "2026-11-26 rodada 14 (PO): created from the stakeholder decisions in REPORT (rodada 4) and docs/specs/2026-11-26-dark-mode-e-produtos.md.",
+        "PO decision: on the journey the switcher is hidden instead of disabled; a disabled control with an explanation adds noise to a page that cannot change. Listed in reviewItems."
+      ]
+    },
+    {
+      "id": "T-092",
+      "title": "Fix dark-theme gaps in sections, books, 404, selection and the journey tunnel",
+      "type": "fix",
+      "priority": "P1",
+      "touchesUi": true,
+      "acceptance": [
+        "With <html data-theme=\"dark\"> forced, Hero, About, Experience, Skills, Education, Products, Testimonials, Books (including progress bars and their track), Teasers, Contact, Footer and the 404 page use only theme tokens: no element keeps a light background or dark text from a hardcoded value",
+        "::selection, tags and the focus ring stay at >= 3:1 against their surface in both themes; the favicon stays visible on a dark tab",
+        "Going from a dark home to the journey (warp tunnel in src/lib/warp.ts) and back from the journey to a light home shows no light frame",
+        "axe-core reports no WCAG A/AA violations on /en/, /pt/, /en/books/ and /pt/livros/ in both forced themes, and there is no horizontal scroll at 375px in either theme"
+      ],
+      "dependsOn": [
+        "T-088",
+        "T-089",
+        "T-091"
+      ],
+      "status": "todo",
+      "attempts": 0,
+      "commit": null,
+      "notes": [
+        "2026-11-26 rodada 14 (PO): created from the stakeholder decisions in REPORT (rodada 4) and docs/specs/2026-11-26-dark-mode-e-produtos.md."
+      ]
     }
   ]
 }
