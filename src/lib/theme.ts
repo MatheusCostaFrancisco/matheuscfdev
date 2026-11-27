@@ -23,8 +23,8 @@ export const explicitThemes: readonly ExplicitTheme[] = ['light', 'dark']
  * update both together.
  */
 export const themeSurface: Record<ExplicitTheme, string> = {
-  light: '#f8faf9',
-  dark: '#0c1615',
+  light: '#f7f9fc',
+  dark: '#0b1120',
 }
 
 /** A missing or unknown saved value means "follow the system". */

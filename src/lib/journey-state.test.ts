@@ -36,7 +36,7 @@ function withWorld(
   })
 }
 
-function completeAll(worlds: JourneyWorldInput[]): JourneyWorldInput[] {
+function finishAll(worlds: JourneyWorldInput[]): JourneyWorldInput[] {
   return worlds.reduce(
     (acc, _, index) => withWorld(acc, index, { studyDone: STUDY_COUNT, bossDone: true }),
     worlds,
@@ -102,7 +102,7 @@ describe('journeyState', () => {
   })
 
   it('makes the final boss current when all 8 worlds are completed', () => {
-    const state = journeyState(completeAll(makeWorlds()), makeFinalBoss())
+    const state = journeyState(finishAll(makeWorlds()), makeFinalBoss())
 
     for (const world of state.worlds) {
       expect(world).toMatchObject({ status: 'completed', xp: 100 })
@@ -115,7 +115,7 @@ describe('journeyState', () => {
   })
 
   it('reaches the destination when the final deliverable is marked after the 8 worlds', () => {
-    const state = journeyState(completeAll(makeWorlds()), makeFinalBoss(true))
+    const state = journeyState(finishAll(makeWorlds()), makeFinalBoss(true))
 
     expect(state.finalBoss).toEqual({ id: 'final-boss', status: 'completed', xp: 100 })
     expect(state.totalXp).toBe(100)

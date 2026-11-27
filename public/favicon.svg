@@ -1,11 +1,11 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
   <!-- Colors mirror color-accent-600 (light) and color-accent-700 / color-on-accent (dark) in src/index.css; change them together. Follows prefers-color-scheme, not the site theme switcher. -->
   <style>
-    .tile { fill: #0f7c72; }
+    .tile { fill: #2563eb; }
     .mark { stroke: #ffffff; }
     @media (prefers-color-scheme: dark) {
-      .tile { fill: #62d4c2; }
-      .mark { stroke: #052725; }
+      .tile { fill: #93c5fd; }
+      .mark { stroke: #0a1631; }
     }
   </style>
   <rect class="tile" width="32" height="32" rx="8"/>
