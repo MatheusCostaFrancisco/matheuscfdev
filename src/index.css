@@ -573,3 +573,9 @@
     opacity: 0;
   }
 }
+
+/* Theme switch must not animate colors (T-091): set for two frames by applyThemePreference. */
+:root[data-theme-switching],
+:root[data-theme-switching] * {
+  transition: none !important;
+}

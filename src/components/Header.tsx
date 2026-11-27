@@ -6,6 +6,7 @@ import { storeLocale } from '../lib/locale-storage'
 import { routes, type Page } from '../lib/routes'
 import { useLocale } from '../lib/locale-context'
 import { useContent } from '../lib/use-content'
+import { ThemeSwitcher } from './ThemeSwitcher'
 
 function useHash(): string {
   const [hash, setHash] = useState(() => window.location.hash)
@@ -182,6 +183,11 @@ export function Header({ page }: HeaderProps) {
                 })}
               </ul>
             </li>
+            {page !== 'journey' && (
+              <li className="mt-1 border-t border-line pt-2 xl:ml-2 xl:mt-0 xl:border-l xl:border-t-0 xl:pl-2 xl:pt-0">
+                <ThemeSwitcher />
+              </li>
+            )}
           </ul>
         </nav>
       </div>
