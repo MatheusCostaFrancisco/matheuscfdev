@@ -72,6 +72,25 @@ Resumo: 6 entregues · 42 para revisão · 1 bloqueadas · 0 no backlog
 - [ ] **Gate com navegador** — decidir se a esteira inclui Playwright com `reducedMotion: 'reduce'`. — Sim ou não.
 - [ ] **Limpeza local** — encerrar o `vite preview` na porta 4173; `docker rmi caddy:2-alpine` no WSL, se não for mais usado; reiniciar o Docker Desktop se ainda estiver travado.
 
+## Decisões do stakeholder para a próxima rodada
+
+Tomadas em 2026-11-26. Dark mode e produtos aprovados ("ficou bom"), o que fecha os itens de revisão T-087 a T-092 sobre gosto (paleta escura em teal, proporção 2/5 + 3/5). O PO cria estas tarefas antes de qualquer P2. Spec: `docs/specs/2026-11-26-azul-e-largura.md`.
+
+1. **Acento azul no lugar do verde (P1, várias tarefas).**
+   - Azul clássico (~217°): `#2563eb`/`#1d4ed8` no claro, `#60a5fa`/`#93c5fd` no escuro, fundo escuro `#0b1120`.
+   - Neutros e sombras retingidos para azul nos dois temas, com AA.
+   - Nada de teal residual: theme-color, favicon, OG, 404, seleção e livros.
+   - ADR 0012.
+   - A jornada não muda.
+2. **Conteúdo até 1280px (P1).**
+   - Container e footer em `max-w-7xl`, alinhados ao header.
+   - Texto corrido continua limitado a ~70 caracteres.
+   - Grids (Skills, Experience, Depoimentos, Livros, Teasers) ganham colunas em `xl`.
+   - Revisor confere em 1280px e 1536px.
+3. **Itens já pedidos na rodada passada, que entram junto (P2):**
+   - Sincronizar a cor da barra do navegador com o tema salvo ao carregar (T-091).
+   - Cancelar o rAF anterior na troca rápida de tema (T-091).
+
 ## Bloqueadas
 | Tarefa | Motivo | Tentativas |
 |---|---|---|
