@@ -28,6 +28,7 @@ Fonte de verdade da página **Jornada** do site (antiga Roadmap 2027). Versão *
 - [ ] Tokenização e sampling (temperature, top-p, logprobs)
 - [ ] Atenção, janela de contexto e KV cache
 - [ ] Embeddings e similaridade
+- [ ] Prompting (few-shot, chain of thought)
 - [ ] Python para IA (Pydantic, async, uv)
 - [ ] **Chefão:** artigo explicando um LLM por dentro, com diagramas próprios
 
@@ -39,6 +40,7 @@ Fonte de verdade da página **Jornada** do site (antiga Roadmap 2027). Versão *
 - [ ] Prompt caching
 - [ ] Escolha de modelo por custo e latência
 - [ ] Context engineering
+- [ ] Processamento em batch
 - [ ] **Chefão:** feature de IA no Manda Aí ou no WoodFlow com custo e latência medidos
 
 ## Mundo 2 · RAG e dados
@@ -46,6 +48,8 @@ Fonte de verdade da página **Jornada** do site (antiga Roadmap 2027). Versão *
 - [ ] Chunking
 - [ ] pgvector
 - [ ] Busca híbrida (BM25 + vetor)
+- [ ] Citações e grounding
+- [ ] RAG multimodal (PDF, imagem, áudio)
 - [ ] Reranking
 - [ ] Query rewriting
 - [ ] GraphRAG
@@ -60,6 +64,7 @@ Fonte de verdade da página **Jornada** do site (antiga Roadmap 2027). Versão *
 - [ ] Orquestração multi-agente
 - [ ] Memória
 - [ ] Human-in-the-loop
+- [ ] Workflows vs agentes (execução durável)
 - [ ] Com framework e sem framework
 - [ ] **Chefão:** agente com MCP próprio resolvendo uma tarefa real
 
@@ -71,14 +76,18 @@ Fonte de verdade da página **Jornada** do site (antiga Roadmap 2027). Versão *
 - [ ] Avaliação offline e online
 - [ ] Alucinação
 - [ ] Prompt injection e red teaming
+- [ ] Guardrails
+- [ ] Permissões de tools (OAuth no MCP)
+- [ ] Detecção de PII
 - [ ] **Chefão:** suíte de evals rodando no CI de um projeto
 
 ## Mundo 5 · LLMOps
 
 - [ ] Tracing (OpenTelemetry, Langfuse)
 - [ ] Versionamento de prompt
-- [ ] Fallback entre modelos
+- [ ] Retries e fallback entre modelos
 - [ ] Rate limit
+- [ ] Filas e picos de carga
 - [ ] Controle de custo
 - [ ] A/B de prompt
 - [ ] **Chefão:** painel de observabilidade de um sistema de IA em produção
