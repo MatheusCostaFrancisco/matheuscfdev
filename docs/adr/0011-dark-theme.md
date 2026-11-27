@@ -57,6 +57,13 @@ O Tailwind 4 copia o valor de `--shadow-*` para dentro do utilitário (`.shadow-
 
 Sem preto puro e sem glow. Vale para `shadow-xs…xl`, `inset-shadow-sm` e `drop-shadow-md/lg`. No escuro a sombra só reforça a borda e a diferença de luminância entre `surface` e `surface-raised`.
 
+### Adendo 2026-11-26 (T-089, tema antes do primeiro paint)
+
+- `src/lib/theme.ts` é a fonte da chave (`matheuscfdev.theme`), dos valores (`system`, `light`, `dark`), do parser (`parseThemePreference`, valor ausente ou inválido vira `system`), das superfícies usadas no `theme-color` e do script inline. Leitura e escrita no `localStorage` ficam em `src/lib/theme-storage.ts`, separado porque o `vite.config.ts` importa `theme.ts` sob um tsconfig sem tipos DOM. "Sistema" apaga a chave em vez de gravar `system`.
+- O plugin `themePlugin` do `vite.config.ts` injeta logo depois do `<meta charset>` de cada entrada HTML, antes de qualquer stylesheet: `<meta name="color-scheme" content="light dark">`, dois `theme-color` com `media` (claro #f8faf9, escuro #0c1615) e o script. O script só grava `light` ou `dark` em `data-theme` e envolve o `localStorage` em `try/catch`; com `system` ou erro, `data-theme` fica ausente e o CSS segue o sistema.
+- Página cujo `<html>` já declara `data-theme` fica fora (hoje só a jornada, `data-theme="journey"`, que mantém `color-scheme` dark e `theme-color` #05060f no próprio HTML). Uma página nova entra sozinha; uma entrada sem `<meta charset="UTF-8" />` quebra o build.
+- O fallback sem JS da raiz (`index.html`) ganhou o bloco escuro sob `@media (prefers-color-scheme: dark)`, com os valores desta ADR. Sem JS não existe escolha salva, então ele segue só o sistema. Isso substitui a última consequência abaixo.
+
 ## Contraste no escuro (WCAG 2.1 AA)
 
 Calculado pela fórmula de luminância relativa da WCAG 2.1, nos papéis da ADR 0001.

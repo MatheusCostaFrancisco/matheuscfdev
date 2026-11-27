@@ -64,8 +64,10 @@
 
     <!--
       No-JS fallback styles. This page does not load the CSS bundle, so the
-      custom properties below mirror the @theme tokens of the same name in
-      src/index.css; update both when the theme changes. Poppins is deliberately
+      custom properties below mirror the tokens of the same name in
+      src/index.css (light in @theme, dark in @layer base, ADR 0011); update
+      both when the theme changes. Without JS there is no saved choice, so the
+      dark values follow only the system preference. Poppins is deliberately
       not loaded here (ADR 0002): the page is only seen without JS, and a
       font request would delay the redirect for everyone else.
     -->
@@ -78,6 +80,17 @@
         --color-accent-100: #cbf5ec;
         --color-accent-600: #0f7c72;
         --color-accent-700: #11645d;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --color-surface: #0c1615;
+          --color-surface-sunken: #08100f;
+          --color-fg: #e4eeec;
+          --color-fg-muted: #a1b3af;
+          --color-accent-100: #0e3734;
+          --color-accent-600: #3dbcab;
+          --color-accent-700: #62d4c2;
+        }
       }
       body {
         margin: 0;

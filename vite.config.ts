@@ -8,6 +8,7 @@ import {
 } from "./src/content/career"
 import { defaultLocale, locales, type Locale } from "./src/lib/locale"
 import { pages, resolveRoute, routes, type Page } from "./src/lib/routes"
+import { themeInitScript, themeSurface } from "./src/lib/theme"
 
 const SITE_URL_PLACEHOLDER = "%SITE_URL%"
 
@@ -172,6 +173,39 @@ function siteUrlPlugin(siteUrl: string): Plugin {
   }
 }
 
+const HTML_OPEN_TAG_RE = /<html\b[^>]*>/i
+const CHARSET_META = '<meta charset="UTF-8" />'
+
+// Theme before first paint (ADR 0011): right after the charset meta of every
+// HTML entry, before any stylesheet, injects the color-scheme meta, one
+// theme-color meta per system theme and the inline script from src/lib/theme.ts
+// that applies the saved choice to data-theme. A page whose <html> already
+// declares data-theme (the journey, data-theme="journey") owns its theme and is
+// left untouched.
+function themePlugin(): Plugin {
+  const head = [
+    CHARSET_META,
+    '    <meta name="color-scheme" content="light dark" />',
+    `    <meta name="theme-color" media="(prefers-color-scheme: light)" content="${themeSurface.light}" />`,
+    `    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="${themeSurface.dark}" />`,
+    `    <script>${themeInitScript}</script>`,
+  ].join("\n")
+  return {
+    name: "theme-init",
+    transformIndexHtml: {
+      order: "pre",
+      handler: (html, ctx) => {
+        const htmlTag = HTML_OPEN_TAG_RE.exec(html)?.[0] ?? ""
+        if (/\sdata-theme=/.test(htmlTag)) return html
+        if (!html.includes(CHARSET_META)) {
+          throw new Error(`[theme] ${ctx.path} has no ${CHARSET_META} to anchor the theme script.`)
+        }
+        return html.replace(CHARSET_META, head)
+      },
+    },
+  }
+}
+
 // https://vite.dev/config/
 // Multi-page build (ADR 0002, ADR 0005): the root page only redirects by
 // browser language; every page of the route map, in each locale, has its own
@@ -184,7 +218,7 @@ export default defineConfig(({ command, mode }) => {
     command === "serve" && !env.SITE_URL ? "" : parseSiteUrl(env.SITE_URL)
 
   return {
-    plugins: [react(), tailwindcss(), siteUrlPlugin(siteUrl)],
+    plugins: [react(), tailwindcss(), themePlugin(), siteUrlPlugin(siteUrl)],
     // Journey paths for src/lib/warp.ts, which stays import-free so it adds
     // nothing to the main chunk.
     define: {
