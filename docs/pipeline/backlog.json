@@ -2119,7 +2119,7 @@
       "dependsOn": [],
       "status": "done",
       "attempts": 1,
-      "commit": null,
+      "commit": "e505837",
       "notes": [
         "2026-11-26 rodada 15 (PO): created from the stakeholder decisions in REPORT (rodada 5) and docs/specs/2026-11-26-azul-e-largura.md.",
         "One task for both themes on purpose: the accent is one decision recorded in one ADR, and splitting light and dark would publish a half-teal site if the second task were rejected."
@@ -2143,7 +2143,7 @@
       ],
       "status": "done",
       "attempts": 1,
-      "commit": null,
+      "commit": "bb2b6ce",
       "notes": [
         "2026-11-26 rodada 15 (PO): created from the stakeholder decisions in REPORT (rodada 5) and docs/specs/2026-11-26-azul-e-largura.md."
       ]
@@ -2166,7 +2166,7 @@
       ],
       "status": "done",
       "attempts": 1,
-      "commit": null,
+      "commit": "fb87f42",
       "notes": [
         "2026-11-26 rodada 15 (PO): created from the stakeholder decisions in REPORT (rodada 5) and docs/specs/2026-11-26-azul-e-largura.md.",
         "PO decision: products stay one per row with the approved 2/5 + 3/5 split and no sticky left column for now. The wider container already shortens the right column, so the empty space reported in T-087 is re-checked at 1280px before adding sticky."
@@ -2188,7 +2188,7 @@
       ],
       "status": "done",
       "attempts": 1,
-      "commit": null,
+      "commit": "5816baf",
       "notes": [
         "2026-11-26 rodada 15 (PO): created from the stakeholder decisions in REPORT (rodada 5) and docs/specs/2026-11-26-azul-e-largura.md."
       ]
@@ -2231,7 +2231,7 @@
       ],
       "status": "done",
       "attempts": 1,
-      "commit": null,
+      "commit": "94ab80f",
       "notes": [
         "2026-11-26 rodada 15 (PO): created from the stakeholder decisions in REPORT (rodada 5) and docs/specs/2026-11-26-azul-e-largura.md."
       ]
@@ -2252,7 +2252,7 @@
       ],
       "status": "done",
       "attempts": 1,
-      "commit": null,
+      "commit": "adc3f7e",
       "notes": [
         "2026-11-26 rodada 15 (PO): created from the stakeholder decisions in REPORT (rodada 5) and docs/specs/2026-11-26-azul-e-largura.md."
       ]
@@ -2273,7 +2273,7 @@
       ],
       "status": "done",
       "attempts": 1,
-      "commit": null,
+      "commit": "0e87293",
       "notes": [
         "2026-11-26 rodada 15 (PO): created from the stakeholder decisions in REPORT (rodada 5) and docs/specs/2026-11-26-azul-e-largura.md.",
         "Merges the two T-091 follow-ups the stakeholder asked for in REPORT rodada 5 (item 3): same module, same concern, one small commit."
