@@ -121,30 +121,31 @@
   /* Colors: neutrals tinted toward the accent hue + one accent scale */
   --color-*: initial;
 
-  --color-surface: #f8faf9;
+  --color-surface: #f7f9fc;
   --color-surface-raised: #ffffff;
-  --color-surface-sunken: #eef3f2;
+  --color-surface-sunken: #edf2f9;
 
-  --color-fg: #122220;
-  --color-fg-muted: #475a56;
+  --color-fg: #0f1a2e;
+  --color-fg-muted: #47546b;
   --color-on-accent: #ffffff;
 
-  --color-line: #d5dfdc;
-  --color-line-strong: #7c8f8b;
+  --color-line: #d5dde9;
+  --color-line-strong: #7a879c;
   --color-space: #05060f;
   --color-space-ray: #bcd0ff;
 
-  --color-accent-50: #effcf9;
-  --color-accent-100: #cbf5ec;
-  --color-accent-200: #98eadb;
-  --color-accent-300: #5dd5c3;
-  --color-accent-400: #2db9a8;
-  --color-accent-500: #159a8c;
-  --color-accent-600: #0f7c72;
-  --color-accent-700: #11645d;
-  --color-accent-800: #13504b;
-  --color-accent-900: #14423e;
-  --color-accent-950: #052725;
+  /* Blue, hue ~217deg (ADR 0012) */
+  --color-accent-50: #eff6ff;
+  --color-accent-100: #dbeafe;
+  --color-accent-200: #bfdbfe;
+  --color-accent-300: #93c5fd;
+  --color-accent-400: #60a5fa;
+  --color-accent-500: #3b82f6;
+  --color-accent-600: #2563eb;
+  --color-accent-700: #1d4ed8;
+  --color-accent-800: #1e40af;
+  --color-accent-900: #1b3378;
+  --color-accent-950: #172554;
 
   /* Radius: rounded-2xl is the default for cards, buttons and inputs */
   --radius-2xl: 1rem;
@@ -154,7 +155,7 @@
    * read at runtime from --shadow-tint (rgb channels) and --shadow-strength
    * (alpha multiplier), declared in the base layer per theme, because Tailwind
    * inlines these values into the utilities: overriding --shadow-sm itself in
-   * the dark theme would not reach .shadow-sm. Light: 18 34 32 at x1.
+   * the dark theme would not reach .shadow-sm. Light: 15 26 46 at x1.
    */
   --shadow-*: initial;
   --shadow-xs: 0 1px 2px 0 rgb(var(--shadow-tint) / calc(0.05 * var(--shadow-strength)));
@@ -197,7 +198,7 @@
 @layer base {
   :root {
     color-scheme: light dark;
-    --shadow-tint: 18 34 32;
+    --shadow-tint: 15 26 46;
     --shadow-strength: 1;
   }
 
@@ -211,37 +212,37 @@
 
   /*
    * Dark values of the semantic tokens: same names, so no class changes. The
-   * teal scale is mirrored (50 is the darkest step), so light/dark pairs in
-   * components (bg-accent-50 + text-accent-800) stay pairs. Contrast table in
-   * ADR 0011.
+   * blue scale is mirrored (50 is the darkest step), so light/dark pairs in
+   * components (bg-accent-50 + text-accent-800) stay pairs. Selection rule in
+   * ADR 0011; values and contrast table in ADR 0012.
    */
   :root {
     @variant dark {
-      --color-surface: #0c1615;
-      --color-surface-raised: #132120;
-      --color-surface-sunken: #08100f;
+      --color-surface: #0b1120;
+      --color-surface-raised: #121a2c;
+      --color-surface-sunken: #070b16;
 
-      --color-fg: #e4eeec;
-      --color-fg-muted: #a1b3af;
-      --color-on-accent: #052725;
+      --color-fg: #e3e9f3;
+      --color-fg-muted: #a0adc2;
+      --color-on-accent: #0a1631;
 
-      --color-line: #24332f;
-      --color-line-strong: #667a75;
+      --color-line: #222c40;
+      --color-line-strong: #64718a;
 
-      --color-accent-50: #0a2725;
-      --color-accent-100: #0e3734;
-      --color-accent-200: #13514b;
-      --color-accent-300: #176a61;
-      --color-accent-400: #1c857a;
-      --color-accent-500: #26a091;
-      --color-accent-600: #3dbcab;
-      --color-accent-700: #62d4c2;
-      --color-accent-800: #93e6d8;
-      --color-accent-900: #c0f2e8;
-      --color-accent-950: #e8fbf7;
+      --color-accent-50: #0c1836;
+      --color-accent-100: #11234b;
+      --color-accent-200: #17316c;
+      --color-accent-300: #1d418f;
+      --color-accent-400: #2a5fd0;
+      --color-accent-500: #3b82f6;
+      --color-accent-600: #60a5fa;
+      --color-accent-700: #93c5fd;
+      --color-accent-800: #bfdbfe;
+      --color-accent-900: #dbeafe;
+      --color-accent-950: #eff6ff;
 
-      /* Near-black teal (2 9 8), never #000; alphas x4 so elevation reads on dark */
-      --shadow-tint: 2 9 8;
+      /* Near-black blue (2 5 12), never #000; alphas x4 so elevation reads on dark */
+      --shadow-tint: 2 5 12;
       --shadow-strength: 4;
     }
   }

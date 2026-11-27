@@ -109,3 +109,7 @@ Calculado pela fórmula de luminância relativa da WCAG 2.1.
 - Pedido explícito de dark mode, ou métrica mostrando parcela relevante de visitas com `prefers-color-scheme: dark`.
 - Alguma seção precisar de uma segunda cor semântica (erro, sucesso) que não caiba na escala de acento: estender este ADR com tokens de status, sem abrir uma segunda cor de marca.
 - Upgrade de Tailwind que mude namespaces de tema (`--text-*`, `--shadow-*`) ou o preflight.
+
+## Adendo 2026-11-26 (T-093, acento azul)
+
+O acento passou de teal para azul (hue ~217°) e os neutros e o tint das sombras foram retingidos para o mesmo azul, a pedido do stakeholder. Valores e contraste atuais estão na ADR 0012 (`docs/adr/0012-blue-accent.md`), que substitui a seção "Acento: teal", os valores das tabelas de tokens e de contraste e a cor das sombras desta ADR. Os papéis dos tokens e o resto desta ADR continuam valendo.

@@ -130,3 +130,7 @@ Esta ADR substitui a seção "Claro/escuro" da ADR 0001 ("Só tema claro na v1")
 - O suporte a `light-dark()` cobrir o público do site (Safari < 17.5 sem relevância nas métricas): avaliar trocar o `@custom-variant` por `light-dark()` nos tokens.
 - Upgrade do Tailwind que mude a semântica de `@custom-variant`/`@slot` ou deixe de copiar o valor das sombras para o utilitário.
 - A jornada deixar de ser sempre escura, ou outra página ganhar `data-theme` próprio: a exclusão no seletor precisa incluir esse valor.
+
+## Adendo 2026-11-26 (T-093, acento azul)
+
+Os valores escuros desta ADR (neutros, escala de acento espelhada, `--shadow-tint`) e a tabela de contraste no escuro foram substituídos pela ADR 0012 (`docs/adr/0012-blue-accent.md`): azul hue ~217°, `surface` #0b1120, `accent-600` #60a5fa, `accent-700` #93c5fd. A regra de seleção, o espelhamento da escala e o mecanismo `--shadow-tint`/`--shadow-strength` continuam valendo como descritos aqui.
