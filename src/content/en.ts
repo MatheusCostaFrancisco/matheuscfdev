@@ -15,7 +15,7 @@ export const createEn = (years: ExperienceYears): SiteContent => ({
       `Front-End Software Engineer with ${developmentYearsEn(years)} building web and mobile interfaces in production, focused on React, TypeScript and Vue.js. At AsapFlow, I lead the migration of a visual flow editor from Vue 2 to React + TypeScript, and I rebuilt the CI/CD pipeline on AWS.`,
       "I also work on the back end with Node.js and ship products end to end: through ElevaTech, my consultancy, and in my own SaaS products with payments, API integrations and production deploys. I'm pursuing an MBA in Software Architecture at FIAP.",
     ],
-    photoAlt: 'Portrait of Matheus Costa Francisco smiling, wearing a dark t-shirt, taken indoors at a gym',
+    photoAlt: 'Portrait of Matheus Costa Francisco smiling in a black t-shirt, holding a coffee cup at a café table',
   },
   experience: [
     {

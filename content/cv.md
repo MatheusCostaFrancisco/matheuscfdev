@@ -3,7 +3,7 @@ source: Matheus_Costa_Francisco_-_Resume.pdf (enviado pelo stakeholder em 2026-1
 linkedin: https://www.linkedin.com/in/matheus-costa-francisco/
 pair: content/cv.pt-BR.md
 updated: 2026-11-24 (respostas do stakeholder ao REPORT da rodada 5: resumo, skills, MBA IGTI, local, domínio, anos, depoimentos)
-photo: content/assets/profile.jpg (480x480, extraída do PDF do CV)
+photo: content/assets/profile.jpg (200x200, enviada pelo stakeholder em 2026-11-27)
 ---
 
 # Matheus Costa Francisco
@@ -199,4 +199,4 @@ Fonte: `content/depoimentos.md`, com 6 recomendações públicas do LinkedIn (ab
 
 ## Lacunas conhecidas
 
-- Foto de perfil: o stakeholder vai enviar outra; até lá, manter `content/assets/profile.jpg`.
+- Foto de perfil: substituída em 2026-11-27 pela foto enviada pelo stakeholder (200x200).

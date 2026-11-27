@@ -15,7 +15,7 @@ export const createPtBR = (years: ExperienceYears): SiteContent => ({
       `Engenheiro de software front-end com ${developmentYearsPt(years)} construindo interfaces web e mobile em produção, com foco em React, TypeScript e Vue.js. Na AsapFlow, conduzo a migração de um editor visual de fluxos de Vue 2 para React + TypeScript e reestruturei o CI/CD na AWS.`,
       "Atuo também no back-end com Node.js e entrego produtos de ponta a ponta: pela ElevaTech, minha consultoria, e em SaaS próprios com pagamento, integrações de API e deploy em produção. Curso MBA em Arquitetura de Software na FIAP.",
     ],
-    photoAlt: 'Retrato de Matheus Costa Francisco sorrindo, de camiseta escura, em ambiente fechado numa academia',
+    photoAlt: 'Retrato de Matheus Costa Francisco sorrindo, de camiseta preta, segurando uma xícara de café numa mesa de cafeteria',
   },
   experience: [
     {

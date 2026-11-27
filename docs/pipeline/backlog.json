@@ -289,7 +289,7 @@
         "T-005",
         "T-028"
       ],
-      "status": "blocked",
+      "status": "todo",
       "attempts": 0,
       "commit": null,
       "notes": [
@@ -304,7 +304,8 @@
         "2026-11-26 rodada 12 (PO): content/assets/profile.jpg still unchanged since dc647ca and the photo pending item is still [ ]. Stays blocked.",
         "2026-11-26 rodada 13 (PO): content/assets/profile.jpg still unchanged since dc647ca and the photo pending item is still [ ]. Stays blocked.",
         "2026-11-26 rodada 14 (PO): content/assets/profile.jpg still unchanged since dc647ca and the photo pending item is still [ ]. Stays blocked.",
-        "2026-11-26 rodada 15 (PO): content/assets/profile.jpg still unchanged since dc647ca and the photo pending item is still [ ]. Stays blocked."
+        "2026-11-26 rodada 15 (PO): content/assets/profile.jpg still unchanged since dc647ca and the photo pending item is still [ ]. Stays blocked.",
+        "2026-11-27: stakeholder sent the new photo; content/assets/profile.jpg replaced (200x200, 10 KB). Unblocked. The source is smaller than the rendered size at md+ (256px), so do not upscale; WebP/AVIF at 200px is enough."
       ]
     },
     {

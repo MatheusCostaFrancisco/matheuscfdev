@@ -27,8 +27,8 @@ export function Hero() {
         <img
           src={profilePhoto}
           alt={profile.photoAlt}
-          width={480}
-          height={480}
+          width={200}
+          height={200}
           fetchPriority="high"
           className="size-40 shrink-0 rounded-2xl object-cover shadow-lg sm:size-48 md:size-64"
         />
